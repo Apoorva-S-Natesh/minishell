@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/19 14:55:21 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/19 15:24:50 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ typedef	enum token_type
 
 typedef struct s_token
 {
-	char			*value;
+	char			*value; //for a command can have absolute or relative path
 	e_token_type	type;
 	t_token			*next;
 }	t_token;
@@ -83,7 +83,7 @@ typedef struct s_shell
 	t_command	*commands; //pointer to the head of commands list
 	char		*input; //store the original input (?)
 	t_env		*env;
-	int			status;
+	int			running_status;
 	int			signal_received;
 }	t_shell;
 

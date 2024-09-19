@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 14:19:49 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/19 14:20:37 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/19 15:06:21 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,3 +26,5 @@ int takeInput(char* str)
     else
         return (0);
 }
+
+//check tty
