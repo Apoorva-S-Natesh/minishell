@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/19 14:26:27 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/19 14:55:21 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,10 @@ typedef struct s_redirection
 
 typedef	enum token_type
 {
-	FILE_NAME,
+	WORD,
+	FILE_NAME, //if < or > the word at RIGHT should be filename
 	CMD,
-	ARG,
+	//ARG,
 	RED_IN,
 	RED_OUT,
 	APPEND,
@@ -68,7 +69,7 @@ typedef struct s_token
 
 typedef struct s_command
 {
-	char			**tokens; //array of nodes
+	char			**tokens; //array of nodes of tokes
 	int				type; //1 for builtin - 0 for path
 	int				priority; // 1 for << , increase from left to right, 0 if quotes failed
 	int				last_exit_status;
@@ -79,14 +80,12 @@ typedef struct s_command
 
 typedef struct s_shell
 {
-	t_command	*command; //pointer to the head of commands list
+	t_command	*commands; //pointer to the head of commands list
 	char		*input; //store the original input (?)
 	t_env		*env;
 	int			status;
 	int			signal_received;
 }	t_shell;
-
-/* 	TO IMPLEMENT
 
 typedef struct s_process
 {
@@ -96,13 +95,6 @@ typedef struct s_process
     int pipe_fd[2];          // Pipe file descriptors for input/output communication
     struct s_process *next;  // Next process in a pipeline
 } t_process;
-
-pid: Stores the process ID returned by fork().
-input_fd: The file descriptor for input redirection (if any).
-output_fd: The file descriptor for output redirection (if any).
-pipe_fd[2]: File descriptors for pipe communication between processes.
-next: Pointer to the next process in a pipeline.
-*/
 
 int	takeInput(char* str);
 
