@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/19 14:13:08 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/19 14:26:27 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,11 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+typedef struct s_env			t_env;
+typedef struct s_redirection	t_redirection;
+typedef struct s_token			t_token;
+typedef struct s_command		t_command;
+
 typedef struct s_env
 {
 	char		*key;               // (e.g., "PATH")
@@ -41,7 +46,7 @@ typedef struct s_redirection
 
 typedef	enum token_type
 {
-	FILE,
+	FILE_NAME,
 	CMD,
 	ARG,
 	RED_IN,
@@ -98,5 +103,7 @@ output_fd: The file descriptor for output redirection (if any).
 pipe_fd[2]: File descriptors for pipe communication between processes.
 next: Pointer to the next process in a pipeline.
 */
+
+int	takeInput(char* str);
 
 #endif

@@ -6,7 +6,7 @@
 #    By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/17 11:23:39 by aschmidt          #+#    #+#              #
-#    Updated: 2024/09/17 11:35:47 by aschmidt         ###   ########.fr        #
+#    Updated: 2024/09/19 14:21:00 by aschmidt         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CCFLAGS = -Wall -Wextra -Werror
 
 LDFLAGS = -lreadline
 
-SRC	= $(addprefix src/, main.c)
+SRC	= $(addprefix src/, main.c /input/take_input.c)
 
 OBJS	= $(SRC:%.c=%.o)
 
