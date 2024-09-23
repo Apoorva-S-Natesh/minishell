@@ -6,24 +6,25 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/19 15:24:50 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/23 11:20:56 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/wait.h>
-#include <fcntl.h>
-#include <signal.h>
-#include <errno.h>
-#include <dirent.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+# include "../libft/src/libft.h"
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <string.h>
+# include <sys/wait.h>
+# include <fcntl.h>
+# include <signal.h>
+# include <errno.h>
+# include <dirent.h>
+# include <readline/readline.h>
+# include <readline/history.h>
 
 typedef struct s_env			t_env;
 typedef struct s_redirection	t_redirection;
@@ -39,7 +40,8 @@ typedef struct s_env
 
 typedef struct s_redirection
 {
-	char			*filename; //input or output
+	char			*input_file; //input or output
+	char			*output_file;
 	int				type; // (1 for <) (2 for >) (3 for >>)
 	t_redirection	*next;
 }	t_redirection;
@@ -96,6 +98,12 @@ typedef struct s_process
     struct s_process *next;  // Next process in a pipeline
 } t_process;
 
+//INIT SHELL
+void    init_shell(t_shell *mini, char **envv);
+void    set_envv(char **envv);
+
+//INPUT
+int		check_args(int ac, char **av);
 int	takeInput(char* str);
 
 #endif
