@@ -6,35 +6,43 @@
 #    By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/17 11:23:39 by aschmidt          #+#    #+#              #
-#    Updated: 2024/09/19 14:21:00 by aschmidt         ###   ########.fr        #
+#    Updated: 2024/09/23 11:01:37 by aschmidt         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
+NAME	= minishell
+
 CC	= cc
 
-CCFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror
 
 LDFLAGS = -lreadline
 
 SRC	= $(addprefix src/, main.c /input/take_input.c)
 
-OBJS	= $(SRC:%.c=%.o)
+LIBFT_PATH	= libft/
 
-NAME	= minishell
+LIBFT_NAME	= libft.a
 
-all: $(NAME)
+LIBFT		= $(LIBFT_PATH)$(LIBFT_NAME)
 
-$(NAME): $(OBJS)
-	$(CC) $(CCFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+OBJ		= $(SRC:.c=.o)
 
-%.o: %.c
-	$(CC) $(CCFLAGS) -o $@ -c $<
+all: $(LIBFT) $(NAME)
+
+$(LIBFT):
+	@$(MAKE) -C $(LIBFT_PATH)
+
+$(NAME): $(OBJ)
+	@$(CC) $(CFLAGS) $(LDFLAGS) $(OBJ) -o $(NAME) $(LIBFT)
 
 clean:
-	rm -f $(OBJS)
+	@$(MAKE) -C $(LIBFT_PATH) clean
+	@$(RM) $(OBJ)
 
 fclean: clean
-	rm -f $(NAME)
+	@$(MAKE) -C $(LIBFT_PATH) fclean
+	@$(RM) $(NAME)
 
 re: fclean all
 
