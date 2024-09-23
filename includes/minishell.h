@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/23 14:19:29 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/23 15:14:29 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ void    set_envv(t_shell *mini, char **envv);
 
 //INPUT
 int		check_args(int ac, char **av);
-int	takeInput(char* str);
+int		take_input(t_shell *mini);
 
 //ENVV LIST
 void	append_node(t_env **head, char *key, char *value);

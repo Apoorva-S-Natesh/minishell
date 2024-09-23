@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 14:19:49 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/19 15:52:15 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/23 15:21:58 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,32 @@ int	check_args(int ac, char **av)
 	return (1);
 }
 
-int takeInput(char* str)
+int is_blank(char *str)
 {
-    char* buf;
+    int i;
 
-    buf = readline("\n>>> ");
-    if (strlen(buf) != 0)
+    i = 0;
+    while (str[i])
     {
-        add_history(buf);
-        strcpy(str, buf);
+        if (!ft_isspace(str[i]))
+            return (0);
+        i++;
+    }
+    return (1);
+}
+
+int take_input(t_shell *mini)
+{
+
+    mini->input = readline("\n>>> ");
+    if (strlen(mini->input) != 0)
+    {
+        if (is_blank(mini->input))
+        {
+            free(mini->input);
+            return (0);
+        }
+        add_history(mini->input);
         return (1);
     }
     else

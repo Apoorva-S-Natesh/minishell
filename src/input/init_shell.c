@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:12:50 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/23 14:13:30 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/23 15:26:50 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ void printDir()
 void    init_shell(t_shell *mini, char **envv)
 {
     mini->running_status = 1;
-    printf("the status is %d\n", mini->running_status);
+	mini->input = NULL;
+    //printf("the status is %d\n", mini->running_status);
     set_envv(mini, envv);
 }
 
@@ -44,5 +45,5 @@ void    set_envv(t_shell *mini, char **envv)
         i++;
     }
     mini->env = head;
-    print_list(mini->env);
+    //print_list(mini->env);
 }
