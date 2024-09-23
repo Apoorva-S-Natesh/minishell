@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 12:51:07 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/23 13:23:27 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/23 14:24:54 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,11 +44,19 @@ t_env	*new_env(char *key, char *value)
 {
 	t_env	*variable;
 
-	variable = malloc (sizeof(t_env));
+	variable = malloc(sizeof(t_env));
 	if (!variable)
 		return (NULL);
-	variable->key = key;
-	variable->value = value;
+	variable->key = ft_strdup(key);
+	variable->value = ft_strdup(value);
+	 if (!variable->key || !variable->value)
+	 {
+        free(variable->key);
+        free(variable->value);
+        free(variable);
+        return NULL;
+    }
+	variable->next = NULL;
 	return (variable);
 }
 
@@ -61,6 +69,8 @@ void	free_list(t_env *head)
 	while (current != NULL)
 	{
 		next = current->next;
+		free(current->key);
+		free(current->value);
 		free(current);
 		current = next;
 	}

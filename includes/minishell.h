@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/23 13:21:12 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/23 14:19:29 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,5 +111,9 @@ void	append_node(t_env **head, char *key, char *value);
 t_env	*new_env(char *key, char *value);
 void	free_list(t_env *head);
 void	print_list(t_env *head);
+
+//FREE
+void	ft_free(char **arr);
+void	free_all(t_shell *mini);
 
 #endif

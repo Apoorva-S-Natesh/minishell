@@ -6,7 +6,7 @@
 #    By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/17 11:23:39 by aschmidt          #+#    #+#              #
-#    Updated: 2024/09/23 13:21:56 by aschmidt         ###   ########.fr        #
+#    Updated: 2024/09/23 14:17:39 by aschmidt         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,8 @@ CFLAGS = -Wall -Wextra -Werror
 
 LDFLAGS = -lreadline
 
-SRC	= $(addprefix src/, main.c /input/take_input.c /utils/envv_utils.c)
+SRC	= $(addprefix src/, main.c /input/take_input.c /input/init_shell.c /utils/envv_utils.c \
+		/utils/free_utils.c /utils/close_program.c)
 
 LIBFT_PATH	= libft/
 
