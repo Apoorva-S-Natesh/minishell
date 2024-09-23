@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/23 11:20:56 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/23 13:21:12 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,10 +100,16 @@ typedef struct s_process
 
 //INIT SHELL
 void    init_shell(t_shell *mini, char **envv);
-void    set_envv(char **envv);
+void    set_envv(t_shell *mini, char **envv);
 
 //INPUT
 int		check_args(int ac, char **av);
 int	takeInput(char* str);
+
+//ENVV LIST
+void	append_node(t_env **head, char *key, char *value);
+t_env	*new_env(char *key, char *value);
+void	free_list(t_env *head);
+void	print_list(t_env *head);
 
 #endif

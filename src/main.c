@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 10:41:01 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/23 11:39:52 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/23 13:24:20 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,25 @@ void    init_shell(t_shell *mini, char **envv)
 {
     mini->running_status = 1;
     printf("the status is %d\n", mini->running_status);
-    set_envv(envv);
+    set_envv(mini, envv);
 }
 
-void    set_envv(char **envv)
+void    set_envv(t_shell *mini, char **envv)
 {
     int i;
+    t_env   *head;
+    char **split_envv;
 
     i = 0;
+    head = NULL;
     while (envv[i] != NULL)
     {
-        printf("ENV: %s\n", envv[i]);
+        split_envv = ft_split(envv[i], '=');
+        append_node(&head, split_envv[0], split_envv[1]);
         i++;
     }
-
+    mini->env = head;
+    print_list(mini->env);
 }
 int	main(int ac, char **av, char **envv)
 {
