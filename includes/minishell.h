@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/23 15:14:29 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/24 10:26:32 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,5 +115,8 @@ void	print_list(t_env *head);
 //FREE
 void	ft_free(char **arr);
 void	free_all(t_shell *mini);
+
+//TOKEN
+t_token	*tokenize(char *input);
 
 #endif
