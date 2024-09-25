@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/24 10:26:32 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/25 09:38:30 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,5 +118,12 @@ void	free_all(t_shell *mini);
 
 //TOKEN
 t_token	*tokenize(char *input);
+int		process_tokens(t_token **tokens, char **start, char **end);
+void 	handle_operators(char **start, char **end);
+int 	handle_quotes(char **start, char **end);
+void 	handle_words(char **start, char **end);
+e_token_type classify_token(char *token_value);
+void append_token(t_token **tokens, char *value, e_token_type type);
+
 
 #endif
