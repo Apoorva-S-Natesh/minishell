@@ -42,7 +42,7 @@ typedef struct s_redirection
 {
 	char			*input_file; //input or output
 	char			*output_file;
-	int				type; // (1 for <) (2 for >) (3 for >>)
+	int				type; // (1 for <) (2 for >) (3 for >>) (4 for <<)
 	t_redirection	*next;
 }	t_redirection;
 
@@ -71,7 +71,7 @@ typedef struct s_token
 
 typedef struct s_command
 {
-	char			**tokens; //array of nodes of tokes
+	char			**tokens; //array of nodes of tokens
 	int				type; //1 for builtin - 0 for path
 	int				priority; // 1 for << , increase from left to right, 0 if quotes failed
 	int				last_exit_status;
@@ -95,7 +95,7 @@ typedef struct s_process
     int input_fd;            // File descriptor for input redirection
     int output_fd;           // File descriptor for output redirection
     int pipe_fd[2];          // Pipe file descriptors for input/output communication
-    struct s_process *next;  // Next process in a pipeline
+    //struct s_process *next;  // Next process in a pipeline
 } t_process;
 
 //INIT SHELL
