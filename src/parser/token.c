@@ -26,73 +26,73 @@ t_token	*tokenize(char *input)
 			start++;
 		if (!*start)
 			break;
-		if (!process_tokens(&tokens, &start, &end))
+		if (!create_tokens(&tokens, &start, &end))
 			return (NULL);
 		start = end;
 	}
 	return (tokens);
 }
 
-int	process_tokens(t_token **tokens, char **start, char **end)
+int	create_tokens(t_token **tokens, char **start, char **end)
 {
-	char	*token_start;
-	char	*token_value;
+	char			*token_start;
+	char			*token_value;
 	e_token_type	type;
 
 	token_start = *start;
 	if (**start == '<' || **start == '>' || **start == '|')
-        handle_operators(start, end);
-    else if (**start == '\'' || **start == '\"')
+		handle_operators(start, end);
+	else if (**start == '\'' || **start == '\"')
 	{
-        if (!handle_quotes(start, end))
+		if (!handle_quotes(start, end))
 		{
-            printf("unclosed quotes\n");
-            return (0);
-        }
-    }
+			printf("unclosed quotes\n");
+			return (0);
+		}
+	}
 	else
-        handle_words(start, end);
-    token_value = ft_strndup(token_start, *end - token_start);
-    type = classify_token(token_value);
-    append_token(tokens, token_value, type);
-    free(token_value);
-    return (1);
+		handle_words(start, end);
+	token_value = ft_strndup(token_start, *end - token_start);
+	type = classify_token(token_value);
+	append_token(tokens, token_value, type);
+	free(token_value);
+	return (1);
 }
 
-void handle_operators(char **start, char **end)
+void	handle_operators(char **start, char **end)
 {
-    *end = *start + 1;
-    if ((**start == '<' && **end == '<') || (**start == '>' && **end == '>') \
+	*end = *start + 1;
+	if ((**start == '<' && **end == '<') || (**start == '>' && **end == '>') \
 		|| (**start == '|' && **end == '|'))
 	{
-        (*end)++;
-    }
-    *start = *end;
+		(*end)++;
+	}
+	*start = *end;
 }
 
-int handle_quotes(char **start, char **end)
+int	handle_quotes(char **start, char **end)
 {
-    char quote;
+	char	quote;
 
 	quote = **start;
-    (*start)++;
-    *end = *start;
-    while (**end && **end != quote)
+	(*start)++;
+	*end = *start;
+	while (**end && **end != quote)
 		(*end)++;
-    if (!**end)
+	if (!**end)
 		return (0);
-    (*end)++; // Include the closing quote
-    *start = *end;
-    return (1);
+	(*end)++; // Include the closing quote
+	*start = *end;
+	return (1);
 }
 
 void handle_words(char **start, char **end)
 {
-    *end = *start;
-    while (**end && !ft_isspace(**end) && **end != '<' && \
+	*end = *start;
+	while (**end && !ft_isspace(**end) && **end != '<' && \
 		**end != '>' && **end != '|' && **end != '\'' && **end != '\"')
 	{
-        (*end)++;
-    }
-    *start = *end;
+		(*end)++;
+	}
+	*start = *end;
 }

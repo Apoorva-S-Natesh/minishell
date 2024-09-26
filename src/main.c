@@ -12,35 +12,35 @@
 
 #include "../includes/minishell.h"
 
-static void print_tokens(t_token *tokens)
+static void	print_tokens(t_token *tokens)
 {
-    t_token *current = tokens;
+	t_token *current = tokens;
 
-    while (current)
-    {
-        printf("Token Type: %d, Token Value: %s\n", current->type, current->value);
-        current = current->next;
-    }
+	while (current)
+	{
+		printf("Token Type: %d, Token Value: %s\n", current->type, current->value);
+		current = current->next;
+	}
 }
 
 int	main(int ac, char **av, char **envv)
 {
-    t_shell mini;
-    t_token *tokens;
+	t_shell	mini;
+	t_token	*tokens;
 
-    if (!check_args(ac, av))
-        return (0);
-    init_shell(&mini, envv);
-    while (mini.running_status)
-    {
-        if (take_input(&mini))
-        {
-            printf("hay input!: %s\n", mini.input);
-            tokens = tokenize(mini.input);
-            print_tokens(tokens);
-            //execute
-        }
-    }
-   free_all(&mini);
+	if (!check_args(ac, av))
+		return (0);
+	init_shell(&mini, envv);
+	while (mini.running_status)
+	{
+		if (take_input(&mini))
+		{
+			printf("hay input!: %s\n", mini.input);
+			tokens = tokenize(mini.input);
+			print_tokens(tokens);
+			//execute
+		}
+	}
+	free_all(&mini);
 	return (0);
 }
