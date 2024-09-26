@@ -96,6 +96,7 @@ typedef struct s_process
     int output_fd;           // File descriptor for output redirection
     int pipe_fd[2];          // Pipe file descriptors for input/output communication
     //struct s_process *next;  // Next process in a pipeline
+	int	status;
 } t_process;
 
 //INIT SHELL
