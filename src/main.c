@@ -45,6 +45,7 @@ int	main(int ac, char **av, char **envv)
 
     if (!check_args(ac, av))
         return (0);
+	signal(SIGINT, handle_sigint); // Handle Ctrl+C
     init_shell(&mini, envv);
     //printDir();
     /*loop

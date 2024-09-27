@@ -1,13 +1,13 @@
 #include "minishell.h"
 char	is_builtin(t_command *cmd)
 {
-	if ((strcmp(cmd->tokens[0], "echo")) || 
-		(strcmp(cmd->tokens[0], "cd")) ||
-		(strcmp(cmd->tokens[0], "pwd")) ||
-		(strcmp(cmd->tokens[0], "export")) ||
-		(strcmp(cmd->tokens[0], "unset")) || 
-		(strcmp(cmd->tokens[0], "env")) ||
-		(strcmp(cmd->tokens[0], "exit")))
+	if ((strcmp(cmd->tokens[0], "echo") == 0) || 
+		(strcmp(cmd->tokens[0], "cd") == 0) ||
+		(strcmp(cmd->tokens[0], "pwd") == 0) ||
+		(strcmp(cmd->tokens[0], "export") == 0) ||
+		(strcmp(cmd->tokens[0], "unset") == 0) || 
+		(strcmp(cmd->tokens[0], "env") == 0) ||
+		(strcmp(cmd->tokens[0], "exit") == 0))
 			return (1);
 	return (0);
 }

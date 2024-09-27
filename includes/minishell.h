@@ -97,6 +97,8 @@ typedef struct s_process
     int pipe_fd[2];          // Pipe file descriptors for input/output communication
     //struct s_process *next;  // Next process in a pipeline
 	int	status;
+	int	exit_code;
+	int	signal;
 } t_process;
 
 //INIT SHELL
@@ -106,5 +108,10 @@ void    set_envv(char **envv);
 //INPUT
 int		check_args(int ac, char **av);
 int	takeInput(char* str);
+
+//SIGNAL
+void	handle_sigint(int sig);
+
+//EXECUTE
 
 #endif
