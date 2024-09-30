@@ -87,6 +87,7 @@ typedef struct s_shell
 	t_env		*env;
 	int			running_status;
 	int			signal_received;
+	char		cwd[1024];
 }	t_shell;
 
 typedef struct s_process
@@ -113,5 +114,8 @@ int	takeInput(char* str);
 void	handle_sigint(int sig);
 
 //EXECUTE
+
+// UTILS
+char	*ft_getenv(const char *name, t_env *env);
 
 #endif
