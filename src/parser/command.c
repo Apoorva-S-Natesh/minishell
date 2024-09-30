@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-t_command	*group_tokens(t_token *tokens)
+t_command	*group_tokens_to_cmd(t_token *tokens)
 {
 	t_command	*head;
 	t_command	*current_cmd;
@@ -38,6 +38,7 @@ t_command	*create_new_command(void)
 	new_command->tokens = NULL;
 	new_command->redirection = NULL;
 	new_command->next = NULL;
+	new_command->priority = -1;
 	return (new_command);
 }
 

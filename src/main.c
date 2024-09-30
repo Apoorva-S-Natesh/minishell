@@ -12,15 +12,66 @@
 
 #include "../includes/minishell.h"
 
-static void	print_tokens(t_token *tokens)
-{
-	t_token *current = tokens;
+static void print_command_tokens(t_command *cmd);
+static void print_redirections(t_redirection *redir);
 
-	while (current)
-	{
-		printf("Token Type: %d, Token Value: %s\n", current->type, current->value);
-		current = current->next;
-	}
+static void print_commands(t_command *commands)
+{
+    t_command *current_command = commands;
+    int cmd_count = 1;
+
+    while (current_command)
+    {
+        printf("Command %d:\n", cmd_count);
+
+        // Print tokens (arguments and command)
+        print_command_tokens(current_command);
+
+        // Print redirection information
+        if (current_command->redirection)
+            print_redirections(current_command->redirection);
+
+        // Proceed to next command in the list (in case of pipes)
+        current_command = current_command->next;
+        cmd_count++;
+        printf("\n"); // Separate commands with a newline
+    }
+}
+
+static void print_command_tokens(t_command *cmd)
+{
+    if (cmd->tokens)
+    {
+        printf("  Tokens:\n");
+        for (int i = 0; cmd->tokens[i]; i++)
+        {
+            printf("    [%s]\n", cmd->tokens[i]);
+        }
+    }
+    else
+    {
+        printf("  No tokens.\n");
+    }
+}
+
+static void print_redirections(t_redirection *redir)
+{
+    t_redirection *current_redir = redir;
+
+    printf("  Redirections:\n");
+    while (current_redir)
+    {
+        if (current_redir->input_file)
+            printf("    Input Redirect: <%s>\n", current_redir->input_file);
+        if (current_redir->output_file)
+        {
+            if (current_redir->type == 2)
+                printf("    Output Redirect: >%s\n", current_redir->output_file);
+            else if (current_redir->type == 3)
+                printf("    Append Redirect: >>%s\n", current_redir->output_file);
+        }
+        current_redir = current_redir->next;
+    }
 }
 
 int	main(int ac, char **av, char **envv)
@@ -37,7 +88,8 @@ int	main(int ac, char **av, char **envv)
 		{
 			printf("hay input!: %s\n", mini.input);
 			tokens = tokenize(mini.input);
-			print_tokens(tokens);
+			mini.commands = group_tokens_to_cmd(tokens);
+			print_commands(mini.commands);
 			//execute
 		}
 	}
