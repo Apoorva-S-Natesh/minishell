@@ -1,4 +1,16 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_utils.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/01 12:51:17 by asomanah          #+#    #+#             */
+/*   Updated: 2024/10/01 14:51:06 by asomanah         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../includes/minishell.h"
 
 /*
 typedef struct s_env
@@ -13,7 +25,7 @@ char	*ft_getenv(const char *name, t_env *env)
 	while (env)
 	{
 		if (strcmp(env->key, name) == 0)
-			return env->value;
+			return (env->value);
 		env = env->next;
 	}
 	return (NULL);
@@ -49,13 +61,13 @@ t_env	*new_env(char *key, char *value)
 		return (NULL);
 	variable->key = ft_strdup(key);
 	variable->value = ft_strdup(value);
-	 if (!variable->key || !variable->value)
-	 {
-        free(variable->key);
-        free(variable->value);
-        free(variable);
-        return NULL;
-    }
+	if (!variable->key || !variable->value)
+	{
+		free(variable->key);
+		free(variable->value);
+		free(variable);
+		return (NULL);
+	}
 	variable->next = NULL;
 	return (variable);
 }

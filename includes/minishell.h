@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/23 11:20:56 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/10/01 16:54:04 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ typedef struct s_env			t_env;
 typedef struct s_redirection	t_redirection;
 typedef struct s_token			t_token;
 typedef struct s_command		t_command;
+
+#define SUCCESS 0
 
 typedef struct s_env
 {
@@ -74,7 +76,6 @@ typedef struct s_command
 	char			**tokens; //array of nodes of tokens
 	int				type; //1 for builtin - 0 for path
 	int				priority; // 1 for << , increase from left to right, 0 if quotes failed
-	int				last_exit_status;
 	t_redirection	*redirection; // if there are < or > or >> inside the command. Pointer to the list
 	t_command		*prev;
 	t_command		*next;
@@ -88,6 +89,7 @@ typedef struct s_shell
 	int			running_status;
 	int			signal_received;
 	char		cwd[1024];
+	int			last_exit_status; // Track the last exit status of executed commands
 }	t_shell;
 
 typedef struct s_process

@@ -1,4 +1,16 @@
-#include "minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/01 12:51:27 by asomanah          #+#    #+#             */
+/*   Updated: 2024/10/01 16:57:53 by asomanah         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../includes/minishell.h"
 
 void	execute(t_shell *mini)
 {
@@ -61,7 +73,7 @@ int	set_initial_input(t_command	*cmd, t_process *prcs, int tempin)
 		prcs->input_fd = dup(0);
 	}
 	else if (cmd->redirection && (cmd->redirection->input_file))
-	{	
+	{
 		prcs->input_fd = open(cmd->redirection->input_file, O_RDONLY);
 		if (prcs->input_fd < 0)
 		{
@@ -96,13 +108,13 @@ int	set_output(t_command *cmd, t_process *prcs, int tempout)
 void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 {
 	if(is_builtin(cmd->tokens[0])) //Check if the command is a built-in
-		execute_builtin(cmd, mini);
+		handle_builtin(cmd, mini);
 	else // Fork and execute command
 	{
 		prcs->pid = fork();
 		if (prcs->pid == 0)
 		{
-			execve(cmd->tokens[0], cmd->tokens, NULL); // send env variable here
+			execve(cmd->tokens[0], cmd->tokens, mini->env); // send env variable here
 			perror("execve");//If execve fails, print an error and exit
 			exit(1);
 		}
@@ -117,6 +129,7 @@ void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 			if (WIFEXITED(prcs->status)) //Checkinig how the child exited
 			{
 				prcs->exit_code = WEXITSTATUS(prcs->status); //If not 0 then process has issue
+				mini->last_exit_status = prcs->exit_code; // Update last exit status
 				printf("Command exited with the code %d\n", prcs->exit_code); // Delete later
 			}	
 			else if (WIFSIGNALED(prcs->status)) //Checking if a signal stopped the child process suddenly

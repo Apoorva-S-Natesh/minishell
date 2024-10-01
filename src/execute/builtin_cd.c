@@ -1,12 +1,27 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtin_cd.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/01 12:50:20 by asomanah          #+#    #+#             */
+/*   Updated: 2024/10/01 17:23:35 by asomanah         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 /*
 cd /: Changes to the root directory.
 cd: Changes to the home directory.
 cd ..: Changes to the parent directory.
 cd -: Changes to the previous directory.
 cd /folder/subfolder: Changes to a specified path.
+how is this handled in our minishell
+asomanah@c3a10c5:~$ cd core_curriculum//////so_long///maps
+asomanah@c3a10c5:~/core_curriculum/so_long/maps$ - should be done in parsing or here?
 */
 
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
 // Function to put a string to a file descriptor 
 void	ft_putstr_fd(char *s, int fd)
@@ -25,6 +40,7 @@ char	*ft_getcwd(t_shell *shell)
 	}
 	return (shell->cwd);
 }
+
 //Function to export an environment variable
 void	ft_env_export(char *var, t_env **env) // check if this function can be replaced 
 {
@@ -40,11 +56,11 @@ void	ft_env_export(char *var, t_env **env) // check if this function can be repl
 static int	many_args(int num_args)
 {
 	if (num_args > 2)
-	{	
+	{
 		ft_putstr_fd("minishell: cd: too many arguments\n", 2);
 		return (1);
 	}
-return (0);
+	return (0);
 }
 
 //Function to change to home directory if no arguments are provided"
@@ -71,7 +87,7 @@ static int	cd_path(int size, char **tokens , t_shell *mini)
 {
 	if (size < 0)
 		return (0);
-	if (strcmp(tokens[1], "~") == 0) //change strcmp to ft_strcmp
+	if ((strcmp(tokens[1], "~") == 0) || strcmp(tokens[1], "$1") == 0) //change strcmp to ft_strcmp
 	{
 		if (ft_getenv("HOME", mini->env) == NULL)
 		{
@@ -93,15 +109,11 @@ static int	cd_path(int size, char **tokens , t_shell *mini)
 	return (mini->running_status);
 }
 
-void	builtin_cd(char **tokens, t_shell *mini)
+void	builtin_cd(char **tokens, t_shell *mini, int size)
 {
-	int			size;
 	static char	prev_dir[1024]; //  is declared as a static variable, meaning it retains its value between function calls.
 	char 		*newpwd;
 
-	size = 0;
-	while (tokens[size] != NULL)
-		size++;
 	if (many_args(size))
 		return ;
 	if (size == 2 && strcmp(tokens[1], "-") == 0)
@@ -127,7 +139,7 @@ void	builtin_cd(char **tokens, t_shell *mini)
 	}
 	if (mini->cwd)
 	{
-		ft_strcpy(prev_dir, mini->cwd);
+		strcpy(prev_dir, mini->cwd);
 		newpwd = malloc(ft_strlen("PWD=") + ft_strlen(mini->cwd) + 1);
 		strcpy(newpwd, "PWD=");
 		strcat(newpwd, mini->cwd);
