@@ -25,81 +25,74 @@ exits
 
 #include "../../includes/minishell.h"
 
-void	builtin_exit(char **tokens, t_shell *mini, int size)
+static char	is_valid_exit_arg(const char *arg)
 {
-	
-}
-
-/*
-static int	too_many_args(int size)
-{
-	if (size > 2)
+	if (*arg == '-' || *arg == '+')
+		arg++;
+	while (*arg)
 	{
-		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-		return (1);
-	}
-	return (0);
-}
-
-static int	is_numeric_arg(char **cmdarr)
-{
-	int	i;
-
-	i = -1;
-	if (ft_isplusminus(cmdarr[1][0]))
-		++i;
-	while (cmdarr[1][++i])
-	{
-		if (!ft_isdigit(cmdarr[1][i]) || i > 9)
-		{
-			ft_putstr_fd("minishell: exit: ", 2);
-			ft_putstr_fd(cmdarr[1], 2);
-			ft_putstr_fd(": numeric argument required\n", 2);
+		if (*arg < '0' || *arg > '9')
 			return (0);
-		}
+		arg++;
 	}
 	return (1);
 }
 
-// if just 'exit' it actually carries the errno when no args. See: bbbb || exit
-// if too_many_args, Bash too just complains, prints exit, but doesn't exit
-int	ft_exit(int size, char **cmdarr)
+static void	print_exit_error(const char *arg, const char message)
 {
-	if (!cmdarr && !cmdarr[0])
-		return (1);
-	ft_putstr_fd("exit\n", 2);
-	if (size == 1)
-		exit(errno);
-	if (too_many_args(size))
-		return (1);
-	if (!is_numeric_arg(cmdarr))
-		exit(2);
-	exit((unsigned char)ft_atoi(cmdarr[1]));
-	return (SUCCESS);
+	ft_putstr_fd("minishell: exit: ", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd(": ", 2);
+	ft_putstr_fd(message, 2);
+	ft_putstr_fd("\n", 2);
 }
-*/
+
+static int	parse_exit_status(const char *arg)
+{
+	long	num;
+
+	num = ft_atoi(arg);
+	if (num < 0 || num > 255) //Check if the number is out of hte valid range for exit status
+	{
+		num %= 256;
+		if (num < 0)
+			num += 256; 
+	}
+	return ((int)num);
+}
+
+void	builtin_exit(char **tokens, t_shell *mini, int size)
+{
+	int	exit_status;
+
+	exit_status = mini->last_exit_status;
+	ft_putstr_fd("exit\n", 2);
+	if (size > 1)
+	{
+		if (!is_valid_exit_arg(tokens[1]))
+		{
+			print_exit_error(tokens[1], "numeric argument required");
+			exit_status = 2;
+		}
+		else
+		{
+			exit_status = parse_exit_status(tokens[1]);
+			if (size > 2)
+			{
+				ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+				mini->last_exit_status = 1;
+				return ;
+			}
+		}
+	}
+	//Clean up resources
+	//free resources(mini);
+	exit(exit_status);
+}
 
 /*
-chat gpt
-int ft_exit(int size, char **cmdarr, t_shell *mini)
-{
-    // Print exit message
-    ft_putstr_fd("exit\n", STDOUT_FILENO);
-
-    // If no arguments, exit with the last exit status
-    if (size == 1)
-        exit(mini->last_exit_status);  // Use last exit status stored in t_shell
-
-    // If too many arguments, print an error and return 1 without exiting
-    if (too_many_args(size))
-        return 1;
-
-    // If the argument is not a numeric value, exit with status 2
-    if (!is_numeric_arg(cmdarr[1]))
-        exit(2);
-
-    // Convert the argument to an exit status and exit
-    int exit_status = ft_atoi(cmdarr[1]);
-    exit((unsigned char)exit_status);
-}
+No arguments: exits with the status of the last executed command.
+One numeric argument: exits with that status (adjusted to be between 0-255).
+Non-numeric argument: prints an error and exits with status 255.
+More than one argument: prints an error message and doesn't exit.
 */
