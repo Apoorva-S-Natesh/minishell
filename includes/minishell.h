@@ -66,6 +66,7 @@ typedef struct s_token
 {
 	char			*value; //for a command can have absolute or relative path
 	e_token_type	type;
+	int				quote; // 0 = no quote, 1 = single quote, 2 = double quote
 	t_token			*next;
 }	t_token;
 
@@ -120,10 +121,16 @@ void	free_all(t_shell *mini);
 t_token	*tokenize(char *input);
 int		create_tokens(t_token **tokens, char **start, char **end);
 void 	handle_operators(char **start, char **end);
-int 	handle_quotes(char **start, char **end);
+int		handle_quotes(char **start, char **end, int *quote_type);
 void 	handle_words(char **start, char **end);
 e_token_type classify_token(char *token_value);
-void append_token(t_token **tokens, char *value, e_token_type type);
+void	append_token(t_token **tokens, char *value, e_token_type type, int quote_type);
+
+//EXPAND TOKENS
+void	expand_tokens(t_token *tokens, t_env *env_list);
+char	*expand_value(char	*token, t_env *env_list);
+char	*extract_env(char **ptr, t_env *env_list);
+char	*get_env_value(const char *name, t_env *env_list);
 
 //CREATE COMMAND
 t_command	*group_tokens_to_cmd(t_token *tokens);
@@ -136,4 +143,6 @@ void		handle_redirection(t_command **cmd, t_token **current_token);
 void		add_redi_to_cmd(t_command *cmd, t_token *redir_token, char *filename);
 void		set_redi_type(t_redirection *redir, t_token *redir_token, char *filename);
 void		append_redi(t_command *cmd, t_redirection *redir);
+
+
 #endif

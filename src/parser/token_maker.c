@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-void	append_token(t_token **tokens, char *value, e_token_type type)
+void	append_token(t_token **tokens, char *value, e_token_type type, int quote_type)
 {
 	t_token	*new;
 	t_token	*current;
@@ -22,6 +22,7 @@ void	append_token(t_token **tokens, char *value, e_token_type type)
 		return ;
 	new->value = ft_strdup(value);
 	new->type = type;
+	new->quote = quote_type;
 	new->next = NULL;
 	if (!*tokens)
 		*tokens = new;

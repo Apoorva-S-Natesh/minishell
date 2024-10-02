@@ -38,13 +38,15 @@ int	create_tokens(t_token **tokens, char **start, char **end)
 	char			*token_start;
 	char			*token_value;
 	e_token_type	type;
+	int				quote;
 
 	token_start = *start;
+	quote = 0;
 	if (**start == '<' || **start == '>' || **start == '|')
 		handle_operators(start, end);
 	else if (**start == '\'' || **start == '\"')
 	{
-		if (!handle_quotes(start, end))
+		if (!handle_quotes(start, end, &quote))
 		{
 			printf("unclosed quotes\n");
 			return (0);
@@ -54,7 +56,7 @@ int	create_tokens(t_token **tokens, char **start, char **end)
 		handle_words(start, end);
 	token_value = ft_strndup(token_start, *end - token_start);
 	type = classify_token(token_value);
-	append_token(tokens, token_value, type);
+	append_token(tokens, token_value, type, quote);
 	free(token_value);
 	return (1);
 }
@@ -70,13 +72,17 @@ void	handle_operators(char **start, char **end)
 	*start = *end;
 }
 
-int	handle_quotes(char **start, char **end)
+int	handle_quotes(char **start, char **end, int *quote_type)
 {
 	char	quote;
 
 	quote = **start;
 	(*start)++;
 	*end = *start;
+	 if (quote == '\'')
+		*quote_type = 1;  // Single quote
+	else if (quote == '\"')
+		*quote_type = 2;  // Double quote
 	while (**end && **end != quote)
 		(*end)++;
 	if (!**end)

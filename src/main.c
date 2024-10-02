@@ -88,6 +88,7 @@ int	main(int ac, char **av, char **envv)
 		{
 			printf("hay input!: %s\n", mini.input);
 			tokens = tokenize(mini.input);
+			expand_tokens(tokens, mini.env);
 			mini.commands = group_tokens_to_cmd(tokens);
 			print_commands(mini.commands);
 			//execute
