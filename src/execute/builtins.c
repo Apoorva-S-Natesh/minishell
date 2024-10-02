@@ -40,7 +40,7 @@ void	handle_builtin(t_command *cmd, t_shell *mini)
 	if (strcmp(cmd->tokens[0], "cd") == 0)
 		builtin_cd(cmd->tokens, mini, size);
 	if (strcmp(cmd->tokens[0], "pwd") == 0)
-		builtin_pwd();
+		builtin_pwd(mini);
 	if (strcmp(cmd->tokens[0], "export") == 0)
 		builtin_export(&cmd->tokens);
 	if (strcmp(cmd->tokens[0], "unset") == 0)

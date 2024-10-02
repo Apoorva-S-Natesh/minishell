@@ -26,6 +26,10 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
+# ifndef PATH_MAX
+# 	define PATH_MAX 4096
+# endif
+
 typedef struct s_env			t_env;
 typedef struct s_redirection	t_redirection;
 typedef struct s_token			t_token;

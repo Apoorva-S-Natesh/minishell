@@ -12,12 +12,43 @@
 
 #include "../../includes/minishell.h"
 
-void	builtin_pwd()
+static char	*ft_getcwd(t_shell *mini)
 {
-	char	cwd[1024];
+	char	*buff;
+	char	*pwd;
 
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		printf("%s\n", cwd);
+	pwd = NULL;
+	buff = NULL;
+	buff = malloc(PATH_MAX * sizeof(char));
+	if (!buff)
+	{
+		ft_putstr_fd("minishell: pwd: malloc fail\n", STDERR_FILENO);
+		mini->last_exit_status = 1;
+		return (NULL);
+	}
+	pwd = getcwd(buff, PATH_MAX);
+	if (pwd == NULL)
+	{
+		perror("minishell: getcwd");
+		mini->last_exit_status = 1;
+		free(buff);
+		return (NULL);
+	}
+	return (pwd);
+}
+
+void	builtin_pwd(t_shell *mini)
+{
+	char	*pwd;
+
+	pwd = ft_getcwd(mini);
+	if (pwd)
+	{
+		ft_putstr_fd(pwd, 1);
+		ft_putstr_fd("\n", 1);
+		free(pwd);
+		mini->last_exit_status = 0;
+	}
 	else
-		perror("cwd");
+		mini->last_exit_status = 1;
 }
