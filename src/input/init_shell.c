@@ -20,30 +20,30 @@ void printDir()
     printf("\nDir: %s", cwd);
 }*/
 
-void    init_shell(t_shell *mini, char **envv)
+void	init_shell(t_shell *mini, char **envv)
 {
-    mini->running_status = 1;
+	mini->running_status = 1;
 	mini->input = NULL;
-    //printf("the status is %d\n", mini->running_status);
-    set_envv(mini, envv);
+	//printf("the status is %d\n", mini->running_status);
+	set_envv(mini, envv);
 }
 
-void    set_envv(t_shell *mini, char **envv)
+void	set_envv(t_shell *mini, char **envv)
 {
-    int i;
-    t_env   *head;
-    char **split_envv;
+	int		i;
+	t_env	*head;
+	char	**split_envv;
 
-    i = 0;
-    head = NULL;
-    while (envv[i] != NULL)
-    {
-        split_envv = ft_split(envv[i], '=');
-        if (split_envv[0] && split_envv[1])
-            append_node(&head, split_envv[0], split_envv[1]);
-        ft_free(split_envv);
-        i++;
-    }
-    mini->env = head;
-    //print_list(mini->env);
+	i = 0;
+	head = NULL;
+	while (envv[i] != NULL)
+	{
+		split_envv = ft_split(envv[i], '=');
+		if (split_envv[0] && split_envv[1])
+			append_node(&head, split_envv[0], split_envv[1]);
+		ft_free(split_envv);
+		i++;
+	}
+	mini->env = head;
+	//print_list(mini->env);
 }
