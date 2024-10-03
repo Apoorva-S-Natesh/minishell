@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/25 12:27:06 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/10/03 15:35:09 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,17 +67,18 @@ typedef struct s_token
 {
 	char			*value; //for a command can have absolute or relative path
 	e_token_type	type;
+	int				quote; // 0 = no quote, 1 = single quote, 2 = double quote
 	t_token			*next;
 }	t_token;
 
 typedef struct s_command
 {
 	char			**tokens; //array of nodes of tokes
-	int				type; //1 for builtin - 0 for path
+//	int				type; //1 for builtin - 0 for path
 	int				priority; // 1 for << , increase from left to right, 0 if quotes failed
 	int				last_exit_status;
 	t_redirection	*redirection; // if there are < or > or >> inside the command. Pointer to the list
-	t_command		*prev;
+//	t_command		*prev;
 	t_command		*next;
 }	t_command;
 
@@ -116,19 +117,39 @@ void		print_list(t_env *head);
 //FREE
 void		ft_free(char **arr);
 void		free_all(t_shell *mini);
+void		free_tokens(t_token *tokens);
 
-//TOKEN
-t_token		*tokenize(char *input);
-int			process_tokens(t_token **tokens, char **start, char **end);
-void 		handle_operators(char **start, char **end);
-int 		handle_quotes(char **start, char **end);
-void		handle_words(char **start, char **end);
+//CREATE TOKEN
+t_token	*tokenize(char *input);
+void handle_word(char *input, int *i, t_token **tokens);
+void handle_redirections_and_pipes(char *input, int *i, t_token **tokens);
+void handle_quotes(char *input, int *i, t_token **tokens);
+//int		create_tokens(t_token **tokens, char **start, char **end);
+//void 	handle_operators(char **start, char **end);
+//int		handle_quotes(char **start, char **end, int *quote_type);
+//void 	handle_words(char **start, char **end);
 e_token_type classify_token(char *token_value);
-void		append_token(t_token **tokens, char *value, e_token_type type);
+void	append_token(t_token **tokens, char *value, e_token_type type, int quote_type);
 
-//COMMAND
-t_command	*new_command(void);
-void		append_command(t_command **head, t_command *new);
+//EXPAND TOKENS
+void	expand_tokens(t_token *tokens, t_env *env_list);
+char	*expand_value(char	*token, t_env *env_list);
+char	*extract_env(char **ptr, t_env *env_list);
+char	*get_env_value(const char *name, t_env *env_list);
+int process_operators(t_token **tokens, char **start, char **end);
+char	*remove_quotes(char *str);
+
+//CREATE COMMAND
+t_command	*group_tokens_to_cmd(t_token *tokens);
+t_command	*get_command(t_command *current, t_command **head);
+t_command	*create_new_command(void);
+void		append_command(t_command **head, t_command *new_command);
+void		process_token(t_command **current_cmd, t_token **current_tkn);
+void		add_tkn_to_cmd(t_command *cmd, t_token *token);
+void		handle_redirection(t_command **cmd, t_token **current_token);
+void		add_redi_to_cmd(t_command *cmd, t_token *redir_token, char *filename);
+void		set_redi_type(t_redirection *redir, t_token *redir_token, char *filename);
+void		append_redi(t_command *cmd, t_redirection *redir);
 
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:33:37 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/23 14:24:05 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/10/03 15:06:03 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,4 +23,16 @@ void	ft_free(char **arr)
 		i++;
 	}
 	free(arr);
+}
+
+void free_tokens(t_token *tokens)
+{
+    t_token *temp;
+
+    while (tokens) {
+        temp = tokens;
+        tokens = tokens->next;
+        free(temp->value);
+        free(temp);
+    }
 }

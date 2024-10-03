@@ -6,7 +6,7 @@
 #    By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/17 11:23:39 by aschmidt          #+#    #+#              #
-#    Updated: 2024/09/25 11:13:34 by aschmidt         ###   ########.fr        #
+#    Updated: 2024/10/03 14:02:35 by aschmidt         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,8 @@ LDFLAGS = -lreadline
 
 SRC	= $(addprefix src/, main.c /input/take_input.c /input/init_shell.c /utils/envv_utils.c \
 		/utils/free_utils.c /utils/close_program.c /parser/token.c /parser/token_maker.c \
-		/parser/command.c /parser/token_to_command.c)
+		/parser/command.c /parser/token_to_command.c /parser/redirection.c \
+		/parser/expand.c /parser/expand_quotes.c)
 
 LIBFT_PATH	= libft/
 
@@ -36,7 +37,7 @@ $(LIBFT):
 	@$(MAKE) -C $(LIBFT_PATH)
 
 $(NAME): $(OBJ)
-	@$(CC) $(CFLAGS) $(LDFLAGS) $(OBJ) -o $(NAME) $(LIBFT)
+	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LIBFT) $(LDFLAGS)
 
 clean:
 	@$(MAKE) -C $(LIBFT_PATH) clean

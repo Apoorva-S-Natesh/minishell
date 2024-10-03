@@ -6,93 +6,114 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 10:25:16 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/25 09:38:11 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/10/03 15:48:11 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-t_token	*tokenize(char *input)
+void handle_quotes(char *input, int *i, t_token **tokens)
 {
-	t_token	*tokens;
-	char	*start;
-	char	*end;
+    char buffer[256]; // Temporary buffer for token storage
+    int buffer_index;
+    int quote_type;
 
-	start = input;
-	tokens = NULL;
-	while (*start)
-	{
-		while (*start && ft_isspace(*start))
-			start++;
-		if (!*start)
-			break;
-		if (!process_tokens(&tokens, &start, &end))
-			return (NULL);
-		start = end;
-	}
-	return (tokens);
+    buffer_index = 0;
+    if (input[*i] == '\'')
+		quote_type = 1;  // Single quote
+	else if (input[*i] == '\"')
+		quote_type = 2;  // Double quote
+    (*i)++; // Move past the quote
+    while (input[*i] && input[*i] != (quote_type == 1 ? '\'' : '\"'))
+    {
+        buffer[buffer_index++] = input[*i];
+        (*i)++;
+    }
+    if (input[*i] == (quote_type == 1 ? '\'' : '\"'))
+    {
+        buffer[buffer_index] = '\0';
+        if (buffer_index > 0)
+            append_token(tokens, buffer, quote_type == 1 ? SINGLE_Q : DOUBLE_Q, quote_type);
+        (*i)++;
+    }
 }
 
-int	process_tokens(t_token **tokens, char **start, char **end)
+void handle_redirections_and_pipes(char *input, int *i, t_token **tokens)
 {
-	char	*token_start;
-	char	*token_value;
-	e_token_type	type;
-
-	token_start = *start;
-	if (**start == '<' || **start == '>' || **start == '|')
-        handle_operators(start, end);
-    else if (**start == '\'' || **start == '\"')
-	{
-        if (!handle_quotes(start, end))
-		{
-            printf("unclosed quotes\n");
-            return (0);
+    if (input[*i] == '|')
+    {
+        append_token(tokens, "|", PIPE, 0);
+        (*i)++;
+    }
+    else if (input[*i] == '<')
+    {
+        if (input[*i + 1] == '<')
+        {
+            append_token(tokens, "<<", HEREDOC, 0);
+            (*i) += 2;
+        }
+        else
+        {
+            append_token(tokens, "<", RED_IN, 0);
+            (*i)++;
         }
     }
-	else
-        handle_words(start, end);
-    token_value = ft_strndup(token_start, *end - token_start);
-    type = classify_token(token_value);
-    append_token(tokens, token_value, type);
-    free(token_value);
-    return (1);
-}
-
-void handle_operators(char **start, char **end)
-{
-    *end = *start + 1;
-    if ((**start == '<' && **end == '<') || (**start == '>' && **end == '>') \
-		|| (**start == '|' && **end == '|'))
-	{
-        (*end)++;
+    else if (input[*i] == '>')
+    {
+        if (input[*i + 1] == '>')
+        { // Append
+            append_token(tokens, ">>", APPEND, 0);
+            (*i) += 2; // Move past both characters
+        }
+        else
+        {
+            append_token(tokens, ">", RED_OUT, 0);
+            (*i)++;
+        }
     }
-    *start = *end;
 }
 
-int handle_quotes(char **start, char **end)
+void handle_word(char *input, int *i, t_token **tokens)
 {
-    char quote;
+    char buffer[256]; // Temporary buffer for token storage
+    int buffer_index;
 
-	quote = **start;
-    (*start)++;
-    *end = *start;
-    while (**end && **end != quote)
-		(*end)++;
-    if (!**end)
-		return (0);
-    (*end)++; // Include the closing quote
-    *start = *end;
-    return (1);
-}
-
-void handle_words(char **start, char **end)
-{
-    *end = *start;
-    while (**end && !ft_isspace(**end) && **end != '<' && \
-		**end != '>' && **end != '|' && **end != '\'' && **end != '\"')
-	{
-        (*end)++;
+    buffer_index = 0;
+    while (input[*i] && !isspace(input[*i]) && \
+           input[*i] != '|' && input[*i] != '<' && input[*i] != '>')
+    {
+        buffer[buffer_index++] = input[*i];
+        (*i)++;
     }
-    *start = *end;
+
+    if (buffer_index > 0)
+    {
+        buffer[buffer_index] = '\0';
+        append_token(tokens, buffer, classify_token(buffer), 0);
+    }
+}
+
+t_token *tokenize(char *input)
+{
+    t_token *tokens;
+    int     i;
+
+    tokens = NULL;
+    i = 0;
+    while (input[i])
+    {
+        while (ft_isspace(input[i]))
+            i++;
+        if (input[i] == '\'' || input[i] == '\"')
+        {
+            handle_quotes(input, &i, &tokens);
+            continue ;
+        }
+        if (input[i] == '|' || input[i] == '<' || input[i] == '>') {
+            handle_redirections_and_pipes(input, &i, &tokens);
+            continue ;
+        }
+        handle_word(input, &i, &tokens);
+    }
+    return (tokens);
 }
