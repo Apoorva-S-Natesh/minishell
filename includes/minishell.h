@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/10/03 11:32:22 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:58:20 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,16 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 
+# ifndef PATH_MAX
+# 	define PATH_MAX 4096
+# endif
+
 typedef struct s_env			t_env;
 typedef struct s_redirection	t_redirection;
 typedef struct s_token			t_token;
 typedef struct s_command		t_command;
+
+#define SUCCESS 0
 
 typedef struct s_env
 {
@@ -42,8 +48,8 @@ typedef struct s_redirection
 {
 	char			*input_file; //input or output
 	char			*output_file;
-	int				type; // (1 for <) (2 for >) (3 for >>) (4 for <<)
-	char            *heredoc_delimiter; // If type == 4, store the heredoc delimiter here
+	char            *heredoc_delimiter;
+	int				type; // (1 for <) (2 for >) (3 for >>)
 	t_redirection	*next;
 }	t_redirection;
 
@@ -73,10 +79,9 @@ typedef struct s_token
 
 typedef struct s_command
 {
-	char			**tokens; //array of nodes of tokes
+	char			**tokens; //array of nodes of tokens
 	int				type; //1 for builtin - 0 for path
 	int				priority; // 1 for << , increase from left to right, 0 if quotes failed
-	int				last_exit_status;
 	t_redirection	*redirection; // if there are < or > or >> inside the command. Pointer to the list
 	t_command		*prev;
 	t_command		*next;
@@ -89,6 +94,8 @@ typedef struct s_shell
 	t_env		*env;
 	int			running_status;
 	int			signal_received;
+	char		cwd[1024];
+	int			last_exit_status; // Track the last exit status of executed commands
 }	t_shell;
 
 typedef struct s_process
@@ -97,7 +104,10 @@ typedef struct s_process
     int input_fd;            // File descriptor for input redirection
     int output_fd;           // File descriptor for output redirection
     int pipe_fd[2];          // Pipe file descriptors for input/output communication
-    struct s_process *next;  // Next process in a pipeline
+    //struct s_process *next;  // Next process in a pipeline
+	int	status;
+	int	exit_code;
+	int	signal;
 } t_process;
 
 //INIT SHELL
@@ -145,5 +155,32 @@ void		add_redi_to_cmd(t_command *cmd, t_token *redir_token, char *filename);
 void		set_redi_type(t_redirection *redir, t_token *redir_token, char *filename);
 void		append_redi(t_command *cmd, t_redirection *redir);
 
+
+//SIGNAL
+void		handle_sigint(int sig);
+
+//EXECUTE
+void		execute(t_shell *mini);
+int			set_initial_input(t_command	*cmd, t_process *prcs, int tempin);
+int			set_output(t_command *cmd, t_process *prcs, int tempout);
+void		execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
+
+//BUILTINS
+char		is_builtin(t_command *cmd);
+void		handle_builtin(t_command *cmd, t_shell *mini);
+char		*ft_getcwd(t_shell *shell);
+void		ft_env_export(char *var, t_env **env);
+void		builtin_cd(char **tokens, t_shell *mini, int size);
+void		handle_env_expansion(char *arg, t_env *env); //Delete
+int			builtin_echo(char **tokens, t_shell *mini, int size);
+void		builtin_env(char **tokens, t_shell *mini, int size);
+void		builtin_exit(char **tokens, t_shell *mini, int size);
+int			is_valid_identifier(const char *str);
+void 		builtin_export(t_shell *shell, char **args);
+void		builtin_pwd(t_shell *mini);
+int 		builtin_unset(t_shell *shell, char **args);
+
+// UTILS
+char	*ft_getenv(const char *name, t_env *env);
 
 #endif

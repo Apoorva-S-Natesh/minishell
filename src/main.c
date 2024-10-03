@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 10:41:01 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/25 09:54:34 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/10/03 12:59:11 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ int	main(int ac, char **av, char **envv)
 
 	if (!check_args(ac, av))
 		return (0);
+	signal(SIGINT, handle_sigint); // Handle Ctrl+C
 	init_shell(&mini, envv);
 	while (mini.running_status)
 	{
@@ -91,7 +92,7 @@ int	main(int ac, char **av, char **envv)
 			expand_tokens(tokens, mini.env);
 			mini.commands = group_tokens_to_cmd(tokens);
 			print_commands(mini.commands);
-			//execute
+			execute(&mini);
 		}
 	}
 	free_all(&mini);
