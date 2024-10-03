@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/25 09:38:30 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/25 12:27:06 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,21 +42,22 @@ typedef struct s_redirection
 {
 	char			*input_file; //input or output
 	char			*output_file;
-	int				type; // (1 for <) (2 for >) (3 for >>)
+	int				type; // (1 for <) (2 for >) (3 for >>) (4 for <<)
+	char            *heredoc_delimiter; // If type == 4, store the heredoc delimiter here
 	t_redirection	*next;
 }	t_redirection;
 
 typedef	enum token_type
 {
 	WORD,
-	FILE_NAME, //if < or > the word at RIGHT should be filename
-	CMD,
-	//ARG,
+	PIPE,
 	RED_IN,
 	RED_OUT,
 	APPEND,
 	HEREDOC,
-	PIPE,
+	FILE_NAME, //if < or > the word at RIGHT should be filename
+	CMD,
+	//ARG,
 	ENV,
 	SINGLE_Q,
 	DOUBLE_Q
@@ -99,31 +100,35 @@ typedef struct s_process
 } t_process;
 
 //INIT SHELL
-void    init_shell(t_shell *mini, char **envv);
-void    set_envv(t_shell *mini, char **envv);
+void		init_shell(t_shell *mini, char **envv);
+void		set_envv(t_shell *mini, char **envv);
 
 //INPUT
-int		check_args(int ac, char **av);
-int		take_input(t_shell *mini);
+int			check_args(int ac, char **av);
+int			take_input(t_shell *mini);
 
 //ENVV LIST
-void	append_node(t_env **head, char *key, char *value);
-t_env	*new_env(char *key, char *value);
-void	free_list(t_env *head);
-void	print_list(t_env *head);
+void		append_node(t_env **head, char *key, char *value);
+t_env		*new_env(char *key, char *value);
+void		free_list(t_env *head);
+void		print_list(t_env *head);
 
 //FREE
-void	ft_free(char **arr);
-void	free_all(t_shell *mini);
+void		ft_free(char **arr);
+void		free_all(t_shell *mini);
 
 //TOKEN
-t_token	*tokenize(char *input);
-int		process_tokens(t_token **tokens, char **start, char **end);
-void 	handle_operators(char **start, char **end);
-int 	handle_quotes(char **start, char **end);
-void 	handle_words(char **start, char **end);
+t_token		*tokenize(char *input);
+int			process_tokens(t_token **tokens, char **start, char **end);
+void 		handle_operators(char **start, char **end);
+int 		handle_quotes(char **start, char **end);
+void		handle_words(char **start, char **end);
 e_token_type classify_token(char *token_value);
-void append_token(t_token **tokens, char *value, e_token_type type);
+void		append_token(t_token **tokens, char *value, e_token_type type);
+
+//COMMAND
+t_command	*new_command(void);
+void		append_command(t_command **head, t_command *new);
 
 
 #endif

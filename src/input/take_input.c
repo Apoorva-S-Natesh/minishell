@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 14:19:49 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/24 10:03:24 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/09/25 10:12:50 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int is_blank(char *str)
 int take_input(t_shell *mini)
 {
 
-    mini->input = readline("\n>>> ");
+    mini->input = readline("\nMiniHell>>> ");
     if (ft_strlen(mini->input) != 0)
     {
         if (is_blank(mini->input))
