@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 13:02:30 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/01 13:02:32 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/03 14:08:18 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	builtin_env(char **tokens, t_shell *mini, int size)
 	current = mini->env;
 	while (current != NULL)
 	{
-		if (current->value && (current->value[0] != '\0')) //Only print if the variable has a value
+		if (current->value && (current->value[0] != '\0')) //Only print if the variable has a value could be even a space
 		{
 			ft_putstr_fd(current->key, 1);
 			ft_putstr_fd("=", 1);
@@ -36,3 +36,5 @@ void	builtin_env(char **tokens, t_shell *mini, int size)
 	}
 	mini->last_exit_status = 0;
 }
+//When we do export hi= hello (adding a space after = then it sets the value as a space and that is also printed when we do env)
+// Check if our export is doing that
