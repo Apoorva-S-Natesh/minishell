@@ -21,7 +21,7 @@ LDFLAGS = -lreadline
 SRC	= $(addprefix src/, main.c /input/take_input.c /input/init_shell.c /utils/envv_utils.c \
 		/utils/free_utils.c /utils/close_program.c /parser/token.c /parser/token_maker.c \
 		/parser/command.c /parser/token_to_command.c /parser/redirection.c \
-		/parser/expand.c /parser/expand_quotes.c)
+		/parser/expand.c /parser/quotes.c)
 
 LIBFT_PATH	= libft/
 

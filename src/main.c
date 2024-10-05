@@ -15,6 +15,29 @@
 static void print_command_tokens(t_command *cmd);
 static void print_redirections(t_redirection *redir);
 
+static void print_tokens(t_token *tokens) {
+    t_token *current = tokens;
+
+    while (current != NULL) {
+        // Print the value of the token
+        printf("Value: %s, ", current->value);
+
+        // Print the quote status of the token
+        if (current->quote == 0) {
+            printf("Quote: None\n");
+        } else if (current->quote == 1) {
+            printf("Quote: Single Quote\n");
+        } else if (current->quote == 2) {
+            printf("Quote: Double Quote\n");
+        } else {
+            printf("Quote: Invalid\n");
+        }
+
+        // Move to the next token
+        current = current->next;
+    }
+}
+
 static void print_commands(t_command *commands)
 {
     t_command *current_command = commands;
@@ -86,9 +109,11 @@ int	main(int ac, char **av, char **envv)
 	{
 		if (take_input(&mini))
 		{
-			printf("hay input!: %s\n", mini.input);
-			tokens = tokenize(mini.input);
+			tokens = tokenize(&mini);
+			if (!tokens)
+				continue ;
 			expand_tokens(tokens, mini.env);
+			print_tokens(tokens);
 			mini.commands = group_tokens_to_cmd(tokens);
 			print_commands(mini.commands);
 			//execute

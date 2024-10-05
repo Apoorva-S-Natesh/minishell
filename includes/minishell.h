@@ -120,14 +120,10 @@ void		free_all(t_shell *mini);
 void		free_tokens(t_token *tokens);
 
 //CREATE TOKEN
-t_token	*tokenize(char *input);
-void handle_word(char *input, int *i, t_token **tokens);
-void handle_redirections_and_pipes(char *input, int *i, t_token **tokens);
-void handle_quotes(char *input, int *i, t_token **tokens);
-//int		create_tokens(t_token **tokens, char **start, char **end);
-//void 	handle_operators(char **start, char **end);
-//int		handle_quotes(char **start, char **end, int *quote_type);
-//void 	handle_words(char **start, char **end);
+t_token	*tokenize(t_shell *mini);
+void handle_word(t_shell *mini, int *i, t_token **tokens);
+void set_redi_and_pipes(t_shell *mini, int *i, t_token **tokens);
+int handle_quotes(t_shell *mini, int *i, t_token **tokens);
 e_token_type classify_token(char *token_value);
 void	append_token(t_token **tokens, char *value, e_token_type type, int quote_type);
 
@@ -138,6 +134,7 @@ char	*extract_env(char **ptr, t_env *env_list);
 char	*get_env_value(const char *name, t_env *env_list);
 int process_operators(t_token **tokens, char **start, char **end);
 char	*remove_quotes(char *str);
+char *extract_quoted_content(char *input, int *i, int quote_type, int buffer_index);
 
 //CREATE COMMAND
 t_command	*group_tokens_to_cmd(t_token *tokens);

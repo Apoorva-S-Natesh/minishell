@@ -12,108 +12,123 @@
 
 #include "../../includes/minishell.h"
 
-void handle_quotes(char *input, int *i, t_token **tokens)
+static void set_redirection(char *input, int *i, t_token **tokens)
 {
-    char buffer[256]; // Temporary buffer for token storage
-    int buffer_index;
-    int quote_type;
+	if (input[*i] == '<')
+	{
+		if (input[*i + 1] == '<')
+		{
+			append_token(tokens, "<<", HEREDOC, 0);
+			(*i)++;
+		}
+		else
+			append_token(tokens, "<", RED_IN, 0);
+		(*i)++;
+	}
+	else if (input[*i] == '>')
+	{
+		if (input[*i + 1] == '>')
+		{
+			append_token(tokens, ">>", APPEND, 0);
+			(*i)++;
+		}
+		else
+			append_token(tokens, ">", RED_OUT, 0);
 
-    buffer_index = 0;
-    if (input[*i] == '\'')
-		quote_type = 1;  // Single quote
-	else if (input[*i] == '\"')
-		quote_type = 2;  // Double quote
-    (*i)++; // Move past the quote
-    while (input[*i] && input[*i] != (quote_type == 1 ? '\'' : '\"'))
-    {
-        buffer[buffer_index++] = input[*i];
-        (*i)++;
-    }
-    if (input[*i] == (quote_type == 1 ? '\'' : '\"'))
-    {
-        buffer[buffer_index] = '\0';
-        if (buffer_index > 0)
-            append_token(tokens, buffer, quote_type == 1 ? SINGLE_Q : DOUBLE_Q, quote_type);
-        (*i)++;
-    }
+		(*i)++;
+	}
 }
 
-void handle_redirections_and_pipes(char *input, int *i, t_token **tokens)
+void set_redi_and_pipes(t_shell *mini, int *i, t_token **tokens)
 {
-    if (input[*i] == '|')
+	char *input;
+
+	input = mini->input;
+	if (input[*i] == '|')
+	{
+		append_token(tokens, "|", PIPE, 0);
+		(*i)++;
+	}
+	else if (input[*i] == '<' || input[*i] == '>')
+	{
+		set_redirection(input, i, tokens);
+	}
+}
+
+void handle_word(t_shell *mini, int *i, t_token **tokens)
+{
+    char buffer[256];
+    int buffer_index = 0;
+    char *input = mini->input;
+    char *quoted_content = NULL;
+
+    // Loop through characters until you hit a delimiter (space, redirection, or pipe)
+    while (input[*i] && !ft_isspace(input[*i]) && input[*i] != '|' && input[*i] != '<' && input[*i] != '>')
     {
-        append_token(tokens, "|", PIPE, 0);
-        (*i)++;
-    }
-    else if (input[*i] == '<')
-    {
-        if (input[*i + 1] == '<')
+        // If you encounter a quote, handle it
+        if (input[*i] == '\'' || input[*i] == '\"')
         {
-            append_token(tokens, "<<", HEREDOC, 0);
-            (*i) += 2;
+			if ((input[*i] == '\'' && input[(*i) + 1] == '\'') || (input[*i] == '\"' && input[(*i) + 1] == '\"'))
+			{
+				(*i) = (*i) + 2;
+				continue ;
+			}
+            // Call handle_quotes to process the quoted content
+            if (!handle_quotes(mini, i, tokens))
+                return; // Handle unclosed quotes
+
+            // Concatenate quoted content with the buffer (i.e., surrounding word parts)
+            quoted_content = (*tokens)->value; // Get the last token's value (which was just added by handle_quotes)
+            if (buffer_index > 0)
+            {
+                // Concatenate buffer content with quoted content
+                buffer[buffer_index] = '\0'; // Null-terminate the buffer
+                char *temp = ft_strjoin(buffer, quoted_content); // Join buffer and quoted content
+                free((*tokens)->value); // Free old quoted content
+                (*tokens)->value = temp; // Update token with concatenated string
+                buffer_index = 0; // Reset buffer index
+            }
+            continue; // After handling the quote, continue processing
         }
         else
         {
-            append_token(tokens, "<", RED_IN, 0);
+            // Append regular characters to the buffer
+            buffer[buffer_index++] = input[*i];
             (*i)++;
         }
     }
-    else if (input[*i] == '>')
-    {
-        if (input[*i + 1] == '>')
-        { // Append
-            append_token(tokens, ">>", APPEND, 0);
-            (*i) += 2; // Move past both characters
-        }
-        else
-        {
-            append_token(tokens, ">", RED_OUT, 0);
-            (*i)++;
-        }
-    }
-}
 
-void handle_word(char *input, int *i, t_token **tokens)
-{
-    char buffer[256]; // Temporary buffer for token storage
-    int buffer_index;
-
-    buffer_index = 0;
-    while (input[*i] && !isspace(input[*i]) && \
-           input[*i] != '|' && input[*i] != '<' && input[*i] != '>')
-    {
-        buffer[buffer_index++] = input[*i];
-        (*i)++;
-    }
-
+    // If a word was built in the buffer, append it as a token
     if (buffer_index > 0)
     {
-        buffer[buffer_index] = '\0';
-        append_token(tokens, buffer, classify_token(buffer), 0);
+        buffer[buffer_index] = '\0'; // Null-terminate the buffer
+        append_token(tokens, buffer, classify_token(buffer), 0); // Append the word token
     }
 }
 
-t_token *tokenize(char *input)
+t_token *tokenize(t_shell *mini)
 {
-    t_token *tokens;
-    int     i;
+	t_token	*tokens;
+	int		i;
 
-    tokens = NULL;
-    i = 0;
-    while (input[i])
-    {
-        while (ft_isspace(input[i]))
-            i++;
-        if (input[i] == '\'' || input[i] == '\"')
-        {
-            handle_quotes(input, &i, &tokens);
-            continue ;
-        }
-        if (input[i] == '|' || input[i] == '<' || input[i] == '>') {
-            handle_redirections_and_pipes(input, &i, &tokens);
-            continue ;
-        }
-        handle_word(input, &i, &tokens);
-    }
-    return (tokens);
+	tokens = NULL;
+	i = 0;
+	while (mini->input[i])
+	{
+		while (ft_isspace(mini->input[i]))
+			i++;
+		if (mini->input[i] == '\'' || mini->input[i] == '\"')
+		{
+			if (!handle_quotes(mini, &i, &tokens))
+				return (NULL); // Handle unclosed quotes
+			continue ;
+		}
+		if (mini->input[i] == '|' || mini->input[i] == '<' || mini->input[i] == '>')
+		{
+			set_redi_and_pipes(mini, &i, &tokens);
+			continue;
+		}
+		handle_word(mini, &i, &tokens);
+	}
+	return (tokens);
 }

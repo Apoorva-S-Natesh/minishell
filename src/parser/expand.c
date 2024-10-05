@@ -2,76 +2,53 @@
 
 void expand_tokens(t_token *tokens, t_env *env_list)
 {
-	t_token	*current;
-	char	*expanded;
-	char *cleaned_value;
+    t_token *current;
+	char *expanded;
 
 	current = tokens;
-	while (current)
+    while (current)
 	{
-		if (current->type != SINGLE_Q)
+        if (current->type != SINGLE_Q && ft_strchr(current->value, '$'))
 		{
-			if (ft_strchr(current->value, '$'))
+            expanded = expand_value(current->value, env_list);
+            if (expanded)
 			{
-				expanded = expand_value(current->value, env_list);
-				free(current->value);
-				current->value = expanded;
-			}
-		}
-		cleaned_value = remove_quotes(current->value);
-		free(current->value);
-		current->value = cleaned_value;
-		current = current->next;
-	}
+                free(current->value);
+                current->value = expanded;
+            }
+        }
+        current = current->next;
+    }
 }
 
-static char *expand_var(char **tkn_ptr, t_env *env_list, char *result_ptr, size_t *current_length, size_t max_size)
+
+char *expand_value(char *token, t_env *env_list)
 {
-    char	*env_value;
-	size_t	env_length;
+    char *result = malloc(1024);
+    if (!result) return NULL;
 
-	env_value = extract_env(tkn_ptr, env_list);
-	if (env_value)
-	{
-		env_length = strlen(env_value);
-		if (*current_length + env_length >= max_size)
-		{
-			printf("Error: Result buffer size exceeded\n");
-			return (NULL);
-		}
-		ft_strlcpy(result_ptr + *current_length, env_value, ft_strlen(env_value) + 1);
-		*current_length += env_length; // Update the current length
-	}
-	return (env_value);
-}
+    char *tkn_ptr = token;
+    size_t current_length = 0;
 
-char	*expand_value(char	*token, t_env *env_list)
-{
-	char	*result; //new string with variables expanded
-	char	*tkn_ptr;
-	size_t	current_length;
-	size_t	max_size;
-
-	max_size = 1024;
-	current_length = 0;
-	result = malloc(max_size); //space enough to store expanded vars
-	if (!result)
-		return (NULL);
-	result[0] = '\0';
-	tkn_ptr = token;
-	while (*tkn_ptr)
-	{
-		if (*tkn_ptr == '$')
-		{
-			tkn_ptr++; //skip the sign
-			printf("Expanding variable at: %s\n", tkn_ptr);
-			expand_var(&tkn_ptr, env_list, result, &current_length, max_size);
-		}
-		else
-			result[current_length++] = *tkn_ptr++; //if theres no dollar sign, just copy the char;
-	}
-	result[current_length] = '\0';
-	return (result);
+    while (*tkn_ptr) {
+        if (*tkn_ptr == '$') {
+            tkn_ptr++; // Skip the dollar sign
+            char *var_value = extract_env(&tkn_ptr, env_list);
+            if (var_value) {
+                size_t var_length = ft_strlen(var_value);
+                if (current_length + var_length >= 1024) {
+                    // Handle overflow here (e.g., realloc)
+                }
+                ft_strlcpy(result + current_length, var_value, var_length + 1);
+                current_length += var_length;
+                free(var_value);
+            }
+        } else {
+            result[current_length++] = *tkn_ptr++;
+        }
+    }
+    result[current_length] = '\0';
+    return result;
 }
 
 char *extract_env(char **ptr, t_env *env_list)
@@ -102,7 +79,7 @@ char	*get_env_value(const char *name, t_env *env_list)
 	while (current)
 	{
 		if (ft_strcmp(current->key, name) == 0)
-			return (current->value);
+			return (ft_strdup(current->value));
 		current = current->next;
 	}
 	return (NULL);

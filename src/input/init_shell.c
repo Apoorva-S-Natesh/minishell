@@ -24,7 +24,7 @@ void	init_shell(t_shell *mini, char **envv)
 {
 	mini->running_status = 1;
 	mini->input = NULL;
-	//printf("the status is %d\n", mini->running_status);
+	mini->commands = NULL;
 	set_envv(mini, envv);
 }
 
@@ -45,5 +45,4 @@ void	set_envv(t_shell *mini, char **envv)
 		i++;
 	}
 	mini->env = head;
-	//print_list(mini->env);
 }
