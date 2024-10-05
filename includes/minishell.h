@@ -98,14 +98,15 @@ typedef struct s_shell
 
 typedef struct s_process
 {
-    pid_t pid;               // Process ID of the forked child
-    int input_fd;            // File descriptor for input redirection
-    int output_fd;           // File descriptor for output redirection
-    int pipe_fd[2];          // Pipe file descriptors for input/output communication
+    pid_t 	pid;               // Process ID of the forked child
+    int 	input_fd;            // File descriptor for input redirection
+    int 	output_fd;           // File descriptor for output redirection
+    int 	pipe_fd[2];          // Pipe file descriptors for input/output communication
     //struct s_process *next;  // Next process in a pipeline
-	int	status;
-	int	exit_code;
-	int	signal;
+	int		status;
+	int		exit_code;
+	int		signal;
+	char	*cmd_path; // Full path of the command to be excuted
 } t_process;
 
 //INIT SHELL
