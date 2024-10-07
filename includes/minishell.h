@@ -201,7 +201,6 @@ void			handle_builtin(t_command *cmd, t_shell *mini);
 void			builtin_cd(char **tokens, t_shell *mini, int size);
 char			*ft_getcwd(t_shell *mini);
 int				builtin_echo(char **tokens, t_shell *mini, int size);
-void			handle_env_expansion(char *arg, t_env *env); //Delete function if already present 
 void			builtin_env(t_shell *mini, int size);
 void			builtin_exit(char **tokens, t_shell *mini, int size);
 int				is_valid_identifier(const char *str);
