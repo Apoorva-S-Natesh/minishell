@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
 //Splits the path string into an array of inidividual paths
 char	**split_path(char *path)
@@ -42,7 +42,7 @@ char	*check_cmd_in_path(char *cmd, char **paths)
 }
 
 //Main fucntion to find the full path of a command
-char	*find_command(char *cmd, char **env)
+char	*find_command(char *cmd, t_env *variable)
 {
 	char	*path_env;
 	char	**paths;
@@ -51,7 +51,7 @@ char	*find_command(char *cmd, char **env)
 
 	if (ft_strchr(cmd, '/'))
 		return (ft_strdup(cmd));
-	path_env = ft_getenv("PATH", env);
+	path_env = ft_getenv("PATH", variable);
 	if (!path_env)
 		return (NULL);
 	paths = split_path(path_env);

@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-void	builtin_env(char **tokens, t_shell *mini, int size)
+void	builtin_env(t_shell *mini, int size)
 {
 	t_env	*current;
 

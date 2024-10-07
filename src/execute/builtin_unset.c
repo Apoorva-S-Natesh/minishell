@@ -59,7 +59,7 @@ void	builtin_unset(t_shell *mini, char **args)
 
 	i = 1;
 	if (!args[1])
-		return 0; // No arguments provided, do nothing (POSIX compliant)
+		return ; // No arguments provided, do nothing (POSIX compliant)
 	while (args[i])
 	{
 		if (is_valid_identifier(args[i]))

@@ -36,3 +36,16 @@ void free_tokens(t_token *tokens)
         free(temp);
     }
 }
+
+void	free_env_array(char **env_array)
+{
+	int	i;
+
+	i = 0;
+	while (env_array[i])
+	{
+		free(env_array[i]);
+		i++;
+	}
+	free(env_array);
+}

@@ -23,19 +23,12 @@ asomanah@c3a10c5:~/core_curriculum/so_long/maps$ - should be done in parsing or 
 
 #include "../../includes/minishell.h"
 
-// Function to put a string to a file descriptor 
-void	ft_putstr_fd(char *s, int fd)
-{
-	write(fd, s, ft_strlen(s));
-}
-
 // Function to get current working directory
 char	*ft_getcwd(t_shell *shell)
 {
 	if (getcwd(shell->cwd, 1024) == NULL)
 	{
 		perror("getcwd");
-		free(shell->cwd);
 		return (NULL);
 	}
 	return (shell->cwd);
@@ -79,7 +72,7 @@ static int	cd_no_arg(int size, t_shell *mini)
 	else if (chdir(home) < 0)
 		perror("minishell: cd");
 	mini->running_status = errno;
-	reutrn (mini->running_status);
+	return (mini->running_status);
 }
 
 // Function to change to the specified path
@@ -143,7 +136,7 @@ void	builtin_cd(char **tokens, t_shell *mini, int size)
 		newpwd = malloc(ft_strlen("PWD=") + ft_strlen(mini->cwd) + 1);
 		strcpy(newpwd, "PWD=");
 		strcat(newpwd, mini->cwd);
-		ft_export(newpwd, &(mini->env));
+		ft_env_export(newpwd, &(mini->env));
 		free(newpwd);
 	}
 }

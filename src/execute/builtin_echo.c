@@ -44,6 +44,7 @@ void	handle_env_expansion(char *arg, t_env *env) //Delete function if already pr
 
 	var_len = 0;
 	arg++;
+	env_value = NULL;
 	//Extract the variable name (alphanumeric or underscore)
 	while(ft_isalnum(*arg) || *arg == '_')
 	{
@@ -51,7 +52,7 @@ void	handle_env_expansion(char *arg, t_env *env) //Delete function if already pr
 		arg++;
 	}
 	var_name[var_len] = '\0'; //Null terminate the variable name
-	strcpy(env_value, ft_getenv(var_name, env));
+	env_value = ft_getenv(var_name, env);
 	if (env_value)
 		ft_putstr_fd(env_value, STDOUT_FILENO);
 }
@@ -103,7 +104,7 @@ int	builtin_echo(char **tokens, t_shell *mini, int size) //what happens if the i
 		if (tokens[i][0] == '$')
 			handle_env_expansion(tokens[i], mini->env); //Delete this part of code when the expansion is done in the parsing stage
 		else
-			echo_single_arg(tokens[i]);
+			single_arg(tokens[i]);
 		if ((i + 1) != size) //Print a space between arguments
 			ft_putstr_fd(" ", STDOUT_FILENO);
 		i++;

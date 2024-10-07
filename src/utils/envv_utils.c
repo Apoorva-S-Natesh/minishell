@@ -19,6 +19,17 @@ typedef struct s_env
 	t_env		*next;
 }	t_env;*/
 
+char	*ft_getenv(const char *name, t_env *env)
+{
+	while (env)
+	{
+		if (strcmp(env->key, name) == 0)
+			return (env->value);
+		env = env->next;
+	}
+	return (NULL);
+}
+
 void	append_node(t_env **head, char *key, char *value)
 {
 	t_env	*new_node;

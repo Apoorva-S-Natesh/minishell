@@ -38,7 +38,7 @@ static char	is_valid_exit_arg(const char *arg)
 	return (1);
 }
 
-static void	print_exit_error(const char *arg, const char message)
+static void	print_exit_error(const char *arg, const char *message)
 {
 	ft_putstr_fd("minishell: exit: ", 2);
 	ft_putstr_fd(arg, 2);

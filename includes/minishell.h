@@ -180,7 +180,15 @@ void			handle_sigint_heredoc(int signum);
 // EXECUTE
 char			**split_path(char *path);
 char			*check_cmd_in_path(char *cmd, char **paths);
-char			*find_command(char *cmd, char **env);
+char			**create_env_array(t_env *env);
+char			*find_command(char *cmd, t_env *variable);
+void			initialize_process(t_process *prcs);
+void			print_redir_err(const char *filename, const char *message);
+void			setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mini);
+void			execute(t_shell *mini);
+void			cleanup_redirections(t_process *prcs);
+void			execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
+void			handle_child_status(t_process *prcs, t_shell *mini);
 
 //heredoc
 void			heredoc_read_loop(int fd, const char *delimiter, t_shell *mini);
@@ -194,7 +202,7 @@ void			builtin_cd(char **tokens, t_shell *mini, int size);
 char			*ft_getcwd(t_shell *shell);
 int				builtin_echo(char **tokens, t_shell *mini, int size);
 void			handle_env_expansion(char *arg, t_env *env); //Delete function if already present 
-void			builtin_env(char **tokens, t_shell *mini, int size);
+void			builtin_env(t_shell *mini, int size);
 void			builtin_exit(char **tokens, t_shell *mini, int size);
 int				is_valid_identifier(const char *str);
 void			builtin_export(char **tokens, t_shell *mini);
@@ -203,6 +211,11 @@ void			builtin_unset(t_shell *mini, char **args);
 
 // UTILS
 char			*ft_getenv(const char *name, t_env *env);
-void			ft_putstr_fd(char *s, int fd);
+void			free_env_array(char **env_array);
+
+//////////////////////////////////Delete this after dicsussion
+//Expand variable in handle heredoc (write_heredoc_line)
+char 			*expand_variables(char *line, t_shell *mini);
+char			*ft_strtok(char *str, const char *delim); // Delete this or rewrite (for finding path in exec_path.c)
 
 #endif
