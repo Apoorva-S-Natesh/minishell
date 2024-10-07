@@ -23,17 +23,6 @@ asomanah@c3a10c5:~/core_curriculum/so_long/maps$ - should be done in parsing or 
 
 #include "../../includes/minishell.h"
 
-// Function to get current working directory
-char	*ft_getcwd(t_shell *shell)
-{
-	if (getcwd(shell->cwd, 1024) == NULL)
-	{
-		perror("getcwd");
-		return (NULL);
-	}
-	return (shell->cwd);
-}
-
 //Function to export an environment variable
 void	ft_env_export(char *var, t_env **env) // check if this function can be replaced 
 {
