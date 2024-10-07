@@ -21,9 +21,10 @@ SRC =	$(addprefix src/, ft_atoi.c ft_isprint.c ft_putendl_fd.c ft_strjoin.c \
 	ft_strnstr.c ft_isspace.c ft_get_next_line.c ft_get_next_line_utils.c \
 	ft_substr.c ft_memset.c ft_strndup.c ft_strcmp.c)
 
-BONUS_SRC = $(addprefix src/, ft_lstnew_bonus.c ft_lstadd_front_bonus.c ft_lstlast_bonus.c \
-	ft_lstsize_bonus.c ft_lstadd_back_bonus.c ft_lstclear_bonus.c \
-	ft_lstiter_bonus.c ft_lstmap_bonus.c ft_lstdelone_bonus.c)
+BONUS_SRC = $(addprefix src/, ft_lstnew_bonus.c ft_lstadd_front_bonus.c \
+	ft_lstlast_bonus.c ft_lstsize_bonus.c ft_lstadd_back_bonus.c \
+	ft_lstclear_bonus.c ft_lstiter_bonus.c ft_lstmap_bonus.c \
+	ft_lstdelone_bonus.c)
 
 INC_DIR = .
 
@@ -40,13 +41,13 @@ CPPFLAGS = -I$(INC_DIR)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	ar rcs $(NAME) $(OBJ)
+	@ar rcs $(NAME) $(OBJ)
 
 %.o: %.c
-	$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
+	@$(CC) $(CPPFLAGS) $(CFLAGS) -o $@ -c $<
 
 bonus: $(BONUS_OBJ)
-	ar rcs $(NAME) $(BONUS_OBJ)
+	@ar rcs $(NAME) $(BONUS_OBJ)
 
 clean:
 	rm -f $(OBJ) $(BONUS_OBJ)
