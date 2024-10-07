@@ -134,9 +134,32 @@ int	takeInput(char* str);
 void	handle_sigint(int sig);
 void	handle_sigint_heredoc(int signum);
 
-//EXECUTE
+// EXECUTE
+char	**split_path(char *path);
+char	*check_cmd_in_path(char *cmd, char **paths);
+char	*find_command(char *cmd, char **env);
+
+//heredoc
+void	heredoc_read_loop(int fd, const char *delimiter, t_shell *mini);
+void	heredoc_child_process(int wr_fd, const char *delimiter, t_shell *mini);
+int		handle_heredoc(const char *delimiter, t_shell *mini);
+
+// BUILTINS
+char	is_builtin(t_command *cmd);
+void	handle_builtin(t_command *cmd, t_shell *mini);
+void	builtin_cd(char **tokens, t_shell *mini, int size);
+char	*ft_getcwd(t_shell *shell);
+int		builtin_echo(char **tokens, t_shell *mini, int size);
+void	handle_env_expansion(char *arg, t_env *env); //Delete function if already present 
+void	builtin_env(char **tokens, t_shell *mini, int size);
+void	builtin_exit(char **tokens, t_shell *mini, int size);
+int		is_valid_identifier(const char *str);
+void	builtin_export(char **tokens, t_shell *mini);
+void	builtin_pwd(t_shell *mini);
+void	builtin_unset(t_shell *mini, char **args);
 
 // UTILS
 char	*ft_getenv(const char *name, t_env *env);
+void	ft_putstr_fd(char *s, int fd);
 
 #endif
