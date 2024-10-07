@@ -30,6 +30,11 @@
 # 	define PATH_MAX 4096
 # endif
 
+# ifndef HEREDOC_EOF
+#	define  HEREDOC_EOF "minishell: warning: here-document \
+delimited by end-of-file\n"
+# endif
+
 typedef struct s_env			t_env;
 typedef struct s_redirection	t_redirection;
 typedef struct s_token			t_token;
@@ -51,6 +56,13 @@ typedef struct s_redirection
 	int				type; // (1 for <) (2 for >) (3 for >>) (4 for <<)
 	t_redirection	*next;
 }	t_redirection;
+
+typedef struct s_redir_info
+{
+	int	tempin;
+	int	tempout;
+} t_redir_info;
+
 
 typedef	enum token_type
 {
@@ -94,6 +106,7 @@ typedef struct s_shell
 	int			signal_received;
 	char		cwd[1024];
 	int			last_exit_status; // Track the last exit status of executed commands
+	int			expand_heredoc; //struct to control variable expansion in heredocs
 }	t_shell;
 
 typedef struct s_process
@@ -119,6 +132,7 @@ int	takeInput(char* str);
 
 //SIGNAL
 void	handle_sigint(int sig);
+void	handle_sigint_heredoc(int signum);
 
 //EXECUTE
 

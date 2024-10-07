@@ -16,6 +16,9 @@
 # include <fcntl.h>
 # include <stdlib.h>
 # include <unistd.h>
+# ifndef BUFFER_SIZE
+#	define BUFFER_SIZE 1
+#endif
 
 typedef struct s_list
 {
@@ -67,5 +70,14 @@ int		ft_lstsize(t_list *lst);
 void	ft_lstdelone(t_list *lst, void (*del)(void*));
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 int		ft_isspace(int c);
+
+//get next line
+char	*get_next_line(int fd);
+char	*ft_read_file(int fd, char *result);
+char	*ft_get_line(char *buff);
+char	*ft_nextline(char *buff);
+char	*ft_str_join(char *result, char *buff);
+void	*ft_calloc(size_t nmemb, size_t size);
+char	*allocate(char *buff, char *result);
 
 #endif

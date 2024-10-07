@@ -13,9 +13,9 @@
 #include "../../includes/minishell.h"
 
 //Handle Ctrl+C (SIGINT)
-void	handle_sigint(int sig)
+void	handle_sigint(int signum)
 {
-	if (sig == SIGINT)
+	if (signum == SIGINT)
 	{
 		//display a new prompt on a new line
 		write(1, "\n", 1);// move to a new line
@@ -23,4 +23,11 @@ void	handle_sigint(int sig)
 		rl_replace_line("", 0);// Clear the buffer
 		rl_redisplay();//Redisplay the prompt
 	}
+}
+
+void	handle_sigint_heredoc(int signum)
+{
+	(void)signum;
+	write(STDOUT_FILENO, "\n", 1);
+	exit (130); // // Exit with status 130 (128 + SIGINT)
 }

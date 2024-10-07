@@ -24,14 +24,22 @@ void	initialize_process(t_process *prcs)
 	prcs->signal = 0;
 	prcs->cmd_path = NULL; //This indicates that no command path has been found or allocated yet
 }
+void	print_redir_err(const char *filename, const char *message)
+{
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(filename, STDERR_FILENO);
+	ft_putstr_fd(": ", STDERR_FILENO);
+	ft_putstr_fd(message, STDERR_FILENO);
+	ft_putstr_fd("\n", STDERR_FILENO);
+}
 
-void	setup_redirs(t_command *cmd, t_process *prcs, int tempin, int tempout)
+void	setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mini)
 {
 	t_redirection	*redir;
 
 	redir = cmd->redirection;
-	prcs->input_fd = dup(tempin);
-	prcs->output_fd = dup(tempout);
+	prcs->input_fd = dup(re->tempin);
+	prcs->output_fd = dup(re->tempout);
 	while (redir)
 	{
 		if (redir->type == 1 || redir->type == 4)
@@ -40,10 +48,11 @@ void	setup_redirs(t_command *cmd, t_process *prcs, int tempin, int tempout)
 			if (redir->type == 1)
 				prcs->input_fd = open(redir->input_file, O_RDONLY);
 			else
-				prcs->input_fd = handle_heredoc(redir->input_file);
+				prcs->input_fd = handle_heredoc(redir->input_file, mini);
 			if (prcs->input_fd < 0)
 			{
-				perror("open");
+				print_redir_err(redir->input_file, "No such file or directory");
+				mini->last_exit_status = 1;
 				return ;
 			}
 		}
@@ -56,7 +65,8 @@ void	setup_redirs(t_command *cmd, t_process *prcs, int tempin, int tempout)
 				prcs->output_fd = open(redir->output_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
 			if (prcs->output_fd < 0)
 			{
-				perror ("open");
+				print_redir_err(redir->output_file, "Permission denied");
+				mini->last_exit_status = 1;
 				return ;
 			}
 		}
@@ -68,13 +78,12 @@ void	setup_redirs(t_command *cmd, t_process *prcs, int tempin, int tempout)
 
 void	execute(t_shell *mini)
 {
-	t_process	prcs;
-	t_command	*cmd;
-	int			tempin;
-	int			tempout;
+	t_process		prcs;
+	t_command		*cmd;
+	t_redir_info	redir_info;
 
-	tempin = dup(0); // Save the current input
-	tempout = dup(1); // Save the current output
+	redir_info.tempin = dup(STDIN_FILENO); // Save the current input
+	redir_info.tempout = dup(STDIN_FILENO); // Save the current output
 	cmd = mini->commands;
 	initialize_process(&prcs);
 
@@ -88,7 +97,7 @@ void	execute(t_shell *mini)
 		//Redirect Input
 		//dup2(prcs.input_fd, 0); //Redirect input to come from input_fd could be file or a pipe
 		//close (prcs.input_fd);
-		setup_redirs(cmd, &prcs, tempin, tempout);
+		setup_redirs(cmd, &prcs, &redir_info, mini);
 		if (prcs.input_fd < 0 || prcs.output_fd < 0)
 			return ;
 // Setup the Output
@@ -118,10 +127,10 @@ void	execute(t_shell *mini)
 		cmd = cmd->next; //Move to next command
 	}
 	//Restore the original input/output
-	dup2(tempin, 0);
-	dup2(tempout, 1);
-	close(tempin);
-	close(tempout);
+	dup2(redir_info.tempin, 0);
+	dup2(redir_info.tempout, 1);
+	close(redir_info.tempin);
+	close(redir_info.tempout);
 	while (wait(&prcs.status) > 0); // Waiting for the last command to finish
 }
 
