@@ -138,6 +138,13 @@ void	handle_sigint_heredoc(int signum);
 char	**split_path(char *path);
 char	*check_cmd_in_path(char *cmd, char **paths);
 char	*find_command(char *cmd, char **env);
+void	initialize_process(t_process *prcs);
+void	print_redir_err(const char *filename, const char *message);
+void	setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mini);
+void	execute(t_shell *mini);
+void	cleanup_redirections(t_process *prcs);
+void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
+void	handle_child_status(t_process *prcs, t_shell *mini);
 
 //heredoc
 void	heredoc_read_loop(int fd, const char *delimiter, t_shell *mini);
