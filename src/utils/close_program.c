@@ -1,21 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isspace.c                                       :+:      :+:    :+:   */
+/*   close_program.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aschmidt <aschmidt@student.42berlin.d      +#+  +:+       +#+        */
+/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/25 09:47:39 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/25 09:48:27 by aschmidt         ###   ########.fr       */
+/*   Created: 2024/09/23 14:16:20 by aschmidt          #+#    #+#             */
+/*   Updated: 2024/09/23 14:19:06 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "../../includes/minishell.h"
 
-int	ft_isspace(int c)
+void	free_all(t_shell *mini)
 {
-	if ((c >= 9 && c <= 13) || (c == 32))
-		return (1);
-	else
-		return (0);
+	free_list(mini->env);
 }
