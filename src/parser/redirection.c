@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-void handle_redirection(t_command **cmd, t_token **current_token)
+int handle_redirection(t_command **cmd, t_token **current_token)
 {
     t_token	*redir_token;
     t_token	*next_token;
@@ -15,7 +15,9 @@ void handle_redirection(t_command **cmd, t_token **current_token)
     else
     {
         printf("Syntax error: missing file after redirection\n");
+		return (0);
     }
+	return (1);
 }
 
 void add_redi_to_cmd(t_command *cmd, t_token *redir_token, char *filename)

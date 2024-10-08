@@ -118,9 +118,9 @@ int	main(int ac, char **av, char **envv)
 			expand_tokens(tokens, mini.env);
 			print_tokens(tokens);
 			mini.commands = group_tokens_to_cmd(tokens);
-			set_cmd_priorities(mini.commands);
 			print_commands(mini.commands);
-			//execute
+			//if (mini.commands)
+				//execute
 		}
 	}
 	free_all(&mini);

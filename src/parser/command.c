@@ -13,8 +13,10 @@ t_command	*group_tokens_to_cmd(t_token *tokens)
 	while (current_tkn)
 	{
 		current_cmd = get_command(current_cmd, &head);
-		process_token(&current_cmd, &current_tkn);
+		if (!process_token(&current_cmd, &current_tkn))
+			return (NULL);
 	}
+	set_cmd_priorities(head);
 	return (head);
 }
 
