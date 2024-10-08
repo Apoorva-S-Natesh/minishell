@@ -140,6 +140,7 @@ char *extract_quoted_content(char *input, int *i, int quote_type, int buffer_ind
 t_command	*group_tokens_to_cmd(t_token *tokens);
 t_command	*get_command(t_command *current, t_command **head);
 t_command	*create_new_command(void);
+void		set_cmd_priorities(t_command *cmd_head);
 void		append_command(t_command **head, t_command *new_command);
 void		process_token(t_command **current_cmd, t_token **current_tkn);
 void		add_tkn_to_cmd(t_command *cmd, t_token *token);

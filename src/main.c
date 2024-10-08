@@ -70,6 +70,7 @@ static void print_command_tokens(t_command *cmd)
         {
             printf("    [%s]\n", cmd->tokens[i]);
         }
+			printf("cmd priority %i\n", cmd->priority);
     }
     else
     {
@@ -115,6 +116,7 @@ int	main(int ac, char **av, char **envv)
 			expand_tokens(tokens, mini.env);
 			print_tokens(tokens);
 			mini.commands = group_tokens_to_cmd(tokens);
+			set_cmd_priorities(mini.commands);
 			print_commands(mini.commands);
 			//execute
 		}
