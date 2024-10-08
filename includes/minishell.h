@@ -210,7 +210,6 @@ void			builtin_pwd(t_shell *mini);
 void			builtin_unset(t_shell *mini, char **args);
 
 // UTILS
-char			*ft_getenv(const char *name, t_env *env);
 void			free_env_array(char **env_array);
 
 //////////////////////////////////Delete this after dicsussion

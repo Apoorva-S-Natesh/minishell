@@ -152,6 +152,7 @@ void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 	{
 		env_array = create_env_array(mini->env);
 		prcs->cmd_path = find_command(cmd->tokens[0], mini->env);
+		printf("path is : %s\n", prcs->cmd_path);
 		if (!prcs->cmd_path)
 		{
 			ft_putstr_fd("minishell: command not found: ", 2);

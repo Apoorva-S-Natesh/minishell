@@ -52,7 +52,7 @@ static int	cd_no_arg(int size, t_shell *mini)
 
 	if (size > 1)
 		return (0);
-	home = ft_getenv("HOME", mini->env);
+	home = get_env_value("HOME", mini->env);
 	if (home == NULL)
 	{
 		ft_putstr_fd("minishell: cd: HOME not set\n", 2);
@@ -71,12 +71,12 @@ static int	cd_path(int size, char **tokens , t_shell *mini)
 		return (0);
 	if ((strcmp(tokens[1], "~") == 0) || strcmp(tokens[1], "$1") == 0) //change strcmp to ft_strcmp
 	{
-		if (ft_getenv("HOME", mini->env) == NULL)
+		if (get_env_value("HOME", mini->env) == NULL)
 		{
 			ft_putstr_fd("Minishell: cd : HOME not set\n", 2);
 			return (1);
 		}
-		if (chdir(ft_getenv("HOME", mini->env)) < 0)
+		if (chdir(get_env_value("HOME", mini->env)) < 0)
 		{
 			perror("minishell: cd");
 			return (1);

@@ -8,12 +8,13 @@ char	**split_path(char *path)
 	int		count;
 
 	count = 0;
-	paths = malloc(sizeof(char *) * (PATH_MAX / 2));
+	paths = malloc(sizeof(char *) * (PATH_MAX));
 	if (!paths)
 		return (NULL);
 	token = ft_strtok(path, ":");
 	while (token)
 	{
+		printf("Path component: %s\n", token);
 		paths[count] = ft_strdup(token);
 		count++;
 		token = ft_strtok(NULL, ":");
@@ -32,9 +33,14 @@ char	*check_cmd_in_path(char *cmd, char **paths)
 	full_path = NULL;
 	while (paths[i])
 	{
-		full_path = ft_strjoin(paths[i], cmd);
+		full_path = ft_strjoin(paths[i], "/");
+		full_path = ft_strjoin(full_path, cmd);
+		printf("checking ath: %s\n", full_path);
 		if (access(full_path, X_OK) == 0) //checks if file exits and if has executable permission
+		{
+			printf("Found executable: %s\n", full_path);  // Debug print
 			return (full_path);
+		}
 		free(full_path);
 		i++;
 	}
@@ -51,20 +57,27 @@ char	*find_command(char *cmd, t_env *variable)
 
 	if (ft_strchr(cmd, '/'))
 		return (ft_strdup(cmd));
-	path_env = ft_getenv("PATH", variable);
+	path_env = get_env_value("PATH", variable);
+	printf("PATH env variable is: %s\n", path_env);
 	if (!path_env)
 		return (NULL);
 	paths = split_path(path_env);
 	free(path_env);
 	if (!paths)
 		return (NULL);
+	 // Debug print: print all paths
+    for (i = 0; paths[i]; i++)
+    {
+		printf("Path %d: %s\n", i, paths[i]);
+	}
 	result = check_cmd_in_path(cmd, paths);
 	i = 0;
-	while (paths[i]) //Freing paths array
+	while (paths[i]) //Freeing paths array
 	{
 		free(paths[i]);
 		i++;
 	}
 	free(paths);
+	 printf("Found command path: %s\n", result);  // Debug print
 	return (result);
 }
