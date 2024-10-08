@@ -58,7 +58,7 @@ void	setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mi
 		}
 		else if (redir->type == 2 || redir->type == 3)
 		{
-			clsoe (prcs->output_fd);
+			close (prcs->output_fd);
 			if (redir->type == 2)
 				prcs->output_fd = open(redir->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			else
@@ -144,11 +144,15 @@ void	cleanup_redirections(t_process *prcs)
 
 void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 {
-	if(is_builtin(cmd->tokens[0])) //Check if the command is a built-in
+	char	**env_array;
+
+	if(is_builtin(cmd)) //Check if the command is a built-in
 		handle_builtin(cmd, mini);
 	else // Fork and execute command
 	{
+		env_array = create_env_array(mini->env);
 		prcs->cmd_path = find_command(cmd->tokens[0], mini->env);
+		printf("path is : %s\n", prcs->cmd_path);
 		if (!prcs->cmd_path)
 		{
 			ft_putstr_fd("minishell: command not found: ", 2);
@@ -160,8 +164,9 @@ void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 		prcs->pid = fork();
 		if (prcs->pid == 0)
 		{
-			execve(prcs->cmd_path, cmd->tokens, mini->env); // send env variable here
+			execve(prcs->cmd_path, cmd->tokens, env_array); // send env variable here
 			perror("execve");//If execve fails, print an error and exit
+			free_env_array(env_array);
 			exit(1);
 		}
 		else if (prcs->pid < 0) // If fork fails, print error and exit the shell
@@ -196,6 +201,34 @@ void	handle_child_status(t_process *prcs, t_shell *mini)
 	prcs->cmd_path = NULL;
 }
 
+char	**create_env_array(t_env *env)
+{
+	int		count;
+	t_env	*temp;
+	char	**env_array;
+	int		i;
+
+	count = 0;
+	temp = env;
+	while (temp)
+	{
+		count++;
+		temp = temp->next;
+	}
+	env_array = malloc(sizeof(char *) * (count + 1));
+	if (!env_array)
+		return (NULL);
+	i = 0;
+	while (env)
+	{
+		env_array[i] = ft_str_join(env->key, "=");
+		env_array[i] = ft_str_join(env_array[i], env->value);
+		env = env->next;
+		i++;
+	}
+	env_array[i] = NULL;
+	return (env_array);
+}
 /*
 // Setup initial input
 int	set_initial_input(t_command	*cmd, t_process *prcs, int tempin)

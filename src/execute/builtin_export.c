@@ -11,6 +11,11 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+static void	handle_variable(t_shell *mini, char *key, char *value, char *arg);
+static void	print_exported_vars(t_env *env);
+static int	set_env_variable(t_shell *mini, const char *key, const char *value);
+static void	print_invalid_error(char *arg);
+static void	handle_export_arg(t_shell *mini, char *arg);
 
 // Checks if a string is a valid variable identifier.
 

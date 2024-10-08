@@ -1,17 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_utils.c                                        :+:      :+:    :+:   */
+/*   envv_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/10/01 12:51:17 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/01 14:51:06 by asomanah         ###   ########.fr       */
+/*   Created: 2024/09/23 12:51:07 by aschmidt          #+#    #+#             */
+/*   Updated: 2024/09/23 14:24:54 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
 /*
 typedef struct s_env
 {
@@ -19,17 +18,6 @@ typedef struct s_env
 	char		*value;             // Path value (e.g., "/usr/bin:/bin")
 	t_env		*next;
 }	t_env;*/
-
-char	*ft_getenv(const char *name, t_env *env)
-{
-	while (env)
-	{
-		if (strcmp(env->key, name) == 0)
-			return (env->value);
-		env = env->next;
-	}
-	return (NULL);
-}
 
 void	append_node(t_env **head, char *key, char *value)
 {
@@ -61,13 +49,13 @@ t_env	*new_env(char *key, char *value)
 		return (NULL);
 	variable->key = ft_strdup(key);
 	variable->value = ft_strdup(value);
-	if (!variable->key || !variable->value)
-	{
-		free(variable->key);
-		free(variable->value);
-		free(variable);
-		return (NULL);
-	}
+	 if (!variable->key || !variable->value)
+	 {
+        free(variable->key);
+        free(variable->value);
+        free(variable);
+        return NULL;
+    }
 	variable->next = NULL;
 	return (variable);
 }

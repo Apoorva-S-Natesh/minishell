@@ -23,24 +23,6 @@ asomanah@c3a10c5:~/core_curriculum/so_long/maps$ - should be done in parsing or 
 
 #include "../../includes/minishell.h"
 
-// Function to put a string to a file descriptor 
-void	ft_putstr_fd(char *s, int fd)
-{
-	write(fd, s, ft_strlen(s));
-}
-
-// Function to get current working directory
-char	*ft_getcwd(t_shell *shell)
-{
-	if (getcwd(shell->cwd, 1024) == NULL)
-	{
-		perror("getcwd");
-		free(shell->cwd);
-		return (NULL);
-	}
-	return (shell->cwd);
-}
-
 //Function to export an environment variable
 void	ft_env_export(char *var, t_env **env) // check if this function can be replaced 
 {
@@ -70,7 +52,7 @@ static int	cd_no_arg(int size, t_shell *mini)
 
 	if (size > 1)
 		return (0);
-	home = ft_getenv("HOME", mini->env);
+	home = get_env_value("HOME", mini->env);
 	if (home == NULL)
 	{
 		ft_putstr_fd("minishell: cd: HOME not set\n", 2);
@@ -79,7 +61,7 @@ static int	cd_no_arg(int size, t_shell *mini)
 	else if (chdir(home) < 0)
 		perror("minishell: cd");
 	mini->running_status = errno;
-	reutrn (mini->running_status);
+	return (mini->running_status);
 }
 
 // Function to change to the specified path
@@ -89,12 +71,12 @@ static int	cd_path(int size, char **tokens , t_shell *mini)
 		return (0);
 	if ((strcmp(tokens[1], "~") == 0) || strcmp(tokens[1], "$1") == 0) //change strcmp to ft_strcmp
 	{
-		if (ft_getenv("HOME", mini->env) == NULL)
+		if (get_env_value("HOME", mini->env) == NULL)
 		{
 			ft_putstr_fd("Minishell: cd : HOME not set\n", 2);
 			return (1);
 		}
-		if (chdir(ft_getenv("HOME", mini->env)) < 0)
+		if (chdir(get_env_value("HOME", mini->env)) < 0)
 		{
 			perror("minishell: cd");
 			return (1);
@@ -143,7 +125,7 @@ void	builtin_cd(char **tokens, t_shell *mini, int size)
 		newpwd = malloc(ft_strlen("PWD=") + ft_strlen(mini->cwd) + 1);
 		strcpy(newpwd, "PWD=");
 		strcat(newpwd, mini->cwd);
-		ft_export(newpwd, &(mini->env));
+		ft_env_export(newpwd, &(mini->env));
 		free(newpwd);
 	}
 }

@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-static char	*ft_getcwd(t_shell *mini)
+char	*ft_getcwd(t_shell *mini)
 {
 	char	*buff;
 	char	*pwd;

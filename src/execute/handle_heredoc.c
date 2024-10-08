@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../../includes/minishell.h"
 
 /*The heredoc is typically handled in a child process to allow for proper signal 
 handling and to prevent the main shell process from being affected by signals 
@@ -13,7 +13,7 @@ static void	write_heredoc_line(int fd, char *line, t_shell *mini)
 	if (mini->expand_heredoc)
 		expanded_line = expand_variables(line, mini); // Expand vairables in the line
 	else
-		expanded_line = expand_vaiables(line, mini); // Use the original line if expansion is disabled
+		expanded_line = expand_variables(line, mini); // Use the original line if expansion is disabled
 	write(fd, expanded_line, ft_strlen(expanded_line)); // Write line to the file desciptor
 	if (expanded_line != line)
 		free(expanded_line);
@@ -59,7 +59,7 @@ int	handle_heredoc(const char *delimiter, t_shell *mini)
 {
 	t_process	hd_prcs;
 
-	initialize_process(hd_prcs);
+	initialize_process(&hd_prcs);
 	if (pipe(hd_prcs.pipe_fd) == -1)
 	{
 		perror("minishell: pipe");
@@ -77,6 +77,7 @@ int	handle_heredoc(const char *delimiter, t_shell *mini)
 	{
 		close(hd_prcs.pipe_fd[0]); //closing read end of the pipe
 		heredoc_child_process(hd_prcs.pipe_fd[1], delimiter, mini);
+		exit (1);
 	}
 	else //Parent process
 	{
@@ -90,4 +91,5 @@ int	handle_heredoc(const char *delimiter, t_shell *mini)
 		}
 		return (hd_prcs.pipe_fd[0]); //Return the read end of the pipe
 	}
+	return (-1); //// This line should never be reached, but it satisfies the compiler
 }

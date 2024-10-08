@@ -42,11 +42,11 @@ void	handle_builtin(t_command *cmd, t_shell *mini)
 	if (strcmp(cmd->tokens[0], "pwd") == 0)
 		builtin_pwd(mini);
 	if (strcmp(cmd->tokens[0], "export") == 0)
-		builtin_export(&cmd->tokens, mini);
+		builtin_export(cmd->tokens, mini);
 	if (strcmp(cmd->tokens[0], "unset") == 0)
 		builtin_unset(mini, cmd->tokens);
 	if (strcmp(cmd->tokens[0], "env") == 0)
-		builtin_env(cmd->tokens, mini, size);
+		builtin_env(mini, size);
 	if (strcmp(cmd->tokens[0], "exit") == 0)
 		builtin_exit(cmd->tokens, mini, size);
 }
