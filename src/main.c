@@ -105,6 +105,8 @@ int	main(int ac, char **av, char **envv)
 
 	if (!check_args(ac, av))
 		return (0);
+	if (!check_terminal_input())
+		return (0);
 	init_shell(&mini, envv);
 	while (mini.running_status)
 	{

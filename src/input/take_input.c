@@ -53,4 +53,12 @@ int	take_input(t_shell *mini)
 		return (0);
 }
 
-//check tty
+int check_terminal_input(void)
+{
+	if (!isatty(STDIN_FILENO))
+	{
+		printf("Error: Input must come from the terminal.\n");
+		return (0);
+	}
+	return (1);
+}
