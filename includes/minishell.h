@@ -149,5 +149,7 @@ void		add_redi_to_cmd(t_command *cmd, t_token *redir_token, char *filename);
 void		set_redi_type(t_redirection *redir, t_token *redir_token, char *filename);
 void		append_redi(t_command *cmd, t_redirection *redir);
 
-
+//CHECK INPUT ERRORS
+int is_special_token(t_token *token);
+int check_invalid_tokens(t_token *tokens);
 #endif

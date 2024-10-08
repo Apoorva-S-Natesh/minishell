@@ -136,5 +136,7 @@ t_token *tokenize(t_shell *mini)
 		}
 		handle_word(mini, &i, &tokens);
 	}
+	if (!check_invalid_tokens(tokens))
+		return (NULL);
 	return (tokens);
 }
