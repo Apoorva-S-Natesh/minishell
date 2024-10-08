@@ -56,4 +56,27 @@ void	append_command(t_command **head, t_command *new_command)
 		temp->next = new_command;
 	}
 }
+void set_cmd_priorities(t_command *cmd_head)
+{
+    int priority = 0;
+    t_command *cmd = cmd_head;
 
+    // First pass to count how many heredoc commands (priority == 0) exist
+    while (cmd != NULL)
+    {
+        if (cmd->priority == 0)
+            priority++;  // Count heredoc commands to start non-heredoc priorities later
+        cmd = cmd->next;
+    }
+
+    // Second pass to assign increasing priority for commands without heredoc
+    cmd = cmd_head;
+    while (cmd != NULL)
+    {
+        if (cmd->priority != 0) {  // Skip commands with heredoc priority
+            cmd->priority = priority;
+            priority++;
+        }
+        cmd = cmd->next;  // Move to the next command
+    }
+}
