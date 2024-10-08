@@ -11,7 +11,6 @@ void handle_redirection(t_command **cmd, t_token **current_token)
     {
         add_redi_to_cmd(*cmd, redir_token, next_token->value);
         *current_token = next_token;
-		add_tkn_to_cmd(*cmd, *current_token);
     }
     else
     {
