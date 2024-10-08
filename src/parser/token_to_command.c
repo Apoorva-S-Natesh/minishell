@@ -9,12 +9,13 @@ void	process_token(t_command **current_cmd, t_token **current_tkn)
 		*current_cmd = NULL;
 	else
 	{
-		add_tkn_to_cmd(*current_cmd, *current_tkn);
 		if (type == RED_IN || type == RED_OUT \
 			|| type == APPEND || type == HEREDOC)
 		{
 			handle_redirection(current_cmd, current_tkn);
 		}
+		else
+			add_tkn_to_cmd(*current_cmd, *current_tkn);
 	}
 	*current_tkn = (*current_tkn)->next;
 }
