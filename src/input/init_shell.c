@@ -39,6 +39,11 @@ void	set_envv(t_shell *mini, char **envv)
 	while (envv[i] != NULL)
 	{
 		split_envv = ft_split(envv[i], '=');
+		if (!split_envv)
+		{
+			ft_putstr_fd("set_envv Memory allocation failed\n", STDERR_FILENO);
+			return ;
+		}
 		if (split_envv[0] && split_envv[1])
 			append_node(&head, split_envv[0], split_envv[1]);
 		ft_free(split_envv);
@@ -46,3 +51,4 @@ void	set_envv(t_shell *mini, char **envv)
 	}
 	mini->env = head;
 }
+ 

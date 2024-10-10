@@ -164,7 +164,7 @@ char			*extract_quoted_content(char *input, int *i, int quote_type, int buffer_i
 t_command		*group_tokens_to_cmd(t_token *tokens);
 t_command		*get_command(t_command *current, t_command **head);
 t_command		*create_new_command(void);
-void		set_cmd_priorities(t_command *cmd_head);
+void			set_cmd_priorities(t_command *cmd_head);
 void			append_command(t_command **head, t_command *new_command);
 void			process_token(t_command **current_cmd, t_token **current_tkn);
 void			add_tkn_to_cmd(t_command *cmd, t_token *token);
@@ -190,13 +190,13 @@ void			execute(t_shell *mini);
 void			cleanup_redirections(t_process *prcs);
 void			execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
 void			handle_child_status(t_process *prcs, t_shell *mini);
-void	initialize_process(t_process *prcs);
-void	print_redir_err(const char *filename, const char *message);
-void	setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mini);
-void	execute(t_shell *mini);
-void	cleanup_redirections(t_process *prcs);
-void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
-void	handle_child_status(t_process *prcs, t_shell *mini);
+void			initialize_process(t_process *prcs);
+void			print_redir_err(const char *filename, const char *message);
+void			setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mini);
+void			execute(t_shell *mini);
+void			cleanup_redirections(t_process *prcs);
+void			execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
+void			handle_child_status(t_process *prcs, t_shell *mini);
 
 //heredoc
 void			heredoc_read_loop(int fd, const char *delimiter, t_shell *mini);

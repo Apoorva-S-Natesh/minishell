@@ -16,7 +16,7 @@ int	check_args(int ac, char **av)
 {
 	if (ac != 1 || av[1])
 	{
-		printf ("Program doesn't take arguments!");
+		ft_putstr_fd("Program doesn't take arguments!\n", STDERR_FILENO);
 		return (0);
 	}
 	return (1);
@@ -39,6 +39,12 @@ int	is_blank(char *str)
 int	take_input(t_shell *mini)
 {
 	mini->input = readline("\nMiniHell>>> ");
+	if (mini->input == NULL)
+	{
+		ft_putstr_fd("exit\n", STDOUT_FILENO);
+		mini->running_status = 0;
+		return (0);
+	}
 	if (ft_strlen(mini->input) != 0)
 	{
 		if (is_blank(mini->input))
@@ -50,7 +56,10 @@ int	take_input(t_shell *mini)
 		return (1);
 	}
 	else
+	{
+		free(mini->input); //To prevent memory leaks when an empty string is entered.
 		return (0);
+	}
 }
 
 //check tty

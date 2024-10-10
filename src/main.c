@@ -106,6 +106,9 @@ int	main(int ac, char **av, char **envv)
 	if (!check_args(ac, av))
 		return (0);
 	init_shell(&mini, envv);
+	signal(SIGINT, handle_sigint);
+	signal(SIGQUIT, SIG_IGN);
+	// Note: Ctrl-D is handled by readline, not as a signal
 	while (mini.running_status)
 	{
 		if (take_input(&mini))
@@ -124,3 +127,8 @@ int	main(int ac, char **av, char **envv)
 	free_all(&mini);
 	return (0);
 }
+
+/*
+Ctrl-D is not actually a signal, but is handled by the readline library as an EOF condition.
+You should handle this in your take_input function. If readline returns NULL, it 
+means EOF was encountered (Ctrl-D was pressed).*/
