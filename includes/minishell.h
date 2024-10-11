@@ -215,6 +215,7 @@ void			builtin_env(t_shell *mini, int size);
 void			builtin_exit(char **tokens, t_shell *mini, int size);
 int				is_valid_identifier(const char *str);
 void			builtin_export(char **tokens, t_shell *mini);
+int				set_env_variable(t_shell *mini, const char *key, const char *value);
 void			builtin_pwd(t_shell *mini);
 void			builtin_unset(t_shell *mini, char **args);
 

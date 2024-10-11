@@ -14,6 +14,5 @@
 
 void	free_all(t_shell *mini)
 {
-
 	free_command(mini->commands);
 }
