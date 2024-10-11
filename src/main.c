@@ -126,6 +126,7 @@ int	main(int ac, char **av, char **envv)
 		free_tokens(tokens);
 		free_all(&mini);
 	}
+	free_list(mini.env);
 	return (0);
 }
 

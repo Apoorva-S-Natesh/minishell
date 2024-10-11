@@ -77,5 +77,6 @@ int handle_quotes(t_shell *mini, int *i, t_token **tokens)
 	}
 	else // Directly append single-quoted content without expansion
 		append_token(tokens, quoted_content, SINGLE_Q, 1);
+	free(quoted_content);
 	return (1); // Successful execution
 }
