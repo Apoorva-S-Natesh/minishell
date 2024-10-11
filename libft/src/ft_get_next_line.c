@@ -12,111 +12,123 @@
 
 #include "libft.h"
 
+static char	*_check_left_over(char *left_over, int fd);
+static char	*_set_line(int fd, char *buff, char *temp_line);
+static char	*_set_left_over(char *line);
+static char	*_clean_line(char *line);
+
 char	*get_next_line(int fd)
 {
 	char		*line;
-	static char	*buff;
+	static char	*left_over;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE < 1)
 		return (NULL);
-	if (!buff)
-		buff = ft_calloc(1, 1);
-	if (!buff)
+	line = _check_left_over(left_over, fd);
+	if (!line)
 	{
-		free(buff);
+		free (left_over);
+		left_over = NULL;
 		return (NULL);
 	}
-	buff = ft_read_file(fd, buff);
-	if (!buff)
+	left_over = _set_left_over(line);
+	line = _clean_line(line);
+	if (!line)
+	{
+		free (left_over);
+		left_over = NULL;
 		return (NULL);
-	line = ft_get_line(buff);
-	buff = ft_nextline(buff);
+	}
 	return (line);
 }
 
-char	*ft_read_file(int fd, char *result)
+static char	*_check_left_over(char *left_over, int fd)
 {
-	int		bytes_read;
 	char	*buff;
+	char	*combined_line;
 
-	bytes_read = 1;
-	buff = NULL;
-	buff = allocate(buff, result);
-	while (bytes_read > 0)
+	if (left_over != NULL && ft_strchr(left_over, '\n'))
+		return (left_over);
+	else
 	{
-		bytes_read = read(fd, buff, BUFFER_SIZE);
-		if (bytes_read == -1)
-		{
-			free(buff);
-			free(result);
+		buff = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
+		if (!buff)
 			return (NULL);
-		}
-		buff[bytes_read] = '\0';
-		result = ft_str_join(result, buff);
-		if (ft_strchr(result, '\n'))
+		combined_line = _set_line(fd, buff, left_over);
+		free (buff);
+		buff = NULL;
+		if (!combined_line)
+			return (NULL);
+	}
+	return (combined_line);
+}
+
+static char	*_set_line(int fd, char *buff, char *temp_line)
+{
+	ssize_t	nr_bytes;
+	char	*temp;
+
+	nr_bytes = 1;
+	while (nr_bytes > 0)
+	{
+		nr_bytes = read(fd, buff, BUFFER_SIZE);
+		if (nr_bytes == -1)
+			return (NULL);
+		if (nr_bytes == 0)
+			break ;
+		buff[nr_bytes] = '\0';
+		if (!temp_line)
+			temp_line = ft_strdup("");
+		if (!temp_line)
+			return (NULL);
+		temp = temp_line;
+		temp_line = ft_strjoin(temp, buff);
+		free (temp);
+		temp = NULL;
+		if (ft_strchr(buff, '\n'))
 			break ;
 	}
-	free (buff);
-	return (result);
+	return (temp_line);
 }
 
-char	*ft_get_line(char *buff)
+static char	*_set_left_over(char *line)
 {
-	char	*line;
+	int		i;
+	char	*left_over;
+
+	i = 0;
+	if (ft_strchr(line, '\n'))
+	{
+		while (line[i] != '\n' && line[i] != '\0')
+			i++;
+		if (line[i] == '\n')
+			i++;
+		if (line[i] == '\0')
+			return (NULL);
+		left_over = ft_substr(line, i, ft_strlen(line));
+		if (!left_over)
+			return (NULL);
+		return (left_over);
+	}
+	else
+		return (NULL);
+}
+
+static char	*_clean_line(char *line)
+{
+	char	*temp;
 	int		i;
 
 	i = 0;
-	if (!buff[i])
+	while (line[i] != '\n' && line[i] != '\0')
+		i++;
+	if (line[i] == '\n')
+		i++;
+	temp = line;
+	line = ft_substr(temp, 0, i);
+	free (temp);
+	temp = NULL;
+	if (!line)
 		return (NULL);
-	while (buff[i] && buff[i] != '\n')
-		i++;
-	line = ft_calloc(i + 2, sizeof(char));
-	i = 0;
-	while (buff[i] && buff[i] != '\n')
-	{
-		line[i] = buff[i];
-		i++;
-	}
-	if (buff[i] && buff[i] == '\n')
-		line[i++] = '\n';
 	return (line);
-}
-
-char	*ft_nextline(char *buff)
-{
-	char	*next;
-	int		i;
-	int		a;
-
-	i = 0;
-	a = 0;
-	while (buff[i] && buff[i] != '\n')
-		i++;
-	if (!buff[i])
-	{
-		free(buff);
-		return (NULL);
-	}
-	next = ft_calloc(((ft_strlen(buff)) - i + 1), sizeof(char));
-	i++;
-	while (buff[i])
-	{
-		next[a] = buff[i];
-		i++;
-		a++;
-	}
-	free (buff);
-	return (next);
-}
-
-char	*allocate(char *buff, char *result)
-{
-	buff = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
-	if (!buff)
-	{
-		free(buff);
-		free(result);
-		return (NULL);
-	}
-	return (buff);
 }

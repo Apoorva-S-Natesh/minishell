@@ -27,18 +27,24 @@ char	**split_path(char *path)
 char	*check_cmd_in_path(char *cmd, char **paths)
 {
 	char	*full_path;
+	char	*temp;
 	int		i;
 
 	i = 0;
 	full_path = NULL;
 	while (paths[i])
 	{
-		full_path = ft_strjoin(paths[i], "/");
-		full_path = ft_strjoin(full_path, cmd);
-		printf("checking ath: %s\n", full_path);
-		if (access(full_path, X_OK) == 0) //checks if file exits and if has executable permission
+		temp = ft_strjoin(paths[i], "/");
+		if (!temp)
+			return (NULL);
+		full_path = ft_strjoin(temp, cmd);
+		free(temp);
+		if (!full_path)
+			return (NULL);
+		printf("checking path: %s\n", full_path);
+		if (access(full_path, X_OK) == 0)
 		{
-			printf("Found executable: %s\n", full_path);  // Debug print
+			printf("Found executable: %s\n", full_path);
 			return (full_path);
 		}
 		free(full_path);
@@ -57,6 +63,7 @@ char	*find_command(char *cmd, t_env *variable)
 
 	if (ft_strchr(cmd, '/'))
 		return (ft_strdup(cmd));
+	print_list(variable);
 	path_env = get_env_value("PATH", variable);
 	printf("PATH env variable is: %s\n", path_env);
 	if (!path_env)

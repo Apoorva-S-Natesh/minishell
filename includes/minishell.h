@@ -142,6 +142,8 @@ void			print_list(t_env *head);
 void			ft_free(char **arr);
 void			free_all(t_shell *mini);
 void			free_tokens(t_token *tokens);
+void			free_redirections(t_redirection *redirection);
+void			free_command(t_command *command);
 
 //CREATE TOKEN
 t_token			*tokenize(t_shell *mini);

@@ -20,7 +20,7 @@ void	initialize_process(t_process *prcs)
 	prcs->pipe_fd[0] = -1; // Means no pipe has been created yet
 	prcs->pipe_fd[1] = -1;
 	prcs->status = 0; //later used to store the exit status of the child process.
-	prcs->exit_code = 0; 
+	prcs->exit_code = 0;
 	prcs->signal = 0;
 	prcs->cmd_path = NULL; //This indicates that no command path has been found or allocated yet
 }
@@ -158,7 +158,8 @@ void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 			ft_putstr_fd("minishell: command not found: ", 2);
 			ft_putstr_fd(cmd->tokens[0], 2);
 			ft_putstr_fd("\n", 2);
-			mini->last_exit_status = 127; //Could not find exit status
+			mini->last_exit_status = 127;
+			free_env_array(env_array); //Could not find exit status
 			return ;
 		}
 		prcs->pid = fork();
@@ -173,12 +174,15 @@ void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 		{
 			perror("fork");
 			free(prcs->cmd_path);
+			free_env_array(env_array);
 			exit(1);
 		}
 		else //Parent process wait for the child to complete
 		{
 			waitpid(prcs->pid, &prcs->status, 0);
 			handle_child_status(prcs, mini);
+			free(prcs->cmd_path);
+			free_env_array(env_array);
 		}
 	}
 }
@@ -190,7 +194,7 @@ void	handle_child_status(t_process *prcs, t_shell *mini)
 		prcs->exit_code = WEXITSTATUS(prcs->status); //If not 0 then process has issue
 		mini->last_exit_status = prcs->exit_code; // Update last exit status
 		printf("Command exited with the code %d\n", prcs->exit_code); // Delete later
-	}	
+	}
 	else if (WIFSIGNALED(prcs->status)) //Checking if a signal stopped the child process suddenly
 	{
 		prcs->signal = WTERMSIG(prcs->status);
@@ -207,6 +211,7 @@ char	**create_env_array(t_env *env)
 	t_env	*temp;
 	char	**env_array;
 	int		i;
+	char	*temp_str;
 
 	count = 0;
 	temp = env;
@@ -221,8 +226,13 @@ char	**create_env_array(t_env *env)
 	i = 0;
 	while (env)
 	{
-		env_array[i] = ft_str_join(env->key, "=");
-		env_array[i] = ft_str_join(env_array[i], env->value);
+		temp_str = ft_strjoin(env->key, "=");
+		if (!temp_str)
+			return (NULL);
+		env_array[i] = ft_strjoin(temp_str, env->value);
+		free(temp_str);
+		if (!env_array[i])
+			return (NULL);
 		env = env->next;
 		i++;
 	}

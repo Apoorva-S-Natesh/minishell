@@ -75,11 +75,5 @@ int		ft_strcmp(const char *s1, const char *s2);
 
 //get next line
 char	*get_next_line(int fd);
-char	*ft_read_file(int fd, char *result);
-char	*ft_get_line(char *buff);
-char	*ft_nextline(char *buff);
-char	*ft_str_join(char *result, char *buff);
-void	*ft_calloc(size_t nmemb, size_t size);
-char	*allocate(char *buff, char *result);
 
 #endif

@@ -15,4 +15,5 @@
 void	free_all(t_shell *mini)
 {
 	free_list(mini->env);
+	free_command(mini->commands);
 }

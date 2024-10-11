@@ -123,12 +123,13 @@ int	main(int ac, char **av, char **envv)
 			print_commands(mini.commands);
 			execute(&mini);
 		}
+		free_tokens(tokens);
+		free_all(&mini);
 	}
-	free_all(&mini);
 	return (0);
 }
 
 /*
 Ctrl-D is not actually a signal, but is handled by the readline library as an EOF condition.
-You should handle this in your take_input function. If readline returns NULL, it 
+You should handle this in your take_input function. If readline returns NULL, it
 means EOF was encountered (Ctrl-D was pressed).*/

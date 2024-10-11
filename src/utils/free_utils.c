@@ -49,3 +49,39 @@ void	free_env_array(char **env_array)
 	}
 	free(env_array);
 }
+
+void	free_redirections(t_redirection *redirection)
+{
+	t_redirection *tmp;
+
+	while (redirection)
+	{
+		tmp = redirection;
+		redirection = redirection->next;
+		free(tmp);
+	}
+}
+
+void	free_command(t_command *command)
+{
+	t_command	*tmp;
+	int			i;
+
+	while (command)
+	{
+		tmp = command;
+		command = command->next;
+		if (tmp->tokens)
+		{
+			i = 0;
+			while (tmp->tokens[i] != NULL)
+			{
+				free(tmp->tokens[i]); // Free token strings
+				i++;
+			}
+			free(tmp->tokens); // Free the tokens array itself
+		}
+		free_redirections(tmp->redirection);
+		free(tmp);
+	}
+}

@@ -24,7 +24,7 @@ asomanah@c3a10c5:~/core_curriculum/so_long/maps$ - should be done in parsing or 
 #include "../../includes/minishell.h"
 
 //Function to export an environment variable
-void	ft_env_export(char *var, t_env **env) // check if this function can be replaced 
+void	ft_env_export(char *var, t_env **env) // check if this function can be replaced
 {
 	char	*key;
 	char	*value;
@@ -119,7 +119,7 @@ void	builtin_cd(char **tokens, t_shell *mini, int size)
 		if (cd_path(size, tokens, mini) != 0)
 			return ;
 	}
-	if (mini->cwd)
+	if (*mini->cwd)
 	{
 		strcpy(prev_dir, mini->cwd);
 		newpwd = malloc(ft_strlen("PWD=") + ft_strlen(mini->cwd) + 1);
