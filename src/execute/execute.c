@@ -76,7 +76,7 @@ void	setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mi
 	dup2(prcs->output_fd, 1);
 }
 
-void	execute(t_shell *mini)
+/*void	execute(t_shell *mini)
 {
 	t_process		prcs;
 	t_command		*cmd;
@@ -132,7 +132,7 @@ void	execute(t_shell *mini)
 	close(redir_info.tempin);
 	close(redir_info.tempout);
 	while (wait(&prcs.status) > 0); // Waiting for the last command to finish
-}
+} */
 
 void	cleanup_redirections(t_process *prcs)
 {
@@ -142,13 +142,13 @@ void	cleanup_redirections(t_process *prcs)
 		close(prcs->output_fd);
 }
 
-void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
+/*void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 {
 	char	**env_array;
 
 	if(is_builtin(cmd)) //Check if the command is a built-in
 	{
-		handle_builtin(cmd, mini);
+		(handle_builtin(cmd, mini));
 	}
 	else // Fork and execute command
 	{
@@ -187,7 +187,7 @@ void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 			free_env_array(env_array);
 		}
 	}
-}
+} */
 
 void	handle_child_status(t_process *prcs, t_shell *mini)
 {
@@ -283,3 +283,115 @@ int	set_output(t_command *cmd, t_process *prcs, int tempout)
 	return (prcs->output_fd);
 }
 */
+
+void execute(t_shell *mini)
+{
+    t_process prcs;
+    t_command *cmd;
+    t_redir_info redir_info;
+    int prev_pipe[2] = {-1, -1};
+
+    redir_info.tempin = dup(STDIN_FILENO);
+    redir_info.tempout = dup(STDOUT_FILENO);
+    cmd = mini->commands;
+    initialize_process(&prcs);
+
+    while (cmd != NULL)
+    {
+        int pipe_fd[2];
+        if (cmd->next != NULL)
+        {
+            if (pipe(pipe_fd) == -1)
+            {
+                perror("pipe");
+                exit(1);
+            }
+        }
+
+        prcs.pid = fork();
+        if (prcs.pid == 0)
+        {
+            // Child process
+            if (prev_pipe[0] != -1)
+            {
+                dup2(prev_pipe[0], STDIN_FILENO);
+                close(prev_pipe[0]);
+                close(prev_pipe[1]);
+            }
+
+            if (cmd->next != NULL)
+            {
+                close(pipe_fd[0]);
+                dup2(pipe_fd[1], STDOUT_FILENO);
+                close(pipe_fd[1]);
+            }
+
+            execute_command(cmd, &prcs, mini);
+            exit(mini->last_exit_status);
+        }
+        else if (prcs.pid < 0)
+        {
+            perror("fork");
+            exit(1);
+        }
+        else
+        {
+            // Parent process
+            if (prev_pipe[0] != -1)
+            {
+                close(prev_pipe[0]);
+                close(prev_pipe[1]);
+            }
+
+            if (cmd->next != NULL)
+            {
+                prev_pipe[0] = pipe_fd[0];
+                prev_pipe[1] = pipe_fd[1];
+            }
+            else
+            {
+                waitpid(prcs.pid, &prcs.status, 0);
+                handle_child_status(&prcs, mini);
+            }
+        }
+
+        cmd = cmd->next;
+    }
+
+    // Wait for all remaining child processes
+    while (wait(NULL) > 0);
+
+    dup2(redir_info.tempin, STDIN_FILENO);
+    dup2(redir_info.tempout, STDOUT_FILENO);
+    close(redir_info.tempin);
+    close(redir_info.tempout);
+}
+
+void execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
+{
+    char **env_array;
+
+    if (is_builtin(cmd))
+    {
+        handle_builtin(cmd, mini);
+    }
+    else
+    {
+        env_array = create_env_array(mini->env);
+        prcs->cmd_path = find_command(cmd->tokens[0], mini->env);
+        printf("path is : %s\n", prcs->cmd_path);
+        if (!prcs->cmd_path)
+        {
+            ft_putstr_fd("minishell: command not found: ", 2);
+            ft_putstr_fd(cmd->tokens[0], 2);
+            ft_putstr_fd("\n", 2);
+            mini->last_exit_status = 127;
+            free_env_array(env_array);
+            exit(127);
+        }
+        execve(prcs->cmd_path, cmd->tokens, env_array);
+        perror("execve");
+        free_env_array(env_array);
+        exit(1);
+    }
+}
