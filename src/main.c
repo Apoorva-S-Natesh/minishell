@@ -93,6 +93,8 @@ static void print_redirections(t_redirection *redir)
                 printf("    Output Redirect: >%s\n", current_redir->output_file);
             else if (current_redir->type == 3)
                 printf("    Append Redirect: >>%s\n", current_redir->output_file);
+			else if (current_redir->type == 4)
+				printf("    Heredoc Redirect: <<%s\n", current_redir->output_file);
         }
         current_redir = current_redir->next;
     }

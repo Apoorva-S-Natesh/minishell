@@ -1,11 +1,1 @@
-Found executable: /usr/bin/grep
-path is : /usr/bin/grep
- 4 -rw-r--r-- 1 jayapoo jayapoo  1992 Oct 11 10:50 Makefile
- 4 -rw-r--r-- 1 jayapoo jayapoo    13 Oct  2 12:30 README.md
- 4 drwxr-xr-x 2 jayapoo jayapoo  4096 Oct 11 22:06 includes
- 4 drwxr-xr-x 3 jayapoo jayapoo  4096 Oct 14 12:19 libft
-48 -rwxr-xr-x 1 jayapoo jayapoo 48304 Oct 14 12:30 minishell
- 4 drwxr-xr-x 6 jayapoo jayapoo  4096 Oct 14 12:19 src
- 4 -rw-r--r-- 1 jayapoo jayapoo    56 Oct 14 12:30 text
-Command exited with the code 0
-hi hope this works
+hi

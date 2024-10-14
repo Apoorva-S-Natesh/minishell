@@ -29,5 +29,5 @@ void	handle_sigint_heredoc(int signum)
 {
 	(void)signum;
 	write(STDOUT_FILENO, "\n", 1);
-	exit (130); // // Exit with status 130 (128 + SIGINT)
+	exit (1); //
 }

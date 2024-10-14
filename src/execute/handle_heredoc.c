@@ -48,7 +48,11 @@ void	heredoc_read_loop(int fd, const char *delimiter, t_shell *mini)
 //Child process function for handling heredoc input
 void	heredoc_child_process(int wr_fd, const char *delimiter, t_shell *mini)
 {
-	signal(SIGINT, handle_sigint_heredoc);
+	if (signal(SIGINT, handle_sigint_heredoc) == SIG_ERR)
+	{
+		perror("minishell: signal");
+		exit(1);
+	}
 	heredoc_read_loop(wr_fd, delimiter, mini); //Read and process heredoc input
 	close (wr_fd); //close the write end of the pipe
 	exit (0); //Exit the child process
@@ -57,6 +61,12 @@ void	heredoc_child_process(int wr_fd, const char *delimiter, t_shell *mini)
 //Main function for handling heredoc
 int	handle_heredoc(const char *delimiter, t_shell *mini)
 {
+	printf("Debug: handle heredoc entered, delimeter: %s \n", delimiter);//debug print
+	if (!delimiter || !mini)
+	{
+			ft_putstr_fd("Error: Invalid arguments to handle_hd\n" ,STDERR_FILENO);
+			return (-1);
+	}
 	t_process	hd_prcs;
 
 	initialize_process(&hd_prcs);

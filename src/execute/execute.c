@@ -42,12 +42,13 @@ void	setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mi
 	prcs->output_fd = dup(re->tempout);
 	while (redir)
 	{
+		printf("Debug: Redirection type: %d\n", redir->type);//Debug print
 		if (redir->type == 1 || redir->type == 4)
 		{
 			close (prcs->input_fd);
 			if (redir->type == 1)
 				prcs->input_fd = open(redir->input_file, O_RDONLY);
-			else
+			else if (redir->type == 4)
 				prcs->input_fd = handle_heredoc(redir->input_file, mini);
 			if (prcs->input_fd < 0)
 			{
@@ -76,64 +77,6 @@ void	setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mi
 	dup2(prcs->output_fd, 1);
 }
 
-/*void	execute(t_shell *mini)
-{
-	t_process		prcs;
-	t_command		*cmd;
-	t_redir_info	redir_info;
-
-	redir_info.tempin = dup(STDIN_FILENO); // Save the current input
-	redir_info.tempout = dup(STDIN_FILENO); // Save the current output
-	cmd = mini->commands;
-	initialize_process(&prcs);
-
-// Setup initial input
-	//prcs.input_fd = set_initial_input(cmd, &prcs, tempin);
-	//if (prcs.input_fd < 0)
-	//	return ;
-// Running through command
-	while(cmd != NULL)
-	{
-		//Redirect Input
-		//dup2(prcs.input_fd, 0); //Redirect input to come from input_fd could be file or a pipe
-		//close (prcs.input_fd);
-		setup_redirs(cmd, &prcs, &redir_info, mini);
-		if (prcs.input_fd < 0 || prcs.output_fd < 0)
-			return ;
-// Setup the Output
-		//if (cmd->next == NULL) //Last command
-		//	prcs.output_fd = set_output(cmd, &prcs, tempout);
-		//if (prcs.output_fd < 0)
-		//	return ;
-		//else //not last command
-		if (cmd->next != NULL)
-		{
-			if(pipe(prcs.pipe_fd) == -1)
-			{
-				perror("pipe");
-				exit(1);
-			}
-			prcs.output_fd = prcs.pipe_fd[1]; //Write to the pipe
-			//prcs.input_fd = prcs.pipe_fd[0]; //Read from the pipe
-		}
-		//redirect output to output_fd(could be file or pipe)
-		//dup2(prcs.output_fd, 1);
-		//close(prcs.output_fd);
-		//execute command
-		execute_command(cmd, &prcs, mini);
-		cleanup_redirections(&prcs);
-		if (cmd->next != NULL)
-			prcs.input_fd = prcs.pipe_fd[0];
-		cmd = cmd->next; //Move to next command
-	}
-	//Restore the original input/output
-	dup2(redir_info.tempin, 0);
-	dup2(redir_info.tempout, 1);
-	close(redir_info.tempin);
-	close(redir_info.tempout);
-	while (wait(&prcs.status) > 0); // Waiting for the last command to finish
-} */
-
 void	cleanup_redirections(t_process *prcs)
 {
 	if (prcs->input_fd > 2)
@@ -141,53 +84,6 @@ void	cleanup_redirections(t_process *prcs)
 	if (prcs->output_fd > 2)
 		close(prcs->output_fd);
 }
-
-/*void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
-{
-	char	**env_array;
-
-	if(is_builtin(cmd)) //Check if the command is a built-in
-	{
-		(handle_builtin(cmd, mini));
-	}
-	else // Fork and execute command
-	{
-		env_array = create_env_array(mini->env);
-		prcs->cmd_path = find_command(cmd->tokens[0], mini->env);
-		printf("path is : %s\n", prcs->cmd_path);
-		if (!prcs->cmd_path)
-		{
-			ft_putstr_fd("minishell: command not found: ", 2);
-			ft_putstr_fd(cmd->tokens[0], 2);
-			ft_putstr_fd("\n", 2);
-			mini->last_exit_status = 127;
-			free_env_array(env_array); //Could not find exit status
-			return ;
-		}
-		prcs->pid = fork();
-		if (prcs->pid == 0)
-		{
-			execve(prcs->cmd_path, cmd->tokens, env_array); // send env variable here
-			perror("execve");//If execve fails, print an error and exit
-			free_env_array(env_array);
-			exit(1);
-		}
-		else if (prcs->pid < 0) // If fork fails, print error and exit the shell
-		{
-			perror("fork");
-			free(prcs->cmd_path);
-			free_env_array(env_array);
-			exit(1);
-		}
-		else //Parent process wait for the child to complete
-		{
-			waitpid(prcs->pid, &prcs->status, 0);
-			handle_child_status(prcs, mini);
-			free(prcs->cmd_path);
-			free_env_array(env_array);
-		}
-	}
-} */
 
 void	handle_child_status(t_process *prcs, t_shell *mini)
 {
