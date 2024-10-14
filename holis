@@ -1,0 +1,78 @@
+key: SHELL, value: /bin/bash
+key: SESSION_MANAGER, value: local/arekusei:@/tmp/.ICE-unix/1441,unix/arekusei:/tmp/.ICE-unix/1441
+key: QT_ACCESSIBILITY, value: 1
+key: COLORTERM, value: truecolor
+key: SSH_AGENT_LAUNCHER, value: openssh
+key: XDG_MENU_PREFIX, value: gnome-
+key: TERM_PROGRAM_VERSION, value: 1.93.1
+key: GNOME_DESKTOP_SESSION_ID, value: this-is-deprecated
+key: LANGUAGE, value: en_GB:en
+key: SSH_AUTH_SOCK, value: /run/user/1000/keyring/ssh
+key: XMODIFIERS, value: @im
+key: DESKTOP_SESSION, value: gnome
+key: GTK_MODULES, value: gail:atk-bridge
+key: DBUS_STARTER_BUS_TYPE, value: session
+key: PWD, value: /home/alex/school_minishell
+key: XDG_SESSION_DESKTOP, value: gnome
+key: LOGNAME, value: alex
+key: XDG_SESSION_TYPE, value: wayland
+key: SYSTEMD_EXEC_PID, value: 1441
+key: XAUTHORITY, value: /run/user/1000/.mutter-Xwaylandauth.BAV7U2
+key: VSCODE_GIT_ASKPASS_NODE, value: /usr/share/code/code
+key: GDM_LANG, value: en_GB.UTF-8
+key: HOME, value: /home/alex
+key: USERNAME, value: alex
+key: IM_CONFIG_PHASE, value: 1
+key: LANG, value: en_GB.UTF-8
+key: LS_COLORS, value: rs
+key: XDG_CURRENT_DESKTOP, value: GNOME
+key: VTE_VERSION, value: 7006
+key: WAYLAND_DISPLAY, value: wayland-0
+key: GIT_ASKPASS, value: /usr/share/code/resources/app/extensions/git/dist/askpass.sh
+key: GNOME_TERMINAL_SCREEN, value: /org/gnome/Terminal/screen/f09e8690_6736_4953_925d_b2f199feda4e
+key: CHROME_DESKTOP, value: code-url-handler.desktop
+key: GNOME_SETUP_DISPLAY, value: :1
+key: XDG_SESSION_CLASS, value: user
+key: TERM, value: xterm-256color
+key: USER, value: alex
+key: VSCODE_GIT_IPC_HANDLE, value: /run/user/1000/vscode-git-1b85c35827.sock
+key: GNOME_TERMINAL_SERVICE, value: :1.102
+key: DISPLAY, value: :0
+key: SHLVL, value: 2
+key: QT_IM_MODULE, value: ibus
+key: DBUS_STARTER_ADDRESS, value: unix:path
+key: XDG_RUNTIME_DIR, value: /run/user/1000
+key: VSCODE_GIT_ASKPASS_MAIN, value: /usr/share/code/resources/app/extensions/git/dist/askpass-main.js
+key: XDG_DATA_DIRS, value: /usr/share/gnome:/usr/local/share/:/usr/share/
+key: GDK_BACKEND, value: x11
+key: PATH, value: /usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/home/alex/.local/bin:/home/alex/.local/bin
+key: GDMSESSION, value: gnome
+key: ORIGINAL_XDG_CURRENT_DESKTOP, value: GNOME
+key: DBUS_SESSION_BUS_ADDRESS, value: unix:path
+key: TERM_PROGRAM, value: vscode
+key: _, value: ./minishell
+NULL
+PATH env variable is: /usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/home/alex/.local/bin:/home/alex/.local/bin
+Path component: /usr/local/bin
+Path component: /usr/bin
+Path component: /bin
+Path component: /usr/local/games
+Path component: /usr/games
+Path component: /home/alex/.local/bin
+Path component: /home/alex/.local/bin
+Path 0: /usr/local/bin
+Path 1: /usr/bin
+Path 2: /bin
+Path 3: /usr/local/games
+Path 4: /usr/games
+Path 5: /home/alex/.local/bin
+Path 6: /home/alex/.local/bin
+checking path: /usr/local/bin/lsls
+checking path: /usr/bin/lsls
+checking path: /bin/lsls
+checking path: /usr/local/games/lsls
+checking path: /usr/games/lsls
+checking path: /home/alex/.local/bin/lsls
+checking path: /home/alex/.local/bin/lsls
+Found command path: (null)
+path is : (null)

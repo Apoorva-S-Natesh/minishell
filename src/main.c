@@ -86,7 +86,12 @@ static void print_redirections(t_redirection *redir)
     while (current_redir)
     {
         if (current_redir->input_file)
-            printf("    Input Redirect: <%s>\n", current_redir->input_file);
+         {
+            if (current_redir->type == 1)
+                printf("    Input Redirect: >%s\n", current_redir->input_file);
+            else if (current_redir->type == 4)
+                printf("    Heredoc: <<%s\n", current_redir->input_file);
+        }
         if (current_redir->output_file)
         {
             if (current_redir->type == 2)
