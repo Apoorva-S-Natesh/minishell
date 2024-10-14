@@ -241,48 +241,6 @@ char	**create_env_array(t_env *env)
 	env_array[i] = NULL;
 	return (env_array);
 }
-/*
-// Setup initial input
-int	set_initial_input(t_command	*cmd, t_process *prcs, int tempin)
-{
-	if (cmd->redirection && cmd->redirection->type == 4)
-	{
-		handle_heredoc(cmd->redirection->input_file);
-		prcs->input_fd = dup(0);
-	}
-	else if (cmd->redirection && (cmd->redirection->input_file))
-	{
-		prcs->input_fd = open(cmd->redirection->input_file, O_RDONLY);
-		if (prcs->input_fd < 0)
-		{
-			perror ("open");
-			return (-1);
-		}
-	}
-	else
-		prcs->input_fd = dup(tempin);
-	return (prcs->input_fd);
-}
-
-int	set_output(t_command *cmd, t_process *prcs, int tempout)
-{
-	if (cmd->redirection && cmd->redirection->output_file)
-	{
-		if (cmd->redirection->type == 2)
-			prcs->output_fd = open(cmd->redirection->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		else if (cmd->redirection->type == 3)
-			prcs->output_fd = open(cmd->redirection->output_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (prcs->output_fd < 0)
-		{
-			perror("open");
-			return (-1);
-		}
-	}
-	else
-		prcs->output_fd = dup(tempout); // Send output to the screen
-	return (prcs->output_fd);
-}
-*/
 
 void execute(t_shell *mini)
 {
@@ -308,52 +266,57 @@ void execute(t_shell *mini)
             }
         }
 		setup_redirs(cmd, &prcs, &redir_info, mini);
-        prcs.pid = fork();
-        if (prcs.pid == 0)
-        {
+		if (is_builtin(cmd))
+    	{
+        	handle_builtin(cmd, mini);
+    	}
+		else
+		{
+			prcs.pid = fork();
+        	if (prcs.pid == 0)
+        	{
             // Child process
-            if (prev_pipe[0] != -1)
-            {
-                dup2(prev_pipe[0], STDIN_FILENO);
-                close(prev_pipe[0]);
-                close(prev_pipe[1]);
-            }
+            	if (prev_pipe[0] != -1)
+            	{
+                	dup2(prev_pipe[0], STDIN_FILENO);
+                	close(prev_pipe[0]);
+                	close(prev_pipe[1]);
+            	}
 
-            if (cmd->next != NULL)
-            {
-                close(pipe_fd[0]);
-                dup2(pipe_fd[1], STDOUT_FILENO);
-                close(pipe_fd[1]);
-            }
-
-            execute_command(cmd, &prcs, mini);
-            exit(mini->last_exit_status);
-        }
-        else if (prcs.pid < 0)
-        {
-            perror("fork");
-            exit(1);
-        }
-        else
-        {
+            	if (cmd->next != NULL)
+            	{
+                	close(pipe_fd[0]);
+                	dup2(pipe_fd[1], STDOUT_FILENO);
+                	close(pipe_fd[1]);
+            	}
+            	execute_command(cmd, &prcs, mini);
+            	exit(mini->last_exit_status);
+        	}
+        	else if (prcs.pid < 0)
+        	{
+            	perror("fork");
+            	exit(1);
+        	}
+        	else
+        	{
             // Parent process
-            if (prev_pipe[0] != -1)
-            {
-                close(prev_pipe[0]);
-                close(prev_pipe[1]);
-            }
-
-            if (cmd->next != NULL)
-            {
-                prev_pipe[0] = pipe_fd[0];
-                prev_pipe[1] = pipe_fd[1];
-            }
-            else
-            {
-                waitpid(prcs.pid, &prcs.status, 0);
-                handle_child_status(&prcs, mini);
-            }
-        }
+            	if (prev_pipe[0] != -1)
+            	{
+                	close(prev_pipe[0]);
+                	close(prev_pipe[1]);
+            	}
+            	if (cmd->next != NULL)
+            	{
+                	prev_pipe[0] = pipe_fd[0];
+                	prev_pipe[1] = pipe_fd[1];
+            	}
+            	else
+            	{
+                	waitpid(prcs.pid, &prcs.status, 0);
+                	handle_child_status(&prcs, mini);
+            	}
+        	}
+		}
 		cleanup_redirections(&prcs);
         cmd = cmd->next;
     }
@@ -371,12 +334,6 @@ void execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 {
     char **env_array;
 
-    if (is_builtin(cmd))
-    {
-        handle_builtin(cmd, mini);
-    }
-    else
-    {
         env_array = create_env_array(mini->env);
         prcs->cmd_path = find_command(cmd->tokens[0], mini->env);
         printf("path is : %s\n", prcs->cmd_path);
@@ -393,5 +350,4 @@ void execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
         perror("execve");
         free_env_array(env_array);
         exit(1);
-    }
 }
