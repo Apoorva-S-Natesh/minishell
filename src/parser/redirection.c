@@ -52,7 +52,7 @@ void set_redi_type(t_redirection *redir, t_token *redir_token, char *filename)
     }
 	else if (redir_token->type == HEREDOC)
     {
-        redir->output_file = ft_strdup(filename);
+        redir->input_file = ft_strdup(filename);
         redir->type = 4;
     }
 }
