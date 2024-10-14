@@ -147,7 +147,9 @@ void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 	char	**env_array;
 
 	if(is_builtin(cmd)) //Check if the command is a built-in
+	{
 		handle_builtin(cmd, mini);
+	}
 	else // Fork and execute command
 	{
 		env_array = create_env_array(mini->env);
