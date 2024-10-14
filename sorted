@@ -1,0 +1,13 @@
+Found executable: /usr/bin/sort
+path is : /usr/bin/sort
+ 4 -rw-r--r-- 1 jayapoo jayapoo    13 Oct  2 12:30 README.md
+ 4 -rw-r--r-- 1 jayapoo jayapoo    56 Oct 14 11:32 sorted
+ 4 -rw-r--r-- 1 jayapoo jayapoo  1992 Oct 11 10:50 Makefile
+ 4 drwxr-xr-x 2 jayapoo jayapoo  4096 Oct 11 22:06 includes
+ 4 drwxr-xr-x 3 jayapoo jayapoo  4096 Oct 14 11:28 libft
+ 4 drwxr-xr-x 6 jayapoo jayapoo  4096 Oct 14 11:28 src
+48 -rwxr-xr-x 1 jayapoo jayapoo 48304 Oct 14 11:28 minishell
+Found executable: /usr/bin/ls
+path is : /usr/bin/ls
+total 72
+Command exited with the code 0

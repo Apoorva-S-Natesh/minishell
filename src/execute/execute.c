@@ -307,7 +307,7 @@ void execute(t_shell *mini)
                 exit(1);
             }
         }
-
+		setup_redirs(cmd, &prcs, &redir_info, mini);
         prcs.pid = fork();
         if (prcs.pid == 0)
         {
@@ -354,7 +354,7 @@ void execute(t_shell *mini)
                 handle_child_status(&prcs, mini);
             }
         }
-
+		cleanup_redirections(&prcs);
         cmd = cmd->next;
     }
 
