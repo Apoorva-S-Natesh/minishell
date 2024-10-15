@@ -59,7 +59,7 @@ char *extract_env(char **ptr, t_shell *mini)
 	char	*value;
 
 	var_start = *ptr;
-	if (**ptr == '?' && *(*ptr + 1) == '\0')
+	if (**ptr == '?')
 	{
 		(*ptr)++;
         return (ft_itoa(mini->last_exit_status));
