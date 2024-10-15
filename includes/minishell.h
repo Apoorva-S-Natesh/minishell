@@ -154,9 +154,9 @@ e_token_type	classify_token(char *token_value);
 void			append_token(t_token **tokens, char *value, e_token_type type, int quote_type);
 
 //EXPAND TOKENS
-void			expand_tokens(t_token *tokens, t_env *env_list);
-char			*expand_value(char	*token, t_env *env_list);
-char			*extract_env(char **ptr, t_env *env_list);
+void			expand_tokens(t_token *tokens, t_shell *mini);
+char			*expand_value(char	*token, t_shell *mini);
+char			*extract_env(char **ptr, t_shell *mini);
 char			*get_env_value(const char *name, t_env *env_list);
 int 			process_operators(t_token **tokens, char **start, char **end);
 char			*remove_quotes(char *str);

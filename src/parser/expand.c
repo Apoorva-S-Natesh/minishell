@@ -1,6 +1,6 @@
 #include "../../includes/minishell.h"
 
-void expand_tokens(t_token *tokens, t_env *env_list)
+void expand_tokens(t_token *tokens, t_shell *mini)
 {
     t_token *current;
 	char *expanded;
@@ -10,7 +10,7 @@ void expand_tokens(t_token *tokens, t_env *env_list)
 	{
         if (current->type != SINGLE_Q && ft_strchr(current->value, '$'))
 		{
-            expanded = expand_value(current->value, env_list);
+            expanded = expand_value(current->value, mini);
             if (expanded)
 			{
                 free(current->value);
@@ -22,18 +22,18 @@ void expand_tokens(t_token *tokens, t_env *env_list)
 }
 
 
-char *expand_value(char *token, t_env *env_list)
+char *expand_value(char *token, t_shell *mini)
 {
     char *result = malloc(1024);
     if (!result) return NULL;
 
     char *tkn_ptr = token;
     size_t current_length = 0;
+
     while (*tkn_ptr) {
-        if (*tkn_ptr == '$') 
-		{
+        if (*tkn_ptr == '$') {
             tkn_ptr++; // Skip the dollar sign
-            char *var_value = extract_env(&tkn_ptr, env_list);
+            char *var_value = extract_env(&tkn_ptr, mini);
             if (var_value) {
                 size_t var_length = ft_strlen(var_value);
                 if (current_length + var_length >= 1024) {
@@ -51,7 +51,7 @@ char *expand_value(char *token, t_env *env_list)
     return result;
 }
 
-char *extract_env(char **ptr, t_env *env_list)
+char *extract_env(char **ptr, t_shell *mini)
 {
 	char	*var_start;
 	size_t	var_length;
@@ -59,6 +59,11 @@ char *extract_env(char **ptr, t_env *env_list)
 	char	*value;
 
 	var_start = *ptr;
+	if (**ptr == '?' && *(*ptr + 1) == '\0')
+	{
+		(*ptr)++;
+        return (ft_itoa(mini->last_exit_status));
+	}
 	while (**ptr && (ft_isalnum(**ptr) || **ptr == '_')) //envv van have only alnum char or _
 		(*ptr)++;
 	var_length = *ptr - var_start;
@@ -66,7 +71,7 @@ char *extract_env(char **ptr, t_env *env_list)
 	if (!var_name)
 		return (NULL);
 	ft_strlcpy(var_name, var_start, var_length + 1);
-	value = get_env_value(var_name, env_list);
+	value = get_env_value(var_name, mini->env);
     free (var_name);
 	return (value);
 }

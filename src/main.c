@@ -123,7 +123,7 @@ int	main(int ac, char **av, char **envv)
 			tokens = tokenize(&mini);
 			if (!tokens)
 				continue ;
-			expand_tokens(tokens, mini.env);
+			expand_tokens(tokens, &mini);
 			print_tokens(tokens);
 			mini.commands = group_tokens_to_cmd(tokens);
 			set_cmd_priorities(mini.commands);

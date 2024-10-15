@@ -25,6 +25,7 @@ void	init_shell(t_shell *mini, char **envv)
 	mini->running_status = 1;
 	mini->input = NULL;
 	mini->commands = NULL;
+	mini->last_exit_status = 0;
 	set_envv(mini, envv);
 }
 
@@ -51,4 +52,3 @@ void	set_envv(t_shell *mini, char **envv)
 	}
 	mini->env = head;
 }
- 

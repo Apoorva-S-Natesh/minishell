@@ -71,7 +71,7 @@ int handle_quotes(t_shell *mini, int *i, t_token **tokens)
 	}
 	if (quote_type == DOUBLE_Q) // Expand for double quotes, but directly append for single quotes
 	{
-		expanded_content = expand_value(quoted_content, mini->env);
+		expanded_content = expand_value(quoted_content, mini);
 		append_token(tokens, expanded_content, DOUBLE_Q, 2); // Append expanded token
 		free(expanded_content); // Free after use
 	}

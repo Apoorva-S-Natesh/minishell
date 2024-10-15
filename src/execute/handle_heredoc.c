@@ -1,7 +1,7 @@
 #include "../../includes/minishell.h"
 
-/*The heredoc is typically handled in a child process to allow for proper signal 
-handling and to prevent the main shell process from being affected by signals 
+/*The heredoc is typically handled in a child process to allow for proper signal
+handling and to prevent the main shell process from being affected by signals
 during heredoc input.*/
 
 
@@ -12,9 +12,9 @@ static void	write_heredoc_line(int fd, char *line, t_shell *mini)
 
 	if (mini->expand_heredoc)
 		//expanded_line = expand_variables(line, mini); // Expand vairables in the line
-		expanded_line = expand_value(line, mini->env); 
+		expanded_line = expand_value(line, mini);
 	else
-		expanded_line = expand_value(line, mini->env); // Use the original line if expansion is disabled
+		expanded_line = expand_value(line, mini); // Use the original line if expansion is disabled
 	write(fd, expanded_line, ft_strlen(expanded_line)); // Write line to the file desciptor
 	if (expanded_line != line)
 		free(expanded_line);
