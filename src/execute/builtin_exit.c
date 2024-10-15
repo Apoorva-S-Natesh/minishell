@@ -86,6 +86,8 @@ void	builtin_exit(char **tokens, t_shell *mini, int size)
 		}
 	}
 	//Clean up resources
+	//free_tokens(mini->commands->tokens); //free every token (in loop)
+	free_command(mini->commands);
 	free_list(mini->env);
 	exit(exit_status);
 }
