@@ -1,1 +1,6 @@
-hi
+Found executable: /usr/bin/grep
+path is : /usr/bin/grep
+%Cpu(s):  7.9 us,  2.4 sy,  0.0 ni, 89.8 id,  0.0 wa,  0.0 hi,  0.0 si,  0.0 st
+MiB Mem :   3850.0 total,   1705.7 free,   1071.5 used,   1072.9 buff/cache
+MiB Swap:   1024.0 total,   1024.0 free,      0.0 used.   2549.0 avail Mem 
+Command exited with the code 0

@@ -130,8 +130,8 @@ int	main(int ac, char **av, char **envv)
 			print_commands(mini.commands);
 			execute(&mini);
 		}
-		free_tokens(tokens);
-		free_command(mini.commands);
+		// free_tokens(tokens); //check if there are tokens
+		// free_command(mini.commands); //check if there are commands
 	}
 	free_list(mini.env);
 	return (0);

@@ -11,9 +11,10 @@ static void	write_heredoc_line(int fd, char *line, t_shell *mini)
 	char	*expanded_line;
 
 	if (mini->expand_heredoc)
-		expanded_line = expand_variables(line, mini); // Expand vairables in the line
+		//expanded_line = expand_variables(line, mini); // Expand vairables in the line
+		expanded_line = expand_value(line, mini->env); 
 	else
-		expanded_line = expand_variables(line, mini); // Use the original line if expansion is disabled
+		expanded_line = expand_value(line, mini->env); // Use the original line if expansion is disabled
 	write(fd, expanded_line, ft_strlen(expanded_line)); // Write line to the file desciptor
 	if (expanded_line != line)
 		free(expanded_line);
@@ -64,8 +65,8 @@ int	handle_heredoc(const char *delimiter, t_shell *mini)
 	printf("Debug: handle heredoc entered, delimeter: %s \n", delimiter);//debug print
 	if (!delimiter || !mini)
 	{
-			ft_putstr_fd("Error: Invalid arguments to handle_hd\n" ,STDERR_FILENO);
-			return (-1);
+		ft_putstr_fd("Error: Invalid arguments to handle_hd\n" ,STDERR_FILENO);
+		return (-1);
 	}
 	t_process	hd_prcs;
 

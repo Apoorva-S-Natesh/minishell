@@ -29,9 +29,9 @@ char *expand_value(char *token, t_env *env_list)
 
     char *tkn_ptr = token;
     size_t current_length = 0;
-
     while (*tkn_ptr) {
-        if (*tkn_ptr == '$') {
+        if (*tkn_ptr == '$') 
+		{
             tkn_ptr++; // Skip the dollar sign
             char *var_value = extract_env(&tkn_ptr, env_list);
             if (var_value) {
