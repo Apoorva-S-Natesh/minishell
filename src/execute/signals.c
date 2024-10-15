@@ -31,3 +31,37 @@ void	handle_sigint_heredoc(int signum)
 	write(STDOUT_FILENO, "\n", 1);
 	exit (1); //
 }
+
+void	handle_sigquit(int signum)
+{
+	(void)signum; //// Do nothing for SIGQUIT, we'll handle it in the main loop
+}
+
+void	setup_sig_handling(t_shell *mini)
+{
+	struct	sigaction sa_int;
+	struct	sigaction sa_quit;
+	
+	if (pipe(mini->signal_pipe) == -1)//create a signal pipe
+	{
+		perror("pipe");
+		exit (1);
+	}
+	// Set up SIGINT handler
+    sa_int.sa_handler = handle_sigint;
+    sigemptyset(&sa_int.sa_mask);
+    sa_int.sa_flags = 0;
+    if (sigaction(SIGINT, &sa_int, NULL) == -1) {
+        perror("sigaction");
+        exit(1);
+    }
+
+    // Set up SIGQUIT handler to ignore in the main process
+    sa_quit.sa_handler = SIG_IGN;
+    sigemptyset(&sa_quit.sa_mask);
+    sa_quit.sa_flags = 0;
+    if (sigaction(SIGQUIT, &sa_quit, NULL) == -1) {
+        perror("sigaction");
+        exit(1);
+    }
+}

@@ -113,9 +113,7 @@ int	main(int ac, char **av, char **envv)
 	if (!check_args(ac, av))
 		return (0);
 	init_shell(&mini, envv);
-	signal(SIGINT, handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
-	// Note: Ctrl-D is handled by readline, not as a signal
+	setup_sig_handling(&mini);
 	while (mini.running_status)
 	{
 		if (take_input(&mini))

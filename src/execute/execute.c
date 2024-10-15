@@ -185,6 +185,9 @@ void execute(t_shell *mini)
                 	dup2(pipe_fd[1], STDOUT_FILENO);
                 	close(pipe_fd[1]);
             	}
+                signal(SIGINT, SIG_DFL);
+                signal(SIGQUIT, SIG_DFL);
+				close(mini->signal_pipe[0]);  // Close read end of signal pipe
             	execute_command(cmd, &prcs, mini);
             	exit(mini->last_exit_status);
         	}
@@ -196,6 +199,7 @@ void execute(t_shell *mini)
         	else
         	{
             // Parent process
+				mini->foreground_pid = prcs.pid;
             	if (prev_pipe[0] != -1)
             	{
                 	close(prev_pipe[0]);
@@ -208,10 +212,52 @@ void execute(t_shell *mini)
             	}
             	else
             	{
-                	waitpid(prcs.pid, &prcs.status, 0);
-                	handle_child_status(&prcs, mini);
+                	// Wait for child or signal
+                    fd_set readfds;
+                    while (1)
+                    {
+                        FD_ZERO(&readfds);
+                        FD_SET(mini->signal_pipe[0], &readfds);
+
+                        struct timeval tv = {0, 100000};  // 100ms timeout
+
+                        int ret = select(mini->signal_pipe[0] + 1, &readfds, NULL, NULL, &tv);
+                        if (ret == -1)
+                        {
+                            if (errno == EINTR) continue;  // Interrupted by a signal, try again
+                            perror("select");
+                            break;
+                        }
+                        else if (ret > 0)
+                        {
+                            // Signal received
+                            char sig;
+                            if (read(mini->signal_pipe[0], &sig, 1) > 0)
+                            {
+                                if (sig == SIGINT)
+                                {
+                                    kill(prcs.pid, SIGINT);
+                                    write(STDOUT_FILENO, "\n", 1);
+                                }
+                                // else if (sig == SIGQUIT)
+                                // {
+                                //     kill(prcs.pid, SIGQUIT);
+                                //     write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+                                // }
+                            }
+                        }
+
+                        // Check if child has exited
+                        if (waitpid(prcs.pid, &prcs.status, WNOHANG) != 0)
+                        {
+                            break;
+                        }
+                    }
+
+                    mini->foreground_pid = -1;
+                    handle_child_status(&prcs, mini);
             	}
-        	}
+			}
 		}
 		cleanup_redirections(&prcs);
         cmd = cmd->next;
@@ -228,22 +274,24 @@ void execute(t_shell *mini)
 
 void execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 {
-    char **env_array;
+	char **env_array;
 
-        env_array = create_env_array(mini->env);
-        prcs->cmd_path = find_command(cmd->tokens[0], mini->env);
-        printf("path is : %s\n", prcs->cmd_path);
-        if (!prcs->cmd_path)
-        {
-            ft_putstr_fd("minishell: command not found: ", 2);
-            ft_putstr_fd(cmd->tokens[0], 2);
-            ft_putstr_fd("\n", 2);
-            mini->last_exit_status = 127;
-            free_env_array(env_array);
-            exit(127);
-        }
-        execve(prcs->cmd_path, cmd->tokens, env_array);
-        perror("execve");
-        free_env_array(env_array);
-        exit(1);
+	signal(SIGINT, SIG_DFL);
+    signal(SIGQUIT, SIG_DFL);
+    env_array = create_env_array(mini->env);
+    prcs->cmd_path = find_command(cmd->tokens[0], mini->env);
+    printf("path is : %s\n", prcs->cmd_path);
+    if (!prcs->cmd_path)
+    {
+        ft_putstr_fd("minishell: command not found: ", 2);
+		ft_putstr_fd(cmd->tokens[0], 2);
+		ft_putstr_fd("\n", 2);
+		mini->last_exit_status = 127;
+		free_env_array(env_array);
+		exit(127);
+	}
+	execve(prcs->cmd_path, cmd->tokens, env_array);
+	perror("execve");
+	free_env_array(env_array);
+	exit(1);
 }

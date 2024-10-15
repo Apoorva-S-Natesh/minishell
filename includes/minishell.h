@@ -13,6 +13,7 @@
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
+#define _XOPEN_SOURCE 700
 # include "../libft/src/libft.h"
 # include <stdio.h>
 # include <stdlib.h>
@@ -25,6 +26,8 @@
 # include <dirent.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+#include <sys/select.h> // for fd_set
+#include <sys/time.h> // for timeval
 
 # ifndef PATH_MAX
 # 	define PATH_MAX 4096
@@ -109,6 +112,8 @@ typedef struct s_shell
 	char		cwd[1024];
 	int			last_exit_status; // Track the last exit status of executed commands
 	int			expand_heredoc; //struct to control variable expansion in heredocs
+	int			signal_pipe[2]; // Pipe for signal communication
+	pid_t		foreground_pid; // PID of the current foreground process
 }	t_shell;
 
 typedef struct s_process
@@ -179,6 +184,9 @@ void			append_redi(t_command *cmd, t_redirection *redir);
 //SIGNAL
 void			handle_sigint(int sig);
 void			handle_sigint_heredoc(int signum);
+void			handle_sigquit(int signum);
+void			setup_sig_handling(t_shell *mini);
+
 
 // EXECUTE
 char			**split_path(char *path);
