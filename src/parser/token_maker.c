@@ -17,6 +17,8 @@ void	append_token(t_token **tokens, char *value, e_token_type type, int quote_ty
 	t_token	*new;
 	t_token	*current;
 
+	if (ft_strlen(value) == 0)
+		return ;
 	new = malloc(sizeof(t_token));
 	if (!new)
 		return ;
