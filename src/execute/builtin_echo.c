@@ -54,16 +54,13 @@ static void	single_arg(char *arg)
 
 static int	n_flag_present(char *arg)
 {
-	int	i;
-
-	i = 0;
 	if (!arg || ft_strlen(arg) < 2 || arg[0] != '-' || arg[1] != 'n')
 		return (0);
-	while (arg[++i])
-	{
-		if (arg[i] != 'n')
-			return (0);
-	}
+	// while (arg[++i])
+	// {
+	// 	if (arg[i] != 'n')
+	// 		return (0);
+	// }
 	return (1);
 }
 
@@ -78,9 +75,9 @@ int	builtin_echo(char **tokens, t_shell *mini, int size) //what happens if the i
 		mini->last_exit_status = 0;
 		return (SUCCESS);
 	}
-	i = 0;
+	i = 1;
 	n_flag = 0;
-	while (++i < size && (n_flag_present(tokens[i]))) // check if the current argument is -n flag 
+	while (i < size && (n_flag_present(tokens[i]))) // check if the current argument is -n flag 
 	{
 		n_flag = 1;
 		i++;

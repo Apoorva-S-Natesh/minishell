@@ -38,7 +38,7 @@ int	is_blank(char *str)
 
 int	take_input(t_shell *mini)
 {
-	mini->input = readline("\nMiniHell>>> ");
+	mini->input = readline("MiniHell>>> ");
 	if (mini->input == NULL)
 	{
 		ft_putstr_fd("exit\n", STDOUT_FILENO);
