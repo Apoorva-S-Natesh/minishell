@@ -89,6 +89,7 @@ typedef struct s_token
 	char			*value; //for a command can have absolute or relative path
 	e_token_type	type;
 	int				quote; // 0 = no quote, 1 = single quote, 2 = double quote
+	int				concat_flag;
 	t_token			*next;
 }	t_token;
 
@@ -132,6 +133,7 @@ typedef struct s_process
 //INIT SHELL
 void			init_shell(t_shell *mini, char **envv);
 void			set_envv(t_shell *mini, char **envv);
+void			execute_minishell(t_shell *mini, t_token *tokens);
 
 //INPUT
 int				check_args(int ac, char **av);
@@ -157,6 +159,9 @@ void			set_redi_and_pipes(t_shell *mini, int *i, t_token **tokens);
 int				handle_quotes(t_shell *mini, int *i, t_token **tokens);
 e_token_type	classify_token(char *token_value);
 void			append_token(t_token **tokens, char *value, e_token_type type, int quote_type);
+void			set_concat_flag(char *input, int i, t_token *last_token);
+void			append_or_concat_token(t_token **tokens, char *value, int type, int quote_type);
+t_token			*get_last_token(t_token *tokens);
 
 //EXPAND TOKENS
 void			expand_tokens(t_token *tokens, t_shell *mini);
@@ -234,5 +239,12 @@ void			free_env_array(char **env_array);
 //Expand variable in handle heredoc (write_heredoc_line)
 char 			*expand_variables(char *line, t_shell *mini);
 char			*ft_strtok(char *str, const char *delim); // Delete this or rewrite (for finding path in exec_path.c)
+
+
+//PRINT DEBUG FUNCTIONS
+void print_redirections(t_redirection *redir);
+void print_command_tokens(t_command *cmd);
+void print_commands(t_command *commands);
+void print_tokens(t_token *tokens);
 
 #endif

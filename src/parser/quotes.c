@@ -72,11 +72,15 @@ int handle_quotes(t_shell *mini, int *i, t_token **tokens)
 	if (quote_type == DOUBLE_Q) // Expand for double quotes, but directly append for single quotes
 	{
 		expanded_content = expand_value(quoted_content, mini);
-		append_token(tokens, expanded_content, DOUBLE_Q, 2); // Append expanded token
+		append_or_concat_token(tokens, expanded_content, DOUBLE_Q, 2); // Append expanded token
+		set_concat_flag(mini->input, *i, get_last_token(*tokens));
 		free(expanded_content); // Free after use
 	}
 	else // Directly append single-quoted content without expansion
-		append_token(tokens, quoted_content, SINGLE_Q, 1);
+	{
+		append_or_concat_token(tokens, quoted_content, SINGLE_Q, 1);
+		set_concat_flag(mini->input, *i, get_last_token(*tokens));
+	}
 	free(quoted_content);
 	return (1); // Successful execution
 }
