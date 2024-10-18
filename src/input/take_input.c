@@ -61,5 +61,3 @@ int	take_input(t_shell *mini)
 		return (0);
 	}
 }
-
-//check tty

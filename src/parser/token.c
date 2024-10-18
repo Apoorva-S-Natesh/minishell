@@ -106,7 +106,11 @@ void handle_word(t_shell *mini, int *i, t_token **tokens)
     if (buffer_index > 0)
     {
         buffer[buffer_index] = '\0'; // Null-terminate the buffer
-        append_token(tokens, buffer, classify_token(buffer), 0); // Append the word token
+		if(tokens)
+        	append_or_concat_token(tokens, buffer, WORD, 0); // Append the word token
+		else
+			append_token(tokens, buffer, WORD, 0);
+		set_concat_flag(input, *i, get_last_token(*tokens));
     }
 }
 

@@ -29,14 +29,15 @@ void free_tokens(t_token *tokens)
 {
     t_token *temp;
 
-    while (tokens) {
+    while (tokens)
+    {
         temp = tokens;
         tokens = tokens->next;
         free(temp->value);
         free(temp);
-		temp = NULL;
     }
 }
+
 
 void	free_env_array(char **env_array)
 {

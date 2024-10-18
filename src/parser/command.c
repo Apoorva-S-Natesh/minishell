@@ -9,7 +9,6 @@ t_command	*group_tokens_to_cmd(t_token *tokens)
 	head = NULL;
 	current_cmd = NULL;
 	current_tkn = tokens;
-
 	while (current_tkn)
 	{
 		current_cmd = get_command(current_cmd, &head);
@@ -68,7 +67,6 @@ void set_cmd_priorities(t_command *cmd_head)
             priority++;  // Count heredoc commands to start non-heredoc priorities later
         cmd = cmd->next;
     }
-
     // Second pass to assign increasing priority for commands without heredoc
     cmd = cmd_head;
     while (cmd != NULL)
@@ -77,6 +75,6 @@ void set_cmd_priorities(t_command *cmd_head)
             cmd->priority = priority;
             priority++;
         }
-        cmd = cmd->next;  // Move to the next command
+        cmd = cmd->next;
     }
 }
