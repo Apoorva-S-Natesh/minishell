@@ -11,131 +11,70 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+static void	init_env_array(t_envv_array *en_ar, t_env *env);
 
 void	initialize_process(t_process *prcs)
-{ // Setting everything to invalid values
-	prcs->pid = -1; //means no process has been created yet
-	prcs->input_fd = -1; // means no input redirecrtion has been set yet
+{
+	prcs->pid = -1;
+	prcs->input_fd = -1;
 	prcs->output_fd = -1;
-	prcs->pipe_fd[0] = -1; // Means no pipe has been created yet
+	prcs->pipe_fd[0] = -1;
 	prcs->pipe_fd[1] = -1;
-	prcs->status = 0; //later used to store the exit status of the child process.
+	prcs->status = 0;
 	prcs->exit_code = 0;
 	prcs->signal = 0;
-	prcs->cmd_path = NULL; //This indicates that no command path has been found or allocated yet
-}
-void	print_redir_err(const char *filename, const char *message)
-{
-	ft_putstr_fd("minishell: ", STDERR_FILENO);
-	ft_putstr_fd(filename, STDERR_FILENO);
-	ft_putstr_fd(": ", STDERR_FILENO);
-	ft_putstr_fd(message, STDERR_FILENO);
-	ft_putstr_fd("\n", STDERR_FILENO);
-}
-
-void	setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mini)
-{
-	t_redirection	*redir;
-
-	redir = cmd->redirection;
-	prcs->input_fd = dup(re->tempin);
-	prcs->output_fd = dup(re->tempout);
-	while (redir)
-	{
-		printf("Debug: Redirection type: %d\n", redir->type);//Debug print
-		if (redir->type == 1 || redir->type == 4)
-		{
-			close (prcs->input_fd);
-			if (redir->type == 1)
-				prcs->input_fd = open(redir->input_file, O_RDONLY);
-			else if (redir->type == 4)
-				prcs->input_fd = handle_heredoc(redir->input_file, mini);
-			if (prcs->input_fd < 0)
-			{
-				print_redir_err(redir->input_file, "No such file or directory");
-				mini->last_exit_status = 1;
-				return ;
-			}
-		}
-		else if (redir->type == 2 || redir->type == 3)
-		{
-			close (prcs->output_fd);
-			if (redir->type == 2)
-				prcs->output_fd = open(redir->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			else
-				prcs->output_fd = open(redir->output_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-			if (prcs->output_fd < 0)
-			{
-				print_redir_err(redir->output_file, "Permission denied");
-				mini->last_exit_status = 1;
-				return ;
-			}
-		}
-		redir = redir->next;
-	}
-	dup2(prcs->input_fd, 0);
-	dup2(prcs->output_fd, 1);
-}
-
-void	cleanup_redirections(t_process *prcs)
-{
-	if (prcs->input_fd > 2)
-		close(prcs->input_fd);
-	if (prcs->output_fd > 2)
-		close(prcs->output_fd);
+	prcs->cmd_path = NULL;
 }
 
 void	handle_child_status(t_process *prcs, t_shell *mini)
 {
-	if (WIFEXITED(prcs->status)) //Checkinig how the child exited
+	if (WIFEXITED(prcs->status))
 	{
-		prcs->exit_code = WEXITSTATUS(prcs->status); //If not 0 then process has issue
-		mini->last_exit_status = prcs->exit_code; // Update last exit status
-		printf("Command exited with the code %d\n", prcs->exit_code); // Delete later
+		prcs->exit_code = WEXITSTATUS(prcs->status);
+		mini->last_exit_status = prcs->exit_code;
 	}
-	else if (WIFSIGNALED(prcs->status)) //Checking if a signal stopped the child process suddenly
+	else if (WIFSIGNALED(prcs->status))
 	{
 		prcs->signal = WTERMSIG(prcs->status);
 		mini->last_exit_status = 128 + prcs->signal;
-		printf("COmmand termniated by signal %d\n", prcs->signal);
 	}
 	free(prcs->cmd_path);
 	prcs->cmd_path = NULL;
 }
 
+static void	init_env_array(t_envv_array *en_ar, t_env *env)
+{
+	en_ar->count = 0;
+	en_ar->temp = env;
+	en_ar->i = 0;
+}
 char	**create_env_array(t_env *env)
 {
-	int		count;
-	t_env	*temp;
-	char	**env_array;
-	int		i;
-	char	*temp_str;
+	t_envv_array	en_ar;
 
-	count = 0;
-	temp = env;
-	while (temp)
+	init_env_array(&en_ar, env);
+	while (en_ar.temp)
 	{
-		count++;
-		temp = temp->next;
+		en_ar.count++;
+		en_ar.temp = en_ar.temp->next;
 	}
-	env_array = malloc(sizeof(char *) * (count + 1));
-	if (!env_array)
+	en_ar.env_array = malloc(sizeof(char *) * (en_ar.count + 1));
+	if (!en_ar.env_array)
 		return (NULL);
-	i = 0;
 	while (env)
 	{
-		temp_str = ft_strjoin(env->key, "=");
-		if (!temp_str)
+		en_ar.temp_str = ft_strjoin(env->key, "=");
+		if (!en_ar.temp_str)
 			return (NULL);
-		env_array[i] = ft_strjoin(temp_str, env->value);
-		free(temp_str);
-		if (!env_array[i])
+		en_ar.env_array[en_ar.i] = ft_strjoin(en_ar.temp_str, env->value);
+		free(en_ar.temp_str);
+		if (!en_ar.env_array[en_ar.i])
 			return (NULL);
 		env = env->next;
-		i++;
+		en_ar.i++;
 	}
-	env_array[i] = NULL;
-	return (env_array);
+	en_ar.env_array[en_ar.i] = NULL;
+	return (en_ar.env_array);
 }
 
 void execute(t_shell *mini)
@@ -149,7 +88,6 @@ void execute(t_shell *mini)
     redir_info.tempout = dup(STDOUT_FILENO);
     cmd = mini->commands;
     initialize_process(&prcs);
-
     while (cmd != NULL)
     {
         int pipe_fd[2];
@@ -171,7 +109,6 @@ void execute(t_shell *mini)
 			prcs.pid = fork();
         	if (prcs.pid == 0)
         	{
-            // Child process
             	if (prev_pipe[0] != -1)
             	{
                 	dup2(prev_pipe[0], STDIN_FILENO);
@@ -187,7 +124,7 @@ void execute(t_shell *mini)
             	}
                 signal(SIGINT, SIG_DFL);
                 signal(SIGQUIT, SIG_DFL);
-				close(mini->signal_pipe[0]);  // Close read end of signal pipe
+				close(mini->signal_pipe[0]);
             	execute_command(cmd, &prcs, mini);
             	exit(mini->last_exit_status);
         	}
@@ -198,7 +135,6 @@ void execute(t_shell *mini)
         	}
         	else
         	{
-            // Parent process
 				mini->foreground_pid = prcs.pid;
             	if (prev_pipe[0] != -1)
             	{
@@ -212,19 +148,18 @@ void execute(t_shell *mini)
             	}
             	else
             	{
-                	// Wait for child or signal
                     fd_set readfds;
                     while (1)
                     {
                         FD_ZERO(&readfds);
                         FD_SET(mini->signal_pipe[0], &readfds);
 
-                        struct timeval tv = {0, 100000};  // 100ms timeout
+                        struct timeval tv = {0, 100000};
 
                         int ret = select(mini->signal_pipe[0] + 1, &readfds, NULL, NULL, &tv);
                         if (ret == -1)
                         {
-                            if (errno == EINTR) continue;  // Interrupted by a signal, try again
+                            if (errno == EINTR) continue;
                             perror("select");
                             break;
                         }
@@ -239,15 +174,8 @@ void execute(t_shell *mini)
                                     kill(prcs.pid, SIGINT);
                                     write(STDOUT_FILENO, "\n", 1);
                                 }
-                                // else if (sig == SIGQUIT)
-                                // {
-                                //     kill(prcs.pid, SIGQUIT);
-                                //     write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-                                // }
                             }
                         }
-
-                        // Check if child has exited
                         if (waitpid(prcs.pid, &prcs.status, WNOHANG) != 0)
                         {
                             break;
@@ -262,10 +190,7 @@ void execute(t_shell *mini)
 		cleanup_redirections(&prcs);
         cmd = cmd->next;
     }
-
-    // Wait for all remaining child processes
     while (wait(NULL) > 0);
-
     dup2(redir_info.tempin, STDIN_FILENO);
     dup2(redir_info.tempout, STDOUT_FILENO);
     close(redir_info.tempin);

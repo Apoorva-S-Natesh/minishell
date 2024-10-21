@@ -130,6 +130,15 @@ typedef struct s_process
 	char	*cmd_path; // Full path of the command to be excuted
 } t_process;
 
+typedef struct	s_envv_array
+{
+	int		count;
+	t_env	*temp;
+	char	**env_array;
+	int		i;
+	char	*temp_str;
+}	t_envv_array;
+
 //INIT SHELL
 void			init_shell(t_shell *mini, char **envv);
 void			set_envv(t_shell *mini, char **envv);
@@ -206,12 +215,16 @@ void			cleanup_redirections(t_process *prcs);
 void			execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
 void			handle_child_status(t_process *prcs, t_shell *mini);
 void			initialize_process(t_process *prcs);
-void			print_redir_err(const char *filename, const char *message);
-void			setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mini);
 void			execute(t_shell *mini);
-void			cleanup_redirections(t_process *prcs);
 void			execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
 void			handle_child_status(t_process *prcs, t_shell *mini);
+
+//redirections 
+void			print_redir_err(const char *filename, const char *message);
+void			setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mini);
+int				setup_input_redir(t_process *prcs, t_redirection *redir, t_shell *mini);
+int				setup_output_redir(t_process *prcs, t_redirection *redir, t_shell *mini);
+void			cleanup_redirections(t_process *prcs);
 
 //heredoc
 void			heredoc_read_loop(int fd, const char *delimiter, t_shell *mini);
