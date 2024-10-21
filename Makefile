@@ -25,7 +25,8 @@ SRC	= $(addprefix src/, main.c /input/take_input.c /input/init_shell.c /utils/en
 		execute/builtin_cd.c execute/builtin_echo.c execute/builtin_pwd.c \
 		execute/builtin_env.c execute/builtin_exit.c execute/builtin_export.c \
 		execute/builtin_unset.c execute/builtins.c execute/handle_heredoc.c \
-		execute/exec_path.c execute/variable_expansion_heredoc.c print.c)
+		execute/exec_path.c execute/variable_expansion_heredoc.c print.c \
+		execute/execute_utils.c)
 
 LIBFT_PATH	= libft/
 

@@ -56,15 +56,20 @@ static int	n_flag_present(char *arg)
 {
 	if (!arg || ft_strlen(arg) < 2 || arg[0] != '-' || arg[1] != 'n')
 		return (0);
-	// while (arg[++i])
-	// {
-	// 	if (arg[i] != 'n')
-	// 		return (0);
-	// }
 	return (1);
 }
 
-int	builtin_echo(char **tokens, t_shell *mini, int size) //what happens if the input has a space at the end? is it considered in the tokens?
+static void	echo_single(int *i, char **tokens, int size)
+{
+	while (tokens[*i])
+	{
+		single_arg(tokens[*i]);
+		if ((*i + 1) != size)
+			ft_putstr_fd(" ", STDOUT_FILENO);
+		(*i)++;
+	}
+}
+int	builtin_echo(char **tokens, t_shell *mini, int size)
 {
 	int	n_flag;
 	int	i;
@@ -77,19 +82,13 @@ int	builtin_echo(char **tokens, t_shell *mini, int size) //what happens if the i
 	}
 	i = 1;
 	n_flag = 0;
-	while (i < size && (n_flag_present(tokens[i]))) // check if the current argument is -n flag 
+	while (i < size && (n_flag_present(tokens[i])))
 	{
 		n_flag = 1;
 		i++;
 	}
-	while (tokens[i])
-	{
-		single_arg(tokens[i]);
-		if ((i + 1) != size) //Print a space between arguments
-			ft_putstr_fd(" ", STDOUT_FILENO);
-		i++;
-	}
-	if (!n_flag) //Print newline if -n flag is not set
+	echo_single(&i, tokens, size);
+	if (!n_flag)
 		ft_putstr_fd("\n", STDOUT_FILENO);
 	mini->last_exit_status = 0;
 	return (SUCCESS);

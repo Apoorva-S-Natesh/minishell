@@ -59,12 +59,12 @@ void	builtin_unset(t_shell *mini, char **args)
 
 	i = 1;
 	if (!args[1])
-		return ; // No arguments provided, do nothing (POSIX compliant)
+		return ;
 	while (args[i])
 	{
 		if (is_valid_identifier(args[i]))
 		{
-			if (strcmp(args[i], "_") != 0) // Cannot unset "_" (POSIX requirement)
+			if (strcmp(args[i], "_") != 0)
 			{
 				ft_unset(args[i], &mini->env);
 				mini->last_exit_status = 0;

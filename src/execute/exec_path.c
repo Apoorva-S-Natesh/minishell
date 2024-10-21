@@ -14,7 +14,6 @@ char	**split_path(char *path)
 	token = strtok(path, ":");
 	while (token)
 	{
-		//printf("Path component: %s\n", token);
 		paths[count] = ft_strdup(token);
 		count++;
 		token = strtok(NULL, ":");
@@ -41,7 +40,6 @@ char	*check_cmd_in_path(char *cmd, char **paths)
 		free(temp);
 		if (!full_path)
 			return (NULL);
-		//printf("checking path: %s\n", full_path);
 		if (access(full_path, X_OK) == 0)
 		{
 			printf("Found executable: %s\n", full_path);
@@ -63,28 +61,20 @@ char	*find_command(char *cmd, t_env *variable)
 
 	if (ft_strchr(cmd, '/'))
 		return (ft_strdup(cmd));
-	//print_list(variable);
 	path_env = get_env_value("PATH", variable);
-	//printf("PATH env variable is: %s\n", path_env);
 	if (!path_env)
 		return (NULL);
 	paths = split_path(path_env);
 	free(path_env);
 	if (!paths)
 		return (NULL);
-	 // Debug print: print all paths
-    // for (i = 0; paths[i]; i++)
-    // {
-	// 	printf("Path %d: %s\n", i, paths[i]);
-	// }
 	result = check_cmd_in_path(cmd, paths);
 	i = 0;
-	while (paths[i]) //Freeing paths array
+	while (paths[i])
 	{
 		free(paths[i]);
 		i++;
 	}
 	free(paths);
-	//printf("Found command path: %s\n", result);  // Debug print
 	return (result);
 }

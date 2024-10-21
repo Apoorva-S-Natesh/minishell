@@ -234,6 +234,8 @@ void			builtin_unset(t_shell *mini, char **args);
 
 // UTILS
 void			free_env_array(char **env_array);
+int				many_args(int num_args);
+
 
 //////////////////////////////////Delete this after dicsussion
 //Expand variable in handle heredoc (write_heredoc_line)

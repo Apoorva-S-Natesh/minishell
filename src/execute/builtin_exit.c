@@ -11,16 +11,10 @@
 /* ************************************************************************** */
 
 /*
-case 1: too many arguments and doesnt exit
-exit 1 3 45 a
-exit
-bash: exit: too many arguments 
-case 2: Exits but says needs numeric arguments
-exit aaaaaa
-exit
-bash: exit: aaaaaa: numeric argument required
-case 3: exit with no argument or numeric argument
-exits
+No arguments: exits with the status of the last executed command.
+One numeric argument: exits with that status (adjusted to be between 0-255).
+Non-numeric argument: prints an error and exits with status 255.
+More than one argument: prints an error message and doesn't exit.
 */
 
 #include "../../includes/minishell.h"
@@ -52,7 +46,7 @@ static int	parse_exit_status(const char *arg)
 	long	num;
 
 	num = ft_atoi(arg);
-	if (num < 0 || num > 255) //Check if the number is out of hte valid range for exit status
+	if (num < 0 || num > 255)
 	{
 		num %= 256;
 		if (num < 0)
@@ -85,16 +79,7 @@ void	builtin_exit(char **tokens, t_shell *mini, int size)
 			}
 		}
 	}
-	//Clean up resources
-	//free_tokens(mini->commands->tokens); //free every token (in loop)
 	free_command(mini->commands);
 	free_list(mini->env);
 	exit(exit_status);
 }
-
-/*
-No arguments: exits with the status of the last executed command.
-One numeric argument: exits with that status (adjusted to be between 0-255).
-Non-numeric argument: prints an error and exits with status 255.
-More than one argument: prints an error message and doesn't exit.
-*/

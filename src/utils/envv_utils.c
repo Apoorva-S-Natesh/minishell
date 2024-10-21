@@ -60,15 +60,17 @@ t_env	*new_env(char *key, char *value)
 	return (variable);
 }
 
-void free_list(t_env *head) {
-    t_env *tmp;
+void free_list(t_env *head) 
+{
+	t_env *tmp;
 
-    while (head) {
-        tmp = head;
-        head = head->next;
-        free(tmp->key);
-        free(tmp->value);
-        free(tmp);
+	while (head)
+	{
+		tmp = head;
+		head = head->next;
+		free(tmp->key);
+		free(tmp->value);
+		free(tmp);
     }
 }
 

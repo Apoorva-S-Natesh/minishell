@@ -17,11 +17,13 @@ static void	print_invalid_error(char *arg);
 static void	handle_export_arg(t_shell *mini, char *arg);
 
 // Checks if a string is a valid variable identifier.
-
 int	is_valid_identifier(const char *str)
 {
-	if (!str || !*str || ft_isdigit(*str))
+	if (!str || !*str)
 		return (0);
+	if (!ft_isalpha(*str) && *str != '_')
+		return (0);
+	str++;
 	while (*str)
 	{
 		if (!ft_isalnum(*str) && *str != '_')
@@ -32,7 +34,6 @@ int	is_valid_identifier(const char *str)
 }
 
 // Prints all exported variable.
-
 static void	print_exported_vars(t_env *env)
 {
 	while (env)
@@ -51,7 +52,6 @@ static void	print_exported_vars(t_env *env)
 }
 
 //Sets or updates an environment variable
-
 int	set_env_variable(t_shell *mini, const char *key, const char *value)
 {
 	t_env	*current;
@@ -59,7 +59,7 @@ int	set_env_variable(t_shell *mini, const char *key, const char *value)
 	current = mini->env;
 	while (current)
 	{
-		if (strcmp(current->key, key) == 0) // change to ft_strncmp
+		if (ft_strcmp(current->key, key) == 0)
 		{
 			free(current->value);
 			if (value)
@@ -70,7 +70,10 @@ int	set_env_variable(t_shell *mini, const char *key, const char *value)
 		}
 		current = current->next;
 	}
-	append_node(&mini->env, (char *)key, (char *)value);
+	if (value)
+		append_node(&mini->env, (char *)key, ft_strdup(value));
+	else
+		append_node(&mini->env, (char *)key, NULL);
 	return (0);
 }
 
@@ -90,21 +93,24 @@ static void	handle_export_arg(t_shell *mini, char *arg)
 	char	*key;
 	char	*value;
 
-	eq_pos = ft_strrchr(arg, '=');
+	eq_pos = ft_strchr(arg, '=');
 	if (eq_pos)
 	{
 		key = ft_substr(arg, 0, eq_pos - arg);
-		if (*(eq_pos + 1) == '\0' || *(eq_pos + 1) == ' ')
+		if (*(eq_pos + 1) == '\0')
+			value = ft_strdup("");
+		else if (*(eq_pos + 1) == ' ' && *(eq_pos + 2) == '\0')
 			value = ft_strdup(" ");
 		else
 			value = ft_strdup(eq_pos + 1);
 	}
-	else // If there is no value, only key and no '='
+	else
 	{
 		key = ft_strdup(arg);
 		value = NULL;
 	}
-	handle_variable(mini, key, value, arg);
+	if (key)
+		handle_variable(mini, key, value, arg);
 	free(key);
 	free(value);
 }
@@ -136,9 +142,19 @@ void builtin_export(char **tokens, t_shell *mini)
 	}
 	while (tokens[i])
 	{
-		handle_export_arg(mini, tokens[i]);
+		if (ft_strchr(tokens[i], '='))
+			handle_export_arg(mini, tokens[i]);
+		else if(is_valid_identifier(tokens[i]))
+			set_env_variable(mini, tokens[i], NULL);
+		else
+		{
+			print_invalid_error(tokens[i]);
+			mini->last_exit_status = 1;
+		}
 		i++;
     }
-	if (mini->last_exit_status != 1) //to make sure that we don't overwrite an error status (1) with a success status (0)
+	if (mini->last_exit_status != 1)
 		mini->last_exit_status = 0;
 }
+//When we do export hi= hello (adding a space after = then it sets the value as a space and that is also printed when we do env)
+// Check if our export is doing that
