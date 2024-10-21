@@ -19,6 +19,10 @@ cd /folder/subfolder: Changes to a specified path.
 how is this handled in our minishell
 asomanah@c3a10c5:~$ cd core_curriculum//////so_long///maps
 asomanah@c3a10c5:~/core_curriculum/so_long/maps$ - should be done in parsing or here?
+
+changing directories involves more than just calling the chdir() system call. 
+The shell needs to update its own internal state and environment variables (like PWD) 
+to reflect the new current directory.
 */
 
 #include "../../includes/minishell.h"
@@ -136,7 +140,3 @@ void	builtin_cd(char **tokens, t_shell *mini, int size)
 		mini->last_exit_status = update_direcs(current_dir, prev_dir, mini);
 	}
 }
-
-/*changing directories involves more than just calling the chdir() system call. 
-The shell needs to update its own internal state and environment variables (like PWD) 
-to reflect the new current directory.*/

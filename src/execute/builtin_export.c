@@ -12,44 +12,8 @@
 
 #include "../../includes/minishell.h"
 static void	handle_variable(t_shell *mini, char *key, char *value, char *arg);
-static void	print_exported_vars(t_env *env);
 static void	print_invalid_error(char *arg);
 static void	handle_export_arg(t_shell *mini, char *arg);
-
-// Checks if a string is a valid variable identifier.
-int	is_valid_identifier(const char *str)
-{
-	if (!str || !*str)
-		return (0);
-	if (!ft_isalpha(*str) && *str != '_')
-		return (0);
-	str++;
-	while (*str)
-	{
-		if (!ft_isalnum(*str) && *str != '_')
-			return (0);
-		str++;
-	}
-	return (1);
-}
-
-// Prints all exported variable.
-static void	print_exported_vars(t_env *env)
-{
-	while (env)
-	{
-		ft_putstr_fd("export ", 1);
-		ft_putstr_fd(env->key, 1);
-		if (env->value)
-		{
-			ft_putstr_fd("=\"", 1);
-			ft_putstr_fd(env->value, 1);
-			ft_putstr_fd("\"", 1);
-		}
-		ft_putstr_fd("\n", 1);
-		env = env->next;
-	}
-}
 
 //Sets or updates an environment variable
 int	set_env_variable(t_shell *mini, const char *key, const char *value)
@@ -78,7 +42,6 @@ int	set_env_variable(t_shell *mini, const char *key, const char *value)
 }
 
 // Prints an error on invalid identifier
-
 static void	print_invalid_error(char *arg)
 {
 	ft_putstr_fd("Minihell: export: `", 2);

@@ -73,6 +73,7 @@ static void	echo_single(int *i, char **tokens, int size)
 		(*i)++;
 	}
 }
+
 int	builtin_echo(char **tokens, t_shell *mini, int size)
 {
 	int	n_flag;
@@ -94,7 +95,6 @@ int	builtin_echo(char **tokens, t_shell *mini, int size)
 	echo_single(&i, tokens, size);
 	if (!n_flag)
 		ft_putstr_fd("\n", STDOUT_FILENO);
-	//fflush(stdout); //check if fflush is allowed  
 	mini->last_exit_status = 0;
 	return (SUCCESS);
 }

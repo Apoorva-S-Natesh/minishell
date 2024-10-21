@@ -1,3 +1,0 @@
-Found executable: /usr/bin/grep
-Debug : path is : /usr/bin/grep
--rw-r--r-- 1 jayapoo jayapoo    64 Oct 21 14:20 output.txt

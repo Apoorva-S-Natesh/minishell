@@ -219,6 +219,10 @@ void			initialize_process(t_process *prcs);
 void			execute(t_shell *mini);
 void			execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
 void			handle_child_status(t_process *prcs, t_shell *mini);
+void			handle_child_process(int prev_pipe[2], int pipe_fd[2], t_command *cmd, t_shell *mini);
+int				setup_pipes(int pipe_fd[2], t_command *cmd);
+void			init_env_array(t_envv_array *en_ar, t_env *env);
+void			execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, int prev_pipe[2]);
 
 //redirections 
 void			print_redir_err(const char *filename, const char *message);
@@ -242,6 +246,7 @@ void			builtin_env(t_shell *mini, int size);
 void			builtin_exit(char **tokens, t_shell *mini, int size);
 int				is_valid_identifier(const char *str);
 void			builtin_export(char **tokens, t_shell *mini);
+void			print_exported_vars(t_env *env);
 int				set_env_variable(t_shell *mini, const char *key, const char *value);
 void			builtin_pwd(t_shell *mini);
 void			builtin_unset(t_shell *mini, char **args);

@@ -11,103 +11,6 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-static void	init_env_array(t_envv_array *en_ar, t_env *env);
-
-void	initialize_process(t_process *prcs)
-{
-	prcs->pid = -1;
-	prcs->input_fd = -1;
-	prcs->output_fd = -1;
-	prcs->pipe_fd[0] = -1;
-	prcs->pipe_fd[1] = -1;
-	prcs->status = 0;
-	prcs->exit_code = 0;
-	prcs->signal = 0;
-	prcs->cmd_path = NULL;
-}
-
-void	handle_child_status(t_process *prcs, t_shell *mini)
-{
-	if (WIFEXITED(prcs->status))
-	{
-		prcs->exit_code = WEXITSTATUS(prcs->status);
-		mini->last_exit_status = prcs->exit_code;
-	}
-	else if (WIFSIGNALED(prcs->status))
-	{
-		prcs->signal = WTERMSIG(prcs->status);
-		mini->last_exit_status = 128 + prcs->signal;
-	}
-	free(prcs->cmd_path);
-	prcs->cmd_path = NULL;
-}
-
-static void	init_env_array(t_envv_array *en_ar, t_env *env)
-{
-	en_ar->count = 0;
-	en_ar->temp = env;
-	en_ar->i = 0;
-}
-char	**create_env_array(t_env *env)
-{
-	t_envv_array	en_ar;
-
-	init_env_array(&en_ar, env);
-	while (en_ar.temp)
-	{
-		en_ar.count++;
-		en_ar.temp = en_ar.temp->next;
-	}
-	en_ar.env_array = malloc(sizeof(char *) * (en_ar.count + 1));
-	if (!en_ar.env_array)
-		return (NULL);
-	while (env)
-	{
-		en_ar.temp_str = ft_strjoin(env->key, "=");
-		if (!en_ar.temp_str)
-			return (NULL);
-		en_ar.env_array[en_ar.i] = ft_strjoin(en_ar.temp_str, env->value);
-		free(en_ar.temp_str);
-		if (!en_ar.env_array[en_ar.i])
-			return (NULL);
-		env = env->next;
-		en_ar.i++;
-	}
-	en_ar.env_array[en_ar.i] = NULL;
-	return (en_ar.env_array);
-}
-
-static int	setup_pipes(int pipe_fd[2], t_command *cmd)
-{
-	if (cmd->next != NULL)
-	{
-		if (pipe(pipe_fd) == -1)
-		{
-			perror("pipe");
-			return (1);
-		}
-	}
-	return (0);
-}
-
-static void	handle_child_process(int prev_pipe[2], int pipe_fd[2], t_command *cmd, t_shell *mini)
-{
-	if (prev_pipe[0] != -1)
-	{
-		dup2(prev_pipe[0], STDIN_FILENO);
-		close(prev_pipe[0]);
-		close(prev_pipe[1]);
-	}
-	if (cmd->next != NULL)
-	{
-		close(pipe_fd[0]);
-		dup2(pipe_fd[1], STDOUT_FILENO);
-		close(pipe_fd[1]);
-	}
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-	close(mini->signal_pipe[0]);
-}
 
 static void	handle_parent_process(int prev_pipe[2], int pipe_fd[2], t_command *cmd)
 {
@@ -122,6 +25,7 @@ static void	handle_parent_process(int prev_pipe[2], int pipe_fd[2], t_command *c
 		prev_pipe[1] = pipe_fd[1];
 	}
 }
+
 static void	wait_for_child(t_process *prcs, t_shell *mini)
 {
 	fd_set			readfds;
@@ -153,7 +57,7 @@ static void	wait_for_child(t_process *prcs, t_shell *mini)
 	}
 }
 
-static void	exexcute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, int prev_pipe[2])
+void	execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, int prev_pipe[2])
 {
 	int pipe_fd[2];
 
@@ -208,7 +112,7 @@ void execute(t_shell *mini)
 	initialize_process(&prcs);
 	while (cmd != NULL)
 	{
-		exexcute_single_command(cmd, &prcs, mini, prev_pipe);
+		execute_single_command(cmd, &prcs, mini, prev_pipe);
 		cmd = cmd->next;
 	}
     while (wait(NULL) > 0);
