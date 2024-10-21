@@ -105,16 +105,17 @@ typedef struct s_command
 
 typedef struct s_shell
 {
-	t_command	*commands; //pointer to the head of commands list
-	char		*input; //store the original input (?)
-	t_env		*env;
-	int			running_status;
-	int			signal_received;
-	char		cwd[1024];
-	int			last_exit_status; // Track the last exit status of executed commands
-	int			expand_heredoc; //struct to control variable expansion in heredocs
-	int			signal_pipe[2]; // Pipe for signal communication
-	pid_t		foreground_pid; // PID of the current foreground process
+	t_command		*commands; //pointer to the head of commands list
+	char			*input; //store the original input (?)
+	t_env			*env;
+	int				running_status;
+	int				signal_received;
+	char			cwd[1024];
+	int				last_exit_status; // Track the last exit status of executed commands
+	int				expand_heredoc; //struct to control variable expansion in heredocs
+	int				signal_pipe[2]; // Pipe for signal communication
+	pid_t			foreground_pid; // PID of the current foreground process
+	t_redir_info	redir_info;
 }	t_shell;
 
 typedef struct s_process

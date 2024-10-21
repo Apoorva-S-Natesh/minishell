@@ -1,10 +1,4 @@
-Found executable: /usr/bin/ls
-path is : /usr/bin/ls
-Makefile
-README.md
-includes
-libft
-minishell
-src
-text
-Command exited with the code 0
+Found executable: /usr/bin/tr
+Debug : path is : /usr/bin/tr
+
+MiniHell>>> 

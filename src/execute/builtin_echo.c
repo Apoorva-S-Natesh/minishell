@@ -45,6 +45,10 @@ static void	single_arg(char *arg)
 			arg++;
 			if (*arg == '\\')
 				ft_putstr_fd("\\", STDOUT_FILENO);
+			else if (*arg == 'n')
+				ft_putchar_fd('\n', STDOUT_FILENO);
+			else if (*arg == 't')
+				ft_putchar_fd('\t', STDOUT_FILENO);
 			arg++;
 		}
 		ft_putchar_fd(*arg, STDOUT_FILENO);
@@ -90,6 +94,15 @@ int	builtin_echo(char **tokens, t_shell *mini, int size)
 	echo_single(&i, tokens, size);
 	if (!n_flag)
 		ft_putstr_fd("\n", STDOUT_FILENO);
+	//fflush(stdout); //check if fflush is allowed  
 	mini->last_exit_status = 0;
 	return (SUCCESS);
 }
+
+/*
+echo "a b c" | tr ' ' '\n' | sort | uniq:
+Buffering: The most likely issue is that the output is being buffered. 
+In a pipeline, stdout is redirected to a pipe, which might not be line-buffered 
+by default. This can cause the output to be held in the buffer and not immediately 
+sent to the next command in the pipeline.
+*/
