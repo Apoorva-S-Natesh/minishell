@@ -40,10 +40,8 @@ static void	wait_for_child(t_process *prcs, t_shell *mini)
 		tv.tv_sec = 0;
 		tv.tv_usec = 100000;
 		ret = select(mini->signal_pipe[0] + 1, &readfds, NULL, NULL, &tv);
-		if (ret == -1)
+		if (ret == -1 && errno != EINTR)
 		{
-			if (errno == EINTR)
-				continue ;
 			perror("select");
 			break ;
 		}
@@ -56,8 +54,7 @@ static void	wait_for_child(t_process *prcs, t_shell *mini)
 			break ;
 	}
 }
-
-void	execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, int prev_pipe[2])
+static void	execute_non_builtin(t_command *cmd, t_process *prcs, t_shell *mini, int prev_pipe[2])
 {
 	int pipe_fd[2];
 
@@ -66,36 +63,40 @@ void	execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, int 
 		mini->last_exit_status = 1;
 		return ;
 	}
+	prcs->pid = fork();
+	if (prcs->pid == 0)
+	{
+		handle_child_process(prev_pipe, pipe_fd, cmd, mini);
+		execute_command(cmd, prcs, mini);
+		exit(mini->last_exit_status);
+	}
+	else if (prcs->pid < 0)
+	{
+		perror("fork");
+		exit(1);
+	}
+	else
+	{
+		mini->foreground_pid = prcs->pid;
+		handle_parent_process(prev_pipe, pipe_fd, cmd);
+	}
+}
+
+void	execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, int prev_pipe[2])
+{
 	setup_redirs(cmd, prcs, &mini->redir_info, mini);
 	if (is_builtin(cmd))
 		handle_builtin(cmd, mini);
 	else
 	{
-		prcs->pid = fork();
-        if (prcs->pid == 0)
+		execute_non_builtin(cmd, prcs, mini, prev_pipe);
+		if (cmd->next == NULL)
 		{
-			handle_child_process(prev_pipe, pipe_fd, cmd, mini);
-			execute_command(cmd, prcs, mini);
-			exit(mini->last_exit_status);
-		}
-		else if (prcs->pid < 0)
-		{
-			perror("fork");
-			exit(1);
-		}
-		else
-		{
-			mini->foreground_pid = prcs->pid;
-			handle_parent_process(prev_pipe, pipe_fd, cmd);
-			if (cmd->next == NULL)
-			{
-				wait_for_child(prcs, mini);
-				mini->foreground_pid = -1;
-				handle_child_status(prcs, mini);
-			}
+			wait_for_child(prcs, mini);
+			mini->foreground_pid = -1;
+			handle_child_status(prcs, mini);
 		}
 	}
-	cleanup_redirections(prcs);
 }
 
 void execute(t_shell *mini)
@@ -113,6 +114,7 @@ void execute(t_shell *mini)
 	while (cmd != NULL)
 	{
 		execute_single_command(cmd, &prcs, mini, prev_pipe);
+		cleanup_redirections(&prcs);
 		cmd = cmd->next;
 	}
     while (wait(NULL) > 0);
