@@ -21,17 +21,23 @@ void	handle_child_process(int prev_pipe[2], int pipe_fd[2], \
 {
 	if (prev_pipe[0] != -1)
 	{
-		dup2(prev_pipe[0], STDIN_FILENO);
+		if(dup2(prev_pipe[0], STDIN_FILENO) == -1)
+			perror("dup2");
 		close(prev_pipe[0]);
 		close(prev_pipe[1]);
 	}
 	if (cmd->next != NULL)
 	{
 		close(pipe_fd[0]);
-		dup2(pipe_fd[1], STDOUT_FILENO);
+		if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
+			perror ("dup2");
 		close(pipe_fd[1]);
 	}
-	signal(SIGINT, SIG_DFL);
+	if (mini->signal_pipe[0] != -1) //Close all unnecessary file descriptors
+		close(mini->signal_pipe[0]);
+	if (mini->signal_pipe[1] != -1)
+		close(mini->signal_pipe[1]);
+	signal(SIGINT, SIG_DFL); //Reset signal handlers for the child process
 	signal(SIGQUIT, SIG_DFL);
-	close(mini->signal_pipe[0]);
+	//close(mini->signal_pipe[0]);
 }

@@ -24,6 +24,11 @@ static void	handle_parent_process(int prev_pipe[2], int pipe_fd[2], t_command *c
 		prev_pipe[0] = pipe_fd[0];
 		prev_pipe[1] = pipe_fd[1];
 	}
+	else //close the pipe file descriptors if it's the last command.
+	{
+		close(pipe_fd[0]);
+		close(pipe_fd[1]);
+	}
 }
 
 static void	wait_for_child(t_process *prcs, t_shell *mini)
@@ -54,6 +59,7 @@ static void	wait_for_child(t_process *prcs, t_shell *mini)
 			break ;
 	}
 }
+
 static void	execute_non_builtin(t_command *cmd, t_process *prcs, t_shell *mini, int prev_pipe[2])
 {
 	int pipe_fd[2];
@@ -84,9 +90,29 @@ static void	execute_non_builtin(t_command *cmd, t_process *prcs, t_shell *mini, 
 
 void	execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, int prev_pipe[2])
 {
+	int	stdout_copy;
+	int	pipe_fd[2];
+
 	setup_redirs(cmd, prcs, &mini->redir_info, mini);
-	if (is_builtin(cmd))
+	if (is_builtin(cmd)) // when there's a pipe. We create a pipe, redirect stdout to the pipe, execute the built-in, and then restore stdout.
+	{
+		stdout_copy = dup(STDOUT_FILENO);
+		if (cmd->next)
+		{
+			if (pipe(pipe_fd) == -1)
+			{
+				perror("pipe");
+				return ;
+			}
+			dup2(pipe_fd[1], STDOUT_FILENO);
+			close(pipe_fd[1]);
+			prev_pipe[0] = pipe_fd[0];
+			prev_pipe[1] = -1;
+		}
 		handle_builtin(cmd, mini);
+		dup2(stdout_copy, STDOUT_FILENO);
+		close(stdout_copy);
+	}
 	else
 	{
 		execute_non_builtin(cmd, prcs, mini, prev_pipe);

@@ -36,25 +36,25 @@ case 3:  inside quotes
 '\t'
 */
 
-static void	single_arg(char *arg)
-{
-	while (*arg)
-	{
-		if (*arg == '\\')
-		{
-			arg++;
-			if (*arg == '\\')
-				ft_putstr_fd("\\", STDOUT_FILENO);
-			else if (*arg == 'n')
-				ft_putchar_fd('\n', STDOUT_FILENO);
-			else if (*arg == 't')
-				ft_putchar_fd('\t', STDOUT_FILENO);
-			arg++;
-		}
-		ft_putchar_fd(*arg, STDOUT_FILENO);
-		arg++;
-	}
-}
+// static void	single_arg(char *arg)
+// {
+// 	while (*arg)
+// 	{
+// 		if (*arg == '\\')
+// 		{
+// 			arg++;
+// 			if (*arg == '\\')
+// 				ft_putstr_fd("\\", STDOUT_FILENO);
+// 			else if (*arg == 'n')
+// 				ft_putchar_fd('\n', STDOUT_FILENO);
+// 			else if (*arg == 't')
+// 				ft_putchar_fd('\t', STDOUT_FILENO);
+// 			arg++;
+// 		}
+// 		ft_putchar_fd(*arg, STDOUT_FILENO);
+// 		arg++;
+// 	}
+// }
 
 static int	n_flag_present(char *arg)
 {
@@ -63,16 +63,16 @@ static int	n_flag_present(char *arg)
 	return (1);
 }
 
-static void	echo_single(int *i, char **tokens, int size)
-{
-	while (tokens[*i])
-	{
-		single_arg(tokens[*i]);
-		if ((*i + 1) != size)
-			ft_putstr_fd(" ", STDOUT_FILENO);
-		(*i)++;
-	}
-}
+// static void	echo_single(int *i, char **tokens, int size)
+// {
+// 	while (tokens[*i])
+// 	{
+// 		single_arg(tokens[*i]);
+// 		if ((*i + 1) != size)
+// 			printf(" ");
+// 		(*i)++;
+// 	}
+// }
 
 int	builtin_echo(char **tokens, t_shell *mini, int size)
 {
@@ -81,7 +81,7 @@ int	builtin_echo(char **tokens, t_shell *mini, int size)
 
 	if (size <= 1)
 	{
-		ft_putchar_fd('\n', STDOUT_FILENO);
+		printf("\n");
 		mini->last_exit_status = 0;
 		return (SUCCESS);
 	}
@@ -92,9 +92,16 @@ int	builtin_echo(char **tokens, t_shell *mini, int size)
 		n_flag = 1;
 		i++;
 	}
-	echo_single(&i, tokens, size);
+	//echo_single(&i, tokens, size);
+	while (i < size)
+    {
+        printf("%s", tokens[i]);
+        if (i + 1 < size)
+            printf(" ");
+        i++;
+	}
 	if (!n_flag)
-		ft_putstr_fd("\n", STDOUT_FILENO);
+		printf("\n");
 	mini->last_exit_status = 0;
 	return (SUCCESS);
 }
