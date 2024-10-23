@@ -14,6 +14,8 @@
 
 char	is_builtin(t_command *cmd)
 {
+	if (!cmd || !cmd->tokens || !cmd->tokens[0])
+		return 0;
 	if ((strcmp(cmd->tokens[0], "echo") == 0) || 
 		(strcmp(cmd->tokens[0], "cd") == 0) || 
 		(strcmp(cmd->tokens[0], "pwd") == 0) || 

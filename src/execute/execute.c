@@ -93,10 +93,11 @@ void	execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, int 
 	int	stdout_copy;
 	int	pipe_fd[2];
 
+	pipe_fd[0] = -1;
+	pipe_fd[1] = -1;
 	setup_redirs(cmd, prcs, &mini->redir_info, mini);
-	if (is_builtin(cmd)) // when there's a pipe. We create a pipe, redirect stdout to the pipe, execute the built-in, and then restore stdout.
+	if (!cmd->tokens || !cmd->tokens[0]) // Handle the case where there's only a redirection (e.g., heredoc)
 	{
-		stdout_copy = dup(STDOUT_FILENO);
 		if (cmd->next)
 		{
 			if (pipe(pipe_fd) == -1)
@@ -104,6 +105,24 @@ void	execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, int 
 				perror("pipe");
 				return ;
 			}
+			prev_pipe[0] = pipe_fd[0];
+			prev_pipe[1] = pipe_fd[1];
+		}
+		return ;
+	}
+	if (cmd->next)
+	{
+		if (pipe(pipe_fd) == -1)
+		{
+			perror("pipe");
+			return ;
+		}
+	}
+	if (is_builtin(cmd)) // when there's a pipe. We create a pipe, redirect stdout to the pipe, execute the built-in, and then restore stdout.
+	{
+		stdout_copy = dup(STDOUT_FILENO);
+		if (cmd->next)
+		{
 			dup2(pipe_fd[1], STDOUT_FILENO);
 			close(pipe_fd[1]);
 			prev_pipe[0] = pipe_fd[0];
