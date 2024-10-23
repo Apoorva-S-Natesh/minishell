@@ -1,6 +1,0 @@
-Found executable: /usr/bin/tr
-Debug : path is : /usr/bin/tr
-Debug : path is : (null)
-Found executable: /usr/bin/cat
-Debug : path is : /usr/bin/cat
-hello
