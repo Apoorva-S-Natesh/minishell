@@ -55,6 +55,7 @@ void	append_command(t_command **head, t_command *new_command)
 		temp->next = new_command;
 	}
 }
+
 void set_cmd_priorities(t_command *cmd_head)
 {
     int priority = 0;

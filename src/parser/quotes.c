@@ -1,26 +1,26 @@
 #include "../../includes/minishell.h"
 
-char *remove_quotes(char *str)
+char	*remove_quotes(char *str)
 {
-    char *cleaned_str;
-    char *src;
-	char *dst;
-    size_t len;
+	char	*cleaned_str;
+	char	*src;
+	char	*dst;
+	size_t	len;
 
 	len = ft_strlen(str);
-    cleaned_str = malloc(len + 1);
-    if (!cleaned_str)
-        return NULL;
-    src = str;
-    dst = cleaned_str;
-    while (*src)
-    {
-        if (*src != '\'' && *src != '\"')
-            *dst++ = *src;
-        src++;
-    }
-    *dst = '\0'; // Null-terminate the cleaned string
-    return (cleaned_str);
+	cleaned_str = malloc(len + 1);
+	if (!cleaned_str)
+		return NULL;
+	src = str;
+	dst = cleaned_str;
+	while (*src)
+	{
+		if (*src != '\'' && *src != '\"')
+			*dst++ = *src;
+		src++;
+	}
+	*dst = '\0';
+	return (cleaned_str);
 }
 
 char *extract_quoted_content(char *input, int *i, int quote_type, int buffer_index)

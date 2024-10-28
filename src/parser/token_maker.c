@@ -54,65 +54,62 @@ void append_token(t_token **tokens, char *value, e_token_type type, int quote_ty
         while (current->next)
             current = current->next;
         current->next = new;
-    }
+	}
 }
 
-
-e_token_type classify_token(char *token_value)
+e_token_type	classify_token(char *token_value)
 {
-    if (ft_strcmp(token_value, "<") == 0)
-        return (RED_IN);
-    if (ft_strcmp(token_value, "<<") == 0)
-        return (HEREDOC);
-    if (ft_strcmp(token_value, ">") == 0)
-        return (RED_OUT);
-    if (ft_strcmp(token_value, ">>") == 0)
-        return (APPEND);
-    if (ft_strcmp(token_value, "|") == 0)
-        return (PIPE);
-    return (WORD);
+	if (ft_strcmp(token_value, "<") == 0)
+		return (RED_IN);
+	if (ft_strcmp(token_value, "<<") == 0)
+		return (HEREDOC);
+	if (ft_strcmp(token_value, ">") == 0)
+		return (RED_OUT);
+	if (ft_strcmp(token_value, ">>") == 0)
+		return (APPEND);
+	if (ft_strcmp(token_value, "|") == 0)
+		return (PIPE);
+	return (WORD);
 }
 
 void set_concat_flag(char *input, int i, t_token *last_token)
 {
-    if (input[i] && !ft_isspace(input[i]) && input[i] != '|' && input[i] != '<' && input[i] != '>')
-    {
-        last_token->concat_flag = 1; // Set concat_flag
-    }
+	if (input[i] && !ft_isspace(input[i]) && input[i] != '|' && input[i] != '<' && input[i] != '>')
+	{
+		last_token->concat_flag = 1;
+	}
 }
 
-void append_or_concat_token(t_token **tokens, char *value, int type, int quote_type)
+void	append_or_concat_token(t_token **tokens, char *value, int type, int quote_type)
 {
-    t_token *last_token;
-	char *new_value;
+	t_token	*last_token;
+	char	*new_value;
 
 	last_token = get_last_token(*tokens);
-    if (last_token != NULL)
-    {
+	if (last_token != NULL)
+	{
 		if (last_token->concat_flag == 1)
 		{
-        // Concatenate the new value to the last token's value
-        	new_value = ft_strjoin(last_token->value, value);
+			new_value = ft_strjoin(last_token->value, value);
 			if (new_value)
 			{
-        		free(last_token->value);
-        		last_token->value = new_value;
-        		// Reset the flag after concatenation
-        		last_token->concat_flag = 0;
+				free(last_token->value);
+				last_token->value = new_value;
+				last_token->concat_flag = 0;
 			}
 		}
 		else
 			append_token(tokens, value, type, quote_type);
-    }
-    else
-        append_token(tokens, value, type, quote_type);
+	}
+	else
+		append_token(tokens, value, type, quote_type);
 }
 
 t_token *get_last_token(t_token *tokens)
 {
-    if (tokens == NULL)
-        return (NULL);
-    while (tokens->next != NULL)
-        tokens = tokens->next;
-    return (tokens);
+	if (tokens == NULL)
+		return (NULL);
+	while (tokens->next != NULL)
+		tokens = tokens->next;
+	return (tokens);
 }

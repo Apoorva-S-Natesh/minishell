@@ -43,9 +43,3 @@ void	add_tkn_to_cmd(t_command *cmd, t_token *token)
 		free(cmd->tokens);
 		cmd->tokens = new_tokens;
 }
-
-
-
-
-
-

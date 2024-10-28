@@ -38,8 +38,8 @@ void	handle_sigquit(int signum)
 
 void	setup_sig_handling(t_shell *mini)
 {
-	struct	sigaction sa_int;
-	struct	sigaction sa_quit;
+	struct sigaction	sa_int;
+	struct sigaction	sa_quit;
 	
 	if (pipe(mini->signal_pipe) == -1)
 	{

@@ -6,7 +6,7 @@ void expand_tokens(t_token *tokens, t_shell *mini)
 	char *expanded;
 
 	current = tokens;
-    while (current && current->type && current->value)
+    while (current && current->value)
 	{
         if (current->type != SINGLE_Q && ft_strchr(current->value, '$'))
 		{

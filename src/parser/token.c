@@ -114,8 +114,6 @@ void handle_word(t_shell *mini, int *i, t_token **tokens)
     }
 }
 
-
-
 t_token *tokenize(t_shell *mini)
 {
 	t_token	*tokens;
