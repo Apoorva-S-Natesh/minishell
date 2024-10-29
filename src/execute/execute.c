@@ -6,13 +6,14 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:51:27 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/29 16:50:18 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 19:09:45 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void	handle_parent_process(int prev_pipe[2], int pipe_fd[2], t_command *cmd)
+static void	handle_parent_process(int prev_pipe[2], int pipe_fd[2],\
+t_command *cmd)
 {
 	if (prev_pipe[0] != -1)
 	{
@@ -102,13 +103,12 @@ t_shell *mini, int prev_pipe[2])
 	redir_result = setup_redirs(cmd, prcs, &mini->redir_info, mini);
 	if (redir_result == -2)
 	{
-		// Heredoc was interrupted by SIGINT, skip this command
-        mini->last_exit_status = 130;
-        return ;
+		mini->last_exit_status = 130;
+		return ;
 	}
 	else if (redir_result == 0)
 		return ;
-	if (!cmd->tokens || !cmd->tokens[0]) // Handle the case where there's only a redirection (e.g., heredoc)
+	if (!cmd->tokens || !cmd->tokens[0])
 	{
 		if (cmd->next)
 		{
@@ -171,8 +171,6 @@ void	execute(t_shell *mini)
 	while (cmd != NULL)
 	{
 		execute_single_command(cmd, &prcs, mini, prev_pipe);
-		// if (mini->last_exit_status == 130)
-		// 	break ;
 		cleanup_redirections(&prcs);
 		cmd = cmd->next;
 	}

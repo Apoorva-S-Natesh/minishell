@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:51:39 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/29 18:15:10 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 18:51:57 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,11 @@ void	handle_sigint(int signum)
 }
 
 void	handle_sigquit(int signum)
+{
+	(void)signum;
+}
+
+void	handle_child_sigquit(int signum)
 {
 	(void)signum;
 }
@@ -71,7 +76,7 @@ void	setup_sig_handling(t_shell *mini)
 	sa_int.sa_handler = handle_sigint;
 	sigemptyset(&sa_int.sa_mask);
 	sa_int.sa_flags = SA_RESTART;
-	sa_quit.sa_handler = SIG_IGN;
+	sa_quit.sa_handler = handle_sigquit;
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_flags = SA_RESTART;
 	if (sigaction(SIGINT, &sa_int, NULL) == -1 ||

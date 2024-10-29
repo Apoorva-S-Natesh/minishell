@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/10/29 18:18:50 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 18:34:09 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,7 @@ void			restore_main_signals(void);
 void			setup_child_signals(void);
 void			disable_ctrl_signals(void);
 void			restore_terminal(void);
+void			handle_child_sigquit(int signum);
 
 // EXECUTE
 char			**split_path(char *path);

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+         #
+#    By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/17 11:23:39 by aschmidt          #+#    #+#              #
-#    Updated: 2024/10/03 14:02:35 by aschmidt         ###   ########.fr        #
+#    Updated: 2024/10/29 19:29:58 by asomanah         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,7 +44,7 @@ all: $(LIBFT) $(NAME)
 $(LIBFT):
 	@$(MAKE) -C $(LIBFT_PATH)
 
-$(NAME): $(OBJ)
+$(NAME): $(LIBFT) $(OBJ)
 	@$(CC) $(CFLAGS) $(OBJ) -o $(NAME) $(LIBFT) $(LDFLAGS)
 
 clean:
@@ -57,4 +57,19 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+readline.supp:
+	@echo "{" > readline.supp
+	@echo "   readline_leak" >> readline.supp
+	@echo "   Memcheck:Leak" >> readline.supp
+	@echo "   ..." >> readline.supp
+	@echo "   obj:*/libreadline.so*" >> readline.supp
+	@echo "}" >> readline.supp
+
+check_leaks: $(NAME) readline.supp
+	@valgrind --leak-check=full --show-leak-kinds=all \
+	--suppressions=readline.supp ./$(NAME)
+
+.PHONY: all clean fclean re check_leaks
+
+##You might want to add readline.supp to your .gitignore file if you're using git, to avoid committing it to your repository.
+##With these changes, you can now run make check_leaks to check for memory leaks while ignoring those from the readline library.
