@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirections.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/29 14:28:10 by asomanah          #+#    #+#             */
+/*   Updated: 2024/10/29 14:29:30 by asomanah         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 void	print_redir_err(const char *filename, const char *message)
@@ -26,13 +38,13 @@ int	setup_input_redir(t_process *prcs, t_redirection *redir, t_shell *mini)
 }
 
 int	setup_output_redir(t_process *prcs, t_redirection *redir, t_shell *mini)
-{	
+{
 	close (prcs->output_fd);
 	if (redir->type == 2)
-		prcs->output_fd = open(redir->output_file, O_WRONLY | O_CREAT | O_TRUNC,
-			 0644);
+		prcs->output_fd = open(redir->output_file, O_WRONLY | \
+		O_CREAT | O_TRUNC, 0644);
 	else
-		prcs->output_fd = open(redir->output_file, O_WRONLY | 
+		prcs->output_fd = open(redir->output_file, O_WRONLY | \
 		O_CREAT | O_APPEND, 0644);
 	if (prcs->output_fd < 0)
 	{
@@ -56,7 +68,7 @@ void	setup_redirs(t_command *cmd, t_process *prcs, \
 		if (redir->type == 1 || redir->type == 4)
 		{
 			if(!setup_input_redir(prcs, redir, mini))
-			return ;
+				return ;
 		}
 		else if (redir->type == 2 || redir->type == 3)
 		{

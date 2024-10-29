@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handle_heredoc.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/29 14:23:14 by asomanah          #+#    #+#             */
+/*   Updated: 2024/10/29 14:23:25 by asomanah         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 /*The heredoc is typically handled in a child process to allow for proper signal
@@ -40,7 +52,8 @@ static int	handle_heredoc_parent(t_process *hd_prcs, t_shell *mini)
 	return (hd_prcs->pipe_fd[0]);
 }
 
-static int	fork_heredoc_process(t_process *hd_prcs, const char *delimiter, t_shell *mini)
+static int	fork_heredoc_process(t_process *hd_prcs, const char *delimiter, \
+t_shell *mini)
 {
 	hd_prcs->pid = fork();
 	if (hd_prcs->pid == -1)
@@ -66,7 +79,7 @@ int	handle_heredoc(const char *delimiter, t_shell *mini)
 
 	if (!delimiter || !mini)
 	{
-		ft_putstr_fd("Error: Invalid arguments to handle_hd\n" ,STDERR_FILENO);
+		ft_putstr_fd("Error: Invalid arguments to handle_hd \n" ,STDERR_FILENO);
 		return (-1);
 	}
 	initialize_process(&hd_prcs);

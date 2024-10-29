@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 10:41:01 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/25 09:54:34 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/10/29 14:31:21 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,3 @@ int	main(int ac, char **av, char **envv)
 	return (0);
 }
 
-/*
-Ctrl-D is not actually a signal, but is handled by the readline library as an EOF condition.
-You should handle this in your take_input function. If readline returns NULL, it
-means EOF was encountered (Ctrl-D was pressed).*/

@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:50:20 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/01 17:23:35 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 11:49:02 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static int	cd_no_arg(t_shell *mini)
 		return (-1);
 	}
 	else if (chdir(home) < 0)
-	{	
+	{
 		perror("minishell: cd");
 		return (-1);
 	}
@@ -91,7 +91,7 @@ static int	handle_cd_dash(char *prev_dir)
 	if (chdir(prev_dir) < 0)
 	{
 		perror("minishell: cd");
-		return (1) ;
+		return (1);
 	}
 	return (0);
 }
@@ -114,7 +114,7 @@ static int	update_direcs(char *current_dir, char *prev_dir, t_shell *mini)
 
 void	builtin_cd(char **tokens, t_shell *mini, int size)
 {
-	char 		current_dir[PATH_MAX];
+	char		current_dir[PATH_MAX];
 	static char	prev_dir[PATH_MAX];
 
 	if (many_args(size))

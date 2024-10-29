@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execute_child.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/29 14:24:35 by asomanah          #+#    #+#             */
+/*   Updated: 2024/10/29 14:24:54 by asomanah         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 void	handle_child_status(t_process *prcs, t_shell *mini)
@@ -21,7 +33,7 @@ void	handle_child_process(int prev_pipe[2], int pipe_fd[2], \
 {
 	if (prev_pipe[0] != -1)
 	{
-		if(dup2(prev_pipe[0], STDIN_FILENO) == -1)
+		if (dup2(prev_pipe[0], STDIN_FILENO) == -1)
 			perror("dup2");
 		close(prev_pipe[0]);
 		close(prev_pipe[1]);

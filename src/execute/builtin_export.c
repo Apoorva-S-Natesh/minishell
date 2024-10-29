@@ -6,11 +6,12 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 13:02:09 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/03 14:10:24 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 14:32:55 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
 static void	handle_variable(t_shell *mini, char *key, char *value, char *arg);
 static void	print_invalid_error(char *arg);
 static void	handle_export_arg(t_shell *mini, char *arg);
@@ -27,7 +28,7 @@ int	set_env_variable(t_shell *mini, const char *key, const char *value)
 		{
 			free(current->value);
 			if (value)
-				current->value= ft_strdup(value);
+				current->value = ft_strdup(value);
 			else
 				current->value = NULL;
 			return (0);
@@ -92,7 +93,7 @@ static void	handle_variable(t_shell *mini, char *key, char *value, char *arg)
 	}
 }
 
-void builtin_export(char **tokens, t_shell *mini)
+void	builtin_export(char **tokens, t_shell *mini)
 {
 	int	i;
 
@@ -107,7 +108,7 @@ void builtin_export(char **tokens, t_shell *mini)
 	{
 		if (ft_strchr(tokens[i], '='))
 			handle_export_arg(mini, tokens[i]);
-		else if(is_valid_identifier(tokens[i]))
+		else if (is_valid_identifier(tokens[i]))
 			set_env_variable(mini, tokens[i], NULL);
 		else
 		{
@@ -115,9 +116,7 @@ void builtin_export(char **tokens, t_shell *mini)
 			mini->last_exit_status = 1;
 		}
 		i++;
-    }
+	}
 	if (mini->last_exit_status != 1)
 		mini->last_exit_status = 0;
 }
-//When we do export hi= hello (adding a space after = then it sets the value as a space and that is also printed when we do env)
-// Check if our export is doing that

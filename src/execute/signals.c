@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:51:39 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/01 12:53:34 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 14:29:40 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	handle_sigint_heredoc(int signum)
 {
 	(void)signum;
 	write(STDOUT_FILENO, "\n", 1);
-	exit (1); //
+	exit (1);
 }
 
 void	handle_sigquit(int signum)
@@ -40,7 +40,7 @@ void	setup_sig_handling(t_shell *mini)
 {
 	struct sigaction	sa_int;
 	struct sigaction	sa_quit;
-	
+
 	if (pipe(mini->signal_pipe) == -1)
 	{
 		perror("pipe");

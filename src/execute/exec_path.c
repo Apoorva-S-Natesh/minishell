@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_path.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/10/29 14:23:57 by asomanah          #+#    #+#             */
+/*   Updated: 2024/10/29 14:24:29 by asomanah         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 //Splits the path string into an array of inidividual paths
@@ -22,7 +34,7 @@ char	**split_path(char *path)
 	return (paths);
 }
 
-//Checks if the command exists in any of the paths and if we have executable rights
+//Check if command exists in any of the paths & if we have executable rights
 char	*check_cmd_in_path(char *cmd, char **paths)
 {
 	char	*full_path;

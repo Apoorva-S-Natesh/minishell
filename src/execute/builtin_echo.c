@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:58:17 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/01 16:13:04 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 11:56:39 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,26 +36,6 @@ case 3:  inside quotes
 '\t'
 */
 
-// static void	single_arg(char *arg)
-// {
-// 	while (*arg)
-// 	{
-// 		if (*arg == '\\')
-// 		{
-// 			arg++;
-// 			if (*arg == '\\')
-// 				ft_putstr_fd("\\", STDOUT_FILENO);
-// 			else if (*arg == 'n')
-// 				ft_putchar_fd('\n', STDOUT_FILENO);
-// 			else if (*arg == 't')
-// 				ft_putchar_fd('\t', STDOUT_FILENO);
-// 			arg++;
-// 		}
-// 		ft_putchar_fd(*arg, STDOUT_FILENO);
-// 		arg++;
-// 	}
-// }
-
 static int	n_flag_present(char *arg)
 {
 	if (!arg || ft_strlen(arg) < 2 || arg[0] != '-' || arg[1] != 'n')
@@ -63,16 +43,16 @@ static int	n_flag_present(char *arg)
 	return (1);
 }
 
-// static void	echo_single(int *i, char **tokens, int size)
-// {
-// 	while (tokens[*i])
-// 	{
-// 		single_arg(tokens[*i]);
-// 		if ((*i + 1) != size)
-// 			printf(" ");
-// 		(*i)++;
-// 	}
-// }
+static void	print_single(int *i, int size, char **tokens)
+{
+	while (*i < size)
+	{
+		printf("%s", tokens[*i]);
+		if (*i + 1 < size)
+			printf(" ");
+		(*i)++;
+	}
+}
 
 int	builtin_echo(char **tokens, t_shell *mini, int size)
 {
@@ -92,14 +72,7 @@ int	builtin_echo(char **tokens, t_shell *mini, int size)
 		n_flag = 1;
 		i++;
 	}
-	//echo_single(&i, tokens, size);
-	while (i < size)
-    {
-        printf("%s", tokens[i]);
-        if (i + 1 < size)
-            printf(" ");
-        i++;
-	}
+	print_single(&i, size, tokens);
 	if (!n_flag)
 		printf("\n");
 	mini->last_exit_status = 0;

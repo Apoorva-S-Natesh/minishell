@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:51:27 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/01 16:57:53 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 14:27:30 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,10 @@ static void	wait_for_child(t_process *prcs, t_shell *mini)
 	}
 }
 
-static void	execute_non_builtin(t_command *cmd, t_process *prcs, t_shell *mini, int prev_pipe[2])
+static void	execute_non_builtin(t_command *cmd, t_process *prcs, \
+t_shell *mini, int prev_pipe[2])
 {
-	int pipe_fd[2];
+	int	pipe_fd[2];
 
 	if (setup_pipes(pipe_fd, cmd) != 0)
 	{
@@ -88,7 +89,8 @@ static void	execute_non_builtin(t_command *cmd, t_process *prcs, t_shell *mini, 
 	}
 }
 
-void	execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, int prev_pipe[2])
+void	execute_single_command(t_command *cmd, t_process *prcs, \
+t_shell *mini, int prev_pipe[2])
 {
 	int	stdout_copy;
 	int	pipe_fd[2];
@@ -144,10 +146,10 @@ void	execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, int 
 	}
 }
 
-void execute(t_shell *mini)
+void	execute(t_shell *mini)
 {
-	t_process prcs;
-	t_command *cmd;
+	t_process	prcs;
+	t_command	*cmd;
 	int prev_pipe[2];
 
 	prev_pipe[0] = -1;
@@ -162,16 +164,16 @@ void execute(t_shell *mini)
 		cleanup_redirections(&prcs);
 		cmd = cmd->next;
 	}
-    while (wait(NULL) > 0);
-    dup2(mini->redir_info.tempin, STDIN_FILENO);
-    dup2(mini->redir_info.tempout, STDOUT_FILENO);
-    close(mini->redir_info.tempin);
-    close(mini->redir_info.tempout);
+	while (wait(NULL) > 0);
+	dup2(mini->redir_info.tempin, STDIN_FILENO);
+	dup2(mini->redir_info.tempout, STDOUT_FILENO);
+	close(mini->redir_info.tempin);
+	close(mini->redir_info.tempout);
 }
 
 void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 {
-	char **env_array;
+	char	**env_array;
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
