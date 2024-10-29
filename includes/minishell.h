@@ -6,14 +6,14 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/10/29 16:02:37 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 18:18:50 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
-#define _XOPEN_SOURCE 700
+//#define _XOPEN_SOURCE 700
 # include "../libft/src/libft.h"
 # include <stdio.h>
 # include <stdlib.h>
@@ -26,8 +26,9 @@
 # include <dirent.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-#include <sys/select.h> // for fd_set
-#include <sys/time.h> // for timeval
+# include <sys/select.h> // for fd_set
+# include <sys/time.h> // for timeval
+# include <termios.h>
 
 # ifndef PATH_MAX
 # 	define PATH_MAX 4096
@@ -198,12 +199,13 @@ void			append_redi(t_command *cmd, t_redirection *redir);
 
 //SIGNAL
 void			handle_sigint(int sig);
-void			handle_sigint_heredoc(int signum);
 void			handle_sigquit(int signum);
 void			setup_sig_handling(t_shell *mini);
 void			setup_heredoc_signals(void);
 void			restore_main_signals(void);
 void			setup_child_signals(void);
+void			disable_ctrl_signals(void);
+void			restore_terminal(void);
 
 // EXECUTE
 char			**split_path(char *path);

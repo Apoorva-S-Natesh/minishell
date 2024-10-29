@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:51:39 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/29 16:35:26 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 18:15:10 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,4 +80,23 @@ void	setup_sig_handling(t_shell *mini)
 		perror("sigaction");
 		exit(1);
 	}
+}
+
+//To disable the ^C and ^\ on terminal
+void	disable_ctrl_signals(void)
+{
+	struct termios	term;
+
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_lflag &= ~ECHOCTL;
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
+}
+
+void	restore_terminal(void)
+{
+	struct termios	term;
+
+	tcgetattr(STDIN_FILENO, &term);
+	term.c_lflag |= ECHOCTL;
+	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }

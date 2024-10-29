@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   take_input.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 14:19:49 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/10/03 13:48:39 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/10/29 18:18:20 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ int	check_args(int ac, char **av)
 
 int	is_blank(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])
