@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/10/01 16:54:04 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 16:02:37 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,9 @@ void			handle_sigint(int sig);
 void			handle_sigint_heredoc(int signum);
 void			handle_sigquit(int signum);
 void			setup_sig_handling(t_shell *mini);
-
+void			setup_heredoc_signals(void);
+void			restore_main_signals(void);
+void			setup_child_signals(void);
 
 // EXECUTE
 char			**split_path(char *path);
@@ -210,7 +212,7 @@ char			**create_env_array(t_env *env);
 char			*find_command(char *cmd, t_env *variable);
 void			initialize_process(t_process *prcs);
 void			print_redir_err(const char *filename, const char *message);
-void			setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mini);
+int				setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mini);
 void			execute(t_shell *mini);
 void			cleanup_redirections(t_process *prcs);
 void			execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
@@ -226,7 +228,6 @@ void			execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, in
 
 //redirections 
 void			print_redir_err(const char *filename, const char *message);
-void			setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mini);
 int				setup_input_redir(t_process *prcs, t_redirection *redir, t_shell *mini);
 int				setup_output_redir(t_process *prcs, t_redirection *redir, t_shell *mini);
 void			cleanup_redirections(t_process *prcs);

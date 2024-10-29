@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 14:27:54 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/29 14:28:01 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 14:40:48 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	heredoc_read_loop(int fd, const char *delimiter, t_shell *mini)
 	char	*line;
 	size_t	delim_len;
 
+	signal(SIGINT, SIG_DFL);
 	delim_len = ft_strlen(delimiter);
 	while (1)
 	{

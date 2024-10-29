@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:51:27 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/29 14:27:30 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 16:50:18 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ t_shell *mini, int prev_pipe[2])
 	prcs->pid = fork();
 	if (prcs->pid == 0)
 	{
+		setup_child_signals();
 		handle_child_process(prev_pipe, pipe_fd, cmd, mini);
 		execute_command(cmd, prcs, mini);
 		exit(mini->last_exit_status);
@@ -94,10 +95,19 @@ t_shell *mini, int prev_pipe[2])
 {
 	int	stdout_copy;
 	int	pipe_fd[2];
+	int	redir_result;
 
 	pipe_fd[0] = -1;
 	pipe_fd[1] = -1;
-	setup_redirs(cmd, prcs, &mini->redir_info, mini);
+	redir_result = setup_redirs(cmd, prcs, &mini->redir_info, mini);
+	if (redir_result == -2)
+	{
+		// Heredoc was interrupted by SIGINT, skip this command
+        mini->last_exit_status = 130;
+        return ;
+	}
+	else if (redir_result == 0)
+		return ;
 	if (!cmd->tokens || !cmd->tokens[0]) // Handle the case where there's only a redirection (e.g., heredoc)
 	{
 		if (cmd->next)
@@ -120,7 +130,7 @@ t_shell *mini, int prev_pipe[2])
 			return ;
 		}
 	}
-	if (is_builtin(cmd)) // when there's a pipe. We create a pipe, redirect stdout to the pipe, execute the built-in, and then restore stdout.
+	if (is_builtin(cmd))
 	{
 		stdout_copy = dup(STDOUT_FILENO);
 		if (cmd->next)
@@ -150,7 +160,7 @@ void	execute(t_shell *mini)
 {
 	t_process	prcs;
 	t_command	*cmd;
-	int prev_pipe[2];
+	int			prev_pipe[2];
 
 	prev_pipe[0] = -1;
 	prev_pipe[1] = -1;
@@ -161,9 +171,12 @@ void	execute(t_shell *mini)
 	while (cmd != NULL)
 	{
 		execute_single_command(cmd, &prcs, mini, prev_pipe);
+		// if (mini->last_exit_status == 130)
+		// 	break ;
 		cleanup_redirections(&prcs);
 		cmd = cmd->next;
 	}
+	restore_main_signals();
 	while (wait(NULL) > 0);
 	dup2(mini->redir_info.tempin, STDIN_FILENO);
 	dup2(mini->redir_info.tempout, STDOUT_FILENO);

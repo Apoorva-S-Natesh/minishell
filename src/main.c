@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 10:41:01 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/10/29 14:31:21 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 16:19:00 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int	main(int ac, char **av, char **envv)
 	setup_sig_handling(&mini);
 	while (mini.running_status)
 	{
+		restore_main_signals();
 		tokens = NULL;
 		if (take_input(&mini))
 		{

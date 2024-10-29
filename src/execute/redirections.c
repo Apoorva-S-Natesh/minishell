@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 14:28:10 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/29 14:29:30 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 16:49:13 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,19 @@ void	print_redir_err(const char *filename, const char *message)
 
 int	setup_input_redir(t_process *prcs, t_redirection *redir, t_shell *mini)
 {
+	int	result;
+
 	close (prcs->input_fd);
 	if (redir->type == 1)
 		prcs->input_fd = open(redir->input_file, O_RDONLY);
 	else if (redir->type == 4)
-		prcs->input_fd = handle_heredoc(redir->input_file, mini);
+	{
+		result = handle_heredoc(redir->input_file, mini);
+		if (result == -2 || result == -1) // SIGINT received during heredoc
+			return (result);
+		else 
+			prcs->input_fd = result;
+	}
 	if (prcs->input_fd < 0)
 	{
 		print_redir_err(redir->input_file, "No such file or directory");
@@ -55,10 +63,11 @@ int	setup_output_redir(t_process *prcs, t_redirection *redir, t_shell *mini)
 	return (1);
 }
 
-void	setup_redirs(t_command *cmd, t_process *prcs, \
+int	setup_redirs(t_command *cmd, t_process *prcs, \
 	t_redir_info *re, t_shell *mini)
 {
 	t_redirection	*redir;
+	int				result;
 
 	redir = cmd->redirection;
 	prcs->input_fd = dup(re->tempin);
@@ -67,18 +76,20 @@ void	setup_redirs(t_command *cmd, t_process *prcs, \
 	{
 		if (redir->type == 1 || redir->type == 4)
 		{
-			if(!setup_input_redir(prcs, redir, mini))
-				return ;
+			result = setup_input_redir (prcs, redir, mini);
+			if (result == -2 || result == 0)
+				return (result);
 		}
 		else if (redir->type == 2 || redir->type == 3)
 		{
-			if(!setup_output_redir(prcs, redir, mini))
-				return ;
+			if (!setup_output_redir (prcs, redir, mini))
+				return (-1);
 		}
 		redir = redir->next;
 	}
 	dup2(prcs->input_fd, 0);
 	dup2(prcs->output_fd, 1);
+	return (1);
 }
 
 void	cleanup_redirections(t_process *prcs)
