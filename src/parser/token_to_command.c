@@ -12,7 +12,11 @@ void	process_token(t_command **current_cmd, t_token **current_tkn)
 		if (type == RED_IN || type == RED_OUT \
 			|| type == APPEND || type == HEREDOC)
 		{
-			handle_redirection(current_cmd, current_tkn);
+			if ((*current_tkn)->next && (*current_tkn)->next->type == WORD)
+				handle_redirection(current_cmd, current_tkn);
+			// else
+			// 	printf("minishell: Syntax error: missing file after\
+			// redirection\n");
 		}
 		else
 			add_tkn_to_cmd(*current_cmd, *current_tkn);

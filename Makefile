@@ -6,7 +6,7 @@
 #    By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/17 11:23:39 by aschmidt          #+#    #+#              #
-#    Updated: 2024/10/29 19:29:58 by asomanah         ###   ########.fr        #
+#    Updated: 2024/10/30 15:38:54 by asomanah         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,8 +21,9 @@ LDFLAGS = -lreadline
 SRC	= $(addprefix src/, main.c /input/take_input.c /input/init_shell.c \
 		/utils/envv_utils.c /utils/free_utils.c /utils/close_program.c \
 		/utils/ft_strtok.c /parser/token.c /parser/token_maker.c \
-		/parser/command.c /parser/token_to_command.c /parser/redirection.c \
-		/parser/expand.c /parser/quotes.c /execute/execute.c /execute/signals.c \
+		/parser/command.c /parser/token_to_command.c  \
+		/parser/expand.c /parser/quotes.c /parser/parsing_redirection.c \
+		/execute/execute.c /execute/signals.c \
 		/execute/builtin_cd.c /execute/builtin_echo.c /execute/builtin_pwd.c \
 		/execute/builtin_env.c /execute/builtin_exit.c \
 		/execute/builtin_unset.c /execute/builtins.c /execute/handle_heredoc.c \
