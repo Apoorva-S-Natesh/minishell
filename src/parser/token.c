@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 10:25:16 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/10/30 16:33:22 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/30 16:38:13 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,27 +54,6 @@ void set_redi_and_pipes(t_shell *mini, int *i, t_token **tokens)
 		set_redirection(input, i, tokens);
 	}
 }
-
-// static int process_quoted_content(t_shell *mini, int *i, t_token **tokens, char *buffer, int *buffer_index)
-// {
-//     char *quoted_content;
-
-//     if (!handle_quotes(mini, i, tokens))
-//         return 0;  // Handle unclosed quotes
-
-//     quoted_content = (*tokens)->value;  // Get the quoted content just processed
-//     if (*buffer_index > 0)
-//     {
-//         // Concatenate buffer content with quoted content
-//         buffer[*buffer_index] = '\0';
-//         char *temp = ft_strjoin(buffer, quoted_content);  // Join buffer and quoted content
-//         free((*tokens)->value);  // Free old quoted content
-//         (*tokens)->value = temp;  // Update token with concatenated string
-//         *buffer_index = 0;  // Reset buffer index
-//     }
-
-//     return 1;
-// }
 
 static void handle_quote(char *input, int *i, char *buffer, int *buffer_index, int *in_quotes, char *quote_char)
 {
