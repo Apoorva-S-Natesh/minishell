@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 10:25:16 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/10/30 09:53:31 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/30 16:33:22 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,62 +55,90 @@ void set_redi_and_pipes(t_shell *mini, int *i, t_token **tokens)
 	}
 }
 
-static int process_quoted_content(t_shell *mini, int *i, t_token **tokens, char *buffer, int *buffer_index)
+// static int process_quoted_content(t_shell *mini, int *i, t_token **tokens, char *buffer, int *buffer_index)
+// {
+//     char *quoted_content;
+
+//     if (!handle_quotes(mini, i, tokens))
+//         return 0;  // Handle unclosed quotes
+
+//     quoted_content = (*tokens)->value;  // Get the quoted content just processed
+//     if (*buffer_index > 0)
+//     {
+//         // Concatenate buffer content with quoted content
+//         buffer[*buffer_index] = '\0';
+//         char *temp = ft_strjoin(buffer, quoted_content);  // Join buffer and quoted content
+//         free((*tokens)->value);  // Free old quoted content
+//         (*tokens)->value = temp;  // Update token with concatenated string
+//         *buffer_index = 0;  // Reset buffer index
+//     }
+
+//     return 1;
+// }
+
+static void handle_quote(char *input, int *i, char *buffer, int *buffer_index, int *in_quotes, char *quote_char)
 {
-    char *quoted_content;
-
-    if (!handle_quotes(mini, i, tokens))
-        return 0;  // Handle unclosed quotes
-
-    quoted_content = (*tokens)->value;  // Get the quoted content just processed
-    if (*buffer_index > 0)
+    if (!*in_quotes)
     {
-        // Concatenate buffer content with quoted content
-        buffer[*buffer_index] = '\0';
-        char *temp = ft_strjoin(buffer, quoted_content);  // Join buffer and quoted content
-        free((*tokens)->value);  // Free old quoted content
-        (*tokens)->value = temp;  // Update token with concatenated string
-        *buffer_index = 0;  // Reset buffer index
+        *in_quotes = 1;
+        *quote_char = input[*i];
     }
+    else if (input[*i] == *quote_char)
+    {
+        *in_quotes = 0;
+        *quote_char = 0;
+    }
+    buffer[(*buffer_index)++] = input[*i];
+    (*i)++;
+}
 
-    return 1;
+static void handle_equals(char *input, int *i, char *buffer, int *buffer_index, int *in_quotes, char *quote_char)
+{
+    buffer[(*buffer_index)++] = input[*i];
+    (*i)++;
+    while (input[*i] && (*in_quotes || !ft_isspace(input[*i])))
+    {
+        if (input[*i] == '\'' || input[*i] == '\"')
+            handle_quote(input, i, buffer, buffer_index, in_quotes, quote_char);
+        else
+        {
+            buffer[(*buffer_index)++] = input[*i];
+            (*i)++;
+        }
+    }
+}
+
+static int should_break(char c, int in_quotes)
+{
+    return !in_quotes && (c == '|' || c == '<' || c == '>');
 }
 
 void handle_word(t_shell *mini, int *i, t_token **tokens)
 {
     char buffer[256];
-    int buffer_index;
-    char *input;
+    int buffer_index = 0;
+    char *input = mini->input;
+    int in_quotes = 0;
+    char quote_char = 0;
 
-	buffer_index = 0;
-	input = mini->input;
-    while (input[*i] && !ft_isspace(input[*i]) && input[*i] != '|' && input[*i] != '<' && input[*i] != '>')
+    while (input[*i] && (!ft_isspace(input[*i]) || in_quotes))
     {
         if (input[*i] == '\'' || input[*i] == '\"')
-        {
-			if ((input[*i] == '\'' && input[(*i) + 1] == '\'') || (input[*i] == '\"' && input[(*i) + 1] == '\"'))
-			{
-				(*i) += 2;
-				continue;
-			}
-            if (!process_quoted_content(mini, i, tokens, buffer, &buffer_index))
-                return;  // Handle unclosed quotes or concatenation
-            continue;
-        }
+            handle_quote(input, i, buffer, &buffer_index, &in_quotes, &quote_char);
+        else if (input[*i] == '=' && !in_quotes)
+            handle_equals(input, i, buffer, &buffer_index, &in_quotes, &quote_char);
+        else if (should_break(input[*i], in_quotes))
+            break;
         else
-        {
-            buffer[buffer_index++] = input[*i];
-            (*i)++;
-        }
+            buffer[buffer_index++] = input[(*i)++];
     }
+
     if (buffer_index > 0)
     {
-        buffer[buffer_index] = '\0'; // Null-terminate the buffer
-		if(tokens)
-        	append_or_concat_token(tokens, buffer, WORD, 0); // Append the word token
-		else
-			append_token(tokens, buffer, WORD, 0);
-		set_concat_flag(input, *i, get_last_token(*tokens));
+        buffer[buffer_index] = '\0';
+		char *cleaned_str = remove_quotes(buffer);
+        append_token(tokens, cleaned_str, WORD, 0);
+		free(cleaned_str);
     }
 }
 
