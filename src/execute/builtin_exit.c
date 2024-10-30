@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 13:01:38 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/30 17:04:02 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/30 17:06:32 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,31 +43,31 @@ static void	print_exit_error(const char *arg, const char *message)
 	ft_putstr_fd("\n", 2);
 }
 
-void builtin_exit(char **tokens, t_shell *mini, int size)
+void	builtin_exit(char **tokens, t_shell *mini, int size)
 {
-    int exit_status;
+	int	exit_status;
 
-    exit_status = mini->last_exit_status;
-    ft_putstr_fd("exit\n", 1);
-    if (size > 1)
-    {
-        if (!is_valid_exit_arg(tokens[1]))
-        {
+	exit_status = mini->last_exit_status;
+	ft_putstr_fd("exit\n", 1);
+	if (size > 1)
+	{
+		if (!is_valid_exit_arg(tokens[1]))
+		{
 			print_exit_error(tokens[1], "numeric argument required");
-            exit_status = 2;
-        }
-        else
-        {
-            exit_status = ft_atoi(tokens[1]);
-            if (size > 2)
-            {
-                ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-                mini->last_exit_status = 1;
-                return;
-            }
-        }
-    }
-    free_command(mini->commands);
-    free_list(mini->env);
-    exit(exit_status);
+			exit_status = 2;
+		}
+		else
+		{
+			exit_status = ft_atoi(tokens[1]);
+			if (size > 2)
+			{
+				ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+				mini->last_exit_status = 1;
+				return ;
+			}
+		}
+	}
+	free_command(mini->commands);
+	free_list(mini->env);
+	exit(exit_status);
 }
