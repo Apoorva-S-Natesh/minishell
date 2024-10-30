@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_shell.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 14:12:50 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/09/23 15:26:50 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/10/30 21:52:49 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,25 +29,47 @@ void	init_shell(t_shell *mini, char **envv)
 	set_envv(mini, envv);
 }
 
+// void	set_envv(t_shell *mini, char **envv)
+// {
+// 	int		i;
+// 	t_env	*head;
+// 	char	**split_envv;
+
+// 	i = 0;
+// 	head = NULL;
+// 	while (envv[i] != NULL)
+// 	{
+// 		split_envv = ft_split(envv[i], '=');
+// 		if (!split_envv)
+// 		{
+// 			ft_putstr_fd("set_envv Memory allocation failed\n", STDERR_FILENO);
+// 			return ;
+// 		}
+// 		if (split_envv[0] && split_envv[1])
+// 			append_node(&head, split_envv[0], split_envv[1]);
+// 		ft_free(split_envv);
+// 		i++;
+// 	}
+// 	mini->env = head;
+// }
+
 void	set_envv(t_shell *mini, char **envv)
 {
 	int		i;
 	t_env	*head;
-	char	**split_envv;
+	char	*equals_pos;
 
 	i = 0;
 	head = NULL;
 	while (envv[i] != NULL)
 	{
-		split_envv = ft_split(envv[i], '=');
-		if (!split_envv)
+		equals_pos = ft_strchr(envv[i], '=');
+		if (equals_pos)
 		{
-			ft_putstr_fd("set_envv Memory allocation failed\n", STDERR_FILENO);
-			return ;
+			*equals_pos = '\0';  // Temporarily split the string
+			append_node(&head, envv[i], equals_pos + 1);
+			*equals_pos = '=';  // Restore the original string
 		}
-		if (split_envv[0] && split_envv[1])
-			append_node(&head, split_envv[0], split_envv[1]);
-		ft_free(split_envv);
 		i++;
 	}
 	mini->env = head;
