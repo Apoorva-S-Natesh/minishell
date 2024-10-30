@@ -22,36 +22,36 @@ void expand_tokens(t_token *tokens, t_shell *mini)
 }
 
 
-char *expand_value(char *token, t_shell *mini)
+char	*expand_value(char *token, t_shell *mini)
 {
-    char *result = malloc(1024);
-    if (!result) return NULL;
+	char	*result = malloc(1024);
+	if (!result) return NULL;
 
-    char *tkn_ptr = token;
-    size_t current_length = 0;
+	char *tkn_ptr = token;
+	size_t current_length = 0;
 
-    while (*tkn_ptr) {
-        if (*tkn_ptr == '$') {
-            tkn_ptr++; // Skip the dollar sign
-            char *var_value = extract_env(&tkn_ptr, mini);
-            if (var_value) {
-                size_t var_length = ft_strlen(var_value);
-                if (current_length + var_length >= 1024) {
+	while (*tkn_ptr) {
+		if (*tkn_ptr == '$' && *(tkn_ptr +1) && !ft_isspace(*(tkn_ptr + 1))) { //to treat a lone $ as a literal character
+			tkn_ptr++; // Skip the dollar sign
+			char *var_value = extract_env(&tkn_ptr, mini);
+			if (var_value) {
+				size_t var_length = ft_strlen(var_value);
+				if (current_length + var_length >= 1024) {
                     // Handle overflow here (e.g., realloc)
-                }
-                ft_strlcpy(result + current_length, var_value, var_length + 1);
-                current_length += var_length;
-                free(var_value);
-            }
-        } else {
-            result[current_length++] = *tkn_ptr++;
-        }
-    }
-    result[current_length] = '\0';
-    return result;
+				}
+				ft_strlcpy(result + current_length, var_value, var_length + 1);
+				current_length += var_length;
+				free(var_value);
+			}
+		}
+		else
+			result[current_length++] = *tkn_ptr++;
+	}
+	result[current_length] = '\0';
+	return (result);
 }
 
-char *extract_env(char **ptr, t_shell *mini)
+char	*extract_env(char **ptr, t_shell *mini)
 {
 	char	*var_start;
 	size_t	var_length;

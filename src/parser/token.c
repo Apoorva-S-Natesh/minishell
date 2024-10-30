@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 10:25:16 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/10/03 15:48:11 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/10/30 09:53:31 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ void handle_word(t_shell *mini, int *i, t_token **tokens)
     }
 }
 
-t_token *tokenize(t_shell *mini)
+t_token	*tokenize(t_shell *mini)
 {
 	t_token	*tokens;
 	int		i;
@@ -131,10 +131,11 @@ t_token *tokenize(t_shell *mini)
 				return (NULL); // Handle unclosed quotes
 			continue ;
 		}
-		if (mini->input[i] == '|' || mini->input[i] == '<' || mini->input[i] == '>')
+		if (mini->input[i] == '|' || mini->input[i] == '<' || 
+			mini->input[i] == '>')
 		{
 			set_redi_and_pipes(mini, &i, &tokens);
-			continue;
+			continue ;
 		}
 		handle_word(mini, &i, &tokens);
 	}

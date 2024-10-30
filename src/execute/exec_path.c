@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 14:23:57 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/29 14:24:29 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/29 19:39:38 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,7 @@ char	*check_cmd_in_path(char *cmd, char **paths)
 		if (!full_path)
 			return (NULL);
 		if (access(full_path, X_OK) == 0)
-		{
-			printf("Found executable: %s\n", full_path);
 			return (full_path);
-		}
 		free(full_path);
 		i++;
 	}
