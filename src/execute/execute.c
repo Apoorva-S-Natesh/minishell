@@ -6,180 +6,92 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:51:27 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/29 19:39:12 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/31 17:11:17 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void	handle_parent_process(int prev_pipe[2], int pipe_fd[2],\
-t_command *cmd)
+void	execute(t_shell *mini)
 {
-	if (prev_pipe[0] != -1)
+	t_process	prcs;
+	t_command	*cmd;
+	t_pipe_info	pipe_info;
+
+	mini->redir_info.tempin = dup(STDIN_FILENO);
+	mini->redir_info.tempout = dup(STDOUT_FILENO);
+	cmd = mini->commands;
+	initialize_process(&prcs);
+	initialize_pipe_info(&pipe_info);
+	while (cmd != NULL)
 	{
-		close(prev_pipe[0]);
-		close(prev_pipe[1]);
+		execute_single_command(cmd, &prcs, mini, &pipe_info);
+		cleanup_redirections(&prcs);
+		cmd = cmd->next;
 	}
-	if (cmd->next != NULL)
-	{
-		prev_pipe[0] = pipe_fd[0];
-		prev_pipe[1] = pipe_fd[1];
-	}
-	else //close the pipe file descriptors if it's the last command.
-	{
-		close(pipe_fd[0]);
-		close(pipe_fd[1]);
-	}
+	finish_execution(mini);
 }
 
-static void	wait_for_child(t_process *prcs, t_shell *mini)
+void	execute_single_command(t_command *cmd, t_process *prcs, \
+t_shell *mini, t_pipe_info *pipe_info)
 {
-	fd_set			readfds;
-	struct timeval	tv;
-	int				ret;
-	char			sig;
+	int	redir_result;
 
-	while (1)
+	redir_result = setup_redirs(cmd, prcs, &mini->redir_info, mini);
+	if (redir_result <= 0)
 	{
-		FD_ZERO(&readfds);
-		FD_SET(mini->signal_pipe[0], &readfds);
-		tv.tv_sec = 0;
-		tv.tv_usec = 100000;
-		ret = select(mini->signal_pipe[0] + 1, &readfds, NULL, NULL, &tv);
-		if (ret == -1 && errno != EINTR)
-		{
-			perror("select");
-			break ;
-		}
-		else if (ret > 0 && (read(mini->signal_pipe[0], &sig, 1)) > 0 && (sig == SIGINT))
-		{
-			kill(prcs->pid, SIGINT);
-			write(STDOUT_FILENO, "\n", 1);
-		}
-		if (waitpid(prcs->pid, &prcs->status, WNOHANG) != 0)
-			break ;
-	}
-}
-
-static void	execute_non_builtin(t_command *cmd, t_process *prcs, \
-t_shell *mini, int prev_pipe[2])
-{
-	int	pipe_fd[2];
-
-	if (setup_pipes(pipe_fd, cmd) != 0)
-	{
-		mini->last_exit_status = 1;
+		handle_redir_error(redir_result, mini);
 		return ;
 	}
+	if (cmd->next || (!cmd->tokens || !cmd->tokens[0]))
+	{
+		if (create_pipe(pipe_info->pipe_fd) == -1)
+			return ;
+	}
+	if (is_builtin(cmd))
+		execute_builtin(cmd, mini, pipe_info);
+	else if (cmd->tokens && cmd->tokens[0])
+		execute_non_builtin(cmd, prcs, mini, pipe_info);
+	cleanup_pipes(cmd, pipe_info);
+}
+
+void	execute_builtin(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info)
+{
+	int	stdout_copy;
+
+	stdout_copy = dup(STDOUT_FILENO);
+	if (cmd->next)
+	{
+		// Redirect stdout to the write end of the pipe
+		dup2(pipe_info->pipe_fd[1], STDOUT_FILENO);
+		close(pipe_info->pipe_fd[1]);
+	}
+	handle_builtin(cmd, mini);
+	// Restore original stdout
+	dup2(stdout_copy, STDOUT_FILENO);
+	close(stdout_copy);
+}
+
+void	execute_non_builtin(t_command *cmd, t_process *prcs, \
+t_shell *mini, t_pipe_info *pipe_info)
+{
+	t_exec_info	exec_info;
+
+	exec_info.cmd = cmd;
+	exec_info.prcs = prcs;
+	exec_info.mini = mini;
+	exec_info.pipe_info = *pipe_info;
+
 	prcs->pid = fork();
 	if (prcs->pid == 0)
-	{
-		setup_child_signals();
-		handle_child_process(prev_pipe, pipe_fd, cmd, mini);
-		execute_command(cmd, prcs, mini);
-		exit(mini->last_exit_status);
-	}
+		handle_child_process(&exec_info);
 	else if (prcs->pid < 0)
 	{
 		perror("fork");
 		exit(1);
 	}
 	else
-	{
-		mini->foreground_pid = prcs->pid;
-		handle_parent_process(prev_pipe, pipe_fd, cmd);
-	}
-}
-
-void	execute_single_command(t_command *cmd, t_process *prcs, \
-t_shell *mini, int prev_pipe[2])
-{
-	int	stdout_copy;
-	int	pipe_fd[2];
-	int	redir_result;
-
-	pipe_fd[0] = -1;
-	pipe_fd[1] = -1;
-	redir_result = setup_redirs(cmd, prcs, &mini->redir_info, mini);
-	if (redir_result == -2)
-	{
-		mini->last_exit_status = 130;
-		return ;
-	}
-	else if (redir_result == 0)
-		return ;
-	if (!cmd->tokens || !cmd->tokens[0])
-	{
-		if (cmd->next)
-		{
-			if (pipe(pipe_fd) == -1)
-			{
-				perror("pipe");
-				return ;
-			}
-			prev_pipe[0] = pipe_fd[0];
-			prev_pipe[1] = pipe_fd[1];
-		}
-		return ;
-	}
-	if (cmd->next)
-	{
-		if (pipe(pipe_fd) == -1)
-		{
-			perror("pipe");
-			return ;
-		}
-	}
-	if (is_builtin(cmd))
-	{
-		stdout_copy = dup(STDOUT_FILENO);
-		if (cmd->next)
-		{
-			dup2(pipe_fd[1], STDOUT_FILENO);
-			close(pipe_fd[1]);
-			prev_pipe[0] = pipe_fd[0];
-			prev_pipe[1] = -1;
-		}
-		handle_builtin(cmd, mini);
-		dup2(stdout_copy, STDOUT_FILENO);
-		close(stdout_copy);
-	}
-	else
-	{
-		execute_non_builtin(cmd, prcs, mini, prev_pipe);
-		if (cmd->next == NULL)
-		{
-			wait_for_child(prcs, mini);
-			mini->foreground_pid = -1;
-			handle_child_status(prcs, mini);
-		}
-	}
-}
-
-void	execute(t_shell *mini)
-{
-	t_process	prcs;
-	t_command	*cmd;
-	int			prev_pipe[2];
-
-	prev_pipe[0] = -1;
-	prev_pipe[1] = -1;
-	mini->redir_info.tempin = dup(STDIN_FILENO);
-	mini->redir_info.tempout = dup(STDOUT_FILENO);
-	cmd = mini->commands;
-	initialize_process(&prcs);
-	while (cmd != NULL)
-	{
-		execute_single_command(cmd, &prcs, mini, prev_pipe);
-		cleanup_redirections(&prcs);
-		cmd = cmd->next;
-	}
-	restore_main_signals();
-	while (wait(NULL) > 0);
-	dup2(mini->redir_info.tempin, STDIN_FILENO);
-	dup2(mini->redir_info.tempout, STDOUT_FILENO);
-	close(mini->redir_info.tempin);
-	close(mini->redir_info.tempout);
+		handle_parent_process(&exec_info);
 }
 
 void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
@@ -203,4 +115,40 @@ void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 	perror("execve");
 	free_env_array(env_array);
 	exit(1);
+}
+
+void	handle_parent_process(t_exec_info *exec_info)
+{
+	if (exec_info->pipe_info.prev_pipe[0] != -1)
+	{
+		close(exec_info->pipe_info.prev_pipe[0]);
+		close(exec_info->pipe_info.prev_pipe[1]);
+	}
+	if (exec_info->cmd->next != NULL)
+	{// Save the read end of the current pipe for the next command
+		close(exec_info->pipe_info.pipe_fd[1]);
+		exec_info->pipe_info.prev_pipe[0] = exec_info->pipe_info.pipe_fd[0];
+		exec_info->pipe_info.prev_pipe[1] = exec_info->pipe_info.pipe_fd[1];
+	}
+	else //close the pipe file descriptors if it's the last command.
+	{
+		close(exec_info->pipe_info.pipe_fd[0]);
+		close(exec_info->pipe_info.pipe_fd[1]);
+	}
+	if (exec_info->cmd->next == NULL)
+	{
+		wait_for_child(exec_info->prcs, exec_info->mini);
+		handle_child_status(exec_info->prcs, exec_info->mini);
+	}
+}
+
+void	finish_execution(t_shell *mini)
+{
+	restore_main_signals();
+	while (wait(NULL) > 0);
+	// Restore original stdin and stdout
+	dup2(mini->redir_info.tempin, STDIN_FILENO);
+	dup2(mini->redir_info.tempout, STDOUT_FILENO);
+	close(mini->redir_info.tempin);
+	close(mini->redir_info.tempout);
 }

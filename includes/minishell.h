@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/10/29 18:34:09 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/31 17:00:22 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,20 @@ typedef struct	s_envv_array
 	char	*temp_str;
 }	t_envv_array;
 
+typedef struct	s_pipe_info
+{
+	int	prev_pipe[2];
+	int	pipe_fd[2];
+}	t_pipe_info;
+
+typedef struct	s_exec_info
+{
+	t_command	*cmd;
+	t_process	*prcs;
+	t_shell		*mini;
+	t_pipe_info	pipe_info;
+}	t_exec_info;
+
 //INIT SHELL
 void			init_shell(t_shell *mini, char **envv);
 void			set_envv(t_shell *mini, char **envv);
@@ -224,10 +238,22 @@ void			initialize_process(t_process *prcs);
 void			execute(t_shell *mini);
 void			execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
 void			handle_child_status(t_process *prcs, t_shell *mini);
-void			handle_child_process(int prev_pipe[2], int pipe_fd[2], t_command *cmd, t_shell *mini);
+void			handle_child_process(t_exec_info *exec_info);
 int				setup_pipes(int pipe_fd[2], t_command *cmd);
 void			init_env_array(t_envv_array *en_ar, t_env *env);
-void			execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, int prev_pipe[2]);
+void			execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, t_pipe_info *pipe_info);
+void			finish_execution(t_shell *mini);
+void			execute_builtin(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info);
+void			execute_non_builtin(t_command *cmd, t_process *prcs, \
+t_shell *mini, t_pipe_info *pipe_info);
+void			handle_redir_error(int redir_result, t_shell *mini);
+void			handle_parent_process(t_exec_info *exec_info);
+void			wait_for_child(t_process *prcs, t_shell *mini);
+
+//pipes
+void			initialize_pipe_info(t_pipe_info *pipe_info);
+void			cleanup_pipes(t_command *cmd, t_pipe_info *pipe_info);
+int				create_pipe(int pipe_fd[2]);
 
 //redirections 
 void			print_redir_err(const char *filename, const char *message);
