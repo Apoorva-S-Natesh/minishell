@@ -6,7 +6,11 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 14:24:35 by asomanah          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/10/31 17:10:45 by asomanah         ###   ########.fr       */
+=======
+/*   Updated: 2024/10/31 13:35:33 by asomanah         ###   ########.fr       */
+>>>>>>> refs/remotes/origin/execute_pipe
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,20 +39,39 @@ void	handle_child_status(t_process *prcs, t_shell *mini)
 void	handle_child_process(t_exec_info *exec_info)
 {
 	setup_child_signals();
+<<<<<<< HEAD
 	if (exec_info->pipe_info.prev_pipe[0] != -1)
 	{// Redirect stdin to the read end of the previous pipe
+=======
+	setup_child_pipes(exec_info);
+	execute_command(exec_info->cmd, exec_info->prcs, exec_info->mini);
+	exit (exec_info->mini->last_exit_status);
+}
+
+void	setup_child_pipes(t_exec_info *exec_info)
+{
+	if (exec_info->pipe_info.prev_pipe[0] != -1)
+	{	// Redirect stdin to the read end of the previous pipe
+>>>>>>> refs/remotes/origin/execute_pipe
 		if (dup2(exec_info->pipe_info.prev_pipe[0], STDIN_FILENO) == -1)
 			perror("dup2");
 		close(exec_info->pipe_info.prev_pipe[0]);
 		close(exec_info->pipe_info.prev_pipe[1]);
 	}
 	if (exec_info->cmd->next != NULL)
+<<<<<<< HEAD
 	{// Redirect stdout to the write end of the current pipe
 		close(exec_info->pipe_info.pipe_fd[0]);
+=======
+	{
+		close(exec_info->pipe_info.pipe_fd[0]);
+		// Redirect stdout to the write end of the current pipe
+>>>>>>> refs/remotes/origin/execute_pipe
 		if (dup2(exec_info->pipe_info.pipe_fd[1], STDOUT_FILENO) == -1)
 			perror ("dup2");
 		close(exec_info->pipe_info.pipe_fd[1]);
 	}
+<<<<<<< HEAD
 	// if (exec_info->mini->signal_pipe[0] != -1)
 	// 	close(exec_info->mini->signal_pipe[0]);
 	// if (exec_info->mini->signal_pipe[1] != -1)
@@ -57,6 +80,10 @@ void	handle_child_process(t_exec_info *exec_info)
 	close(exec_info->mini->signal_pipe[1]);
 	execute_command(exec_info->cmd, exec_info->prcs, exec_info->mini);
 	exit(exec_info->mini->last_exit_status);
+=======
+	close(exec_info->mini->signal_pipe[0]);
+	close(exec_info->mini->signal_pipe[1]);
+>>>>>>> refs/remotes/origin/execute_pipe
 }
 
 void	wait_for_child(t_process *prcs, t_shell *mini)

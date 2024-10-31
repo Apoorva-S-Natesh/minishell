@@ -6,7 +6,11 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/10/31 17:00:22 by asomanah         ###   ########.fr       */
+=======
+/*   Updated: 2024/10/31 13:34:49 by asomanah         ###   ########.fr       */
+>>>>>>> refs/remotes/origin/execute_pipe
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,13 +145,21 @@ typedef struct	s_envv_array
 	char	*temp_str;
 }	t_envv_array;
 
+<<<<<<< HEAD
 typedef struct	s_pipe_info
+=======
+typedef struct s_pipe_info
+>>>>>>> refs/remotes/origin/execute_pipe
 {
 	int	prev_pipe[2];
 	int	pipe_fd[2];
 }	t_pipe_info;
 
+<<<<<<< HEAD
 typedef struct	s_exec_info
+=======
+typedef struct s_exec_info
+>>>>>>> refs/remotes/origin/execute_pipe
 {
 	t_command	*cmd;
 	t_process	*prcs;
@@ -229,7 +241,8 @@ char			**create_env_array(t_env *env);
 char			*find_command(char *cmd, t_env *variable);
 void			initialize_process(t_process *prcs);
 void			print_redir_err(const char *filename, const char *message);
-int				setup_redirs(t_command *cmd, t_process *prcs, t_redir_info *re, t_shell *mini);
+int				setup_redirs(t_command *cmd, t_process *prcs, \
+t_redir_info *re, t_shell *mini);
 void			execute(t_shell *mini);
 void			cleanup_redirections(t_process *prcs);
 void			execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
@@ -239,6 +252,7 @@ void			execute(t_shell *mini);
 void			execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
 void			handle_child_status(t_process *prcs, t_shell *mini);
 void			handle_child_process(t_exec_info *exec_info);
+<<<<<<< HEAD
 int				setup_pipes(int pipe_fd[2], t_command *cmd);
 void			init_env_array(t_envv_array *en_ar, t_env *env);
 void			execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, t_pipe_info *pipe_info);
@@ -254,12 +268,29 @@ void			wait_for_child(t_process *prcs, t_shell *mini);
 void			initialize_pipe_info(t_pipe_info *pipe_info);
 void			cleanup_pipes(t_command *cmd, t_pipe_info *pipe_info);
 int				create_pipe(int pipe_fd[2]);
+=======
+void			wait_for_child(t_process *prcs, t_shell *mini);
+int				setup_pipes(int pipe_fd[2], t_command *cmd);
+void			init_env_array(t_envv_array *en_ar, t_env *env);
+void			execute_single_command(t_command *cmd, t_process *prcs, \
+t_shell *mini, t_pipe_info *pipe_info);
+void			initialize_pipe_info(t_pipe_info *pipe_info);
+void			finish_execution(t_shell *mini);
+int				create_pipe(int pipe_fd[2]);
+void			handle_fork_error(void);
+void			cleanup_pipes(t_command *cmd, t_pipe_info *pipe_info);
+void			setup_child_pipes(t_exec_info *exec_info);
+>>>>>>> refs/remotes/origin/execute_pipe
 
 //redirections 
+
 void			print_redir_err(const char *filename, const char *message);
-int				setup_input_redir(t_process *prcs, t_redirection *redir, t_shell *mini);
-int				setup_output_redir(t_process *prcs, t_redirection *redir, t_shell *mini);
+int				setup_input_redir(t_process *prcs, t_redirection *redir,\
+t_shell *mini);
+int				setup_output_redir(t_process *prcs, t_redirection *redir, \
+t_shell *mini);
 void			cleanup_redirections(t_process *prcs);
+void			handle_redir_error(int redir_result, t_shell *mini);
 
 //heredoc
 void			heredoc_read_loop(int fd, const char *delimiter, t_shell *mini);
@@ -282,15 +313,9 @@ void			builtin_pwd(t_shell *mini);
 void			builtin_unset(t_shell *mini, char **args);
 
 // UTILS
+void			initialize_pipe_info(t_pipe_info *pipe_info);
 void			free_env_array(char **env_array);
 int				many_args(int num_args);
-
-
-//////////////////////////////////Delete this after dicsussion
-//Expand variable in handle heredoc (write_heredoc_line)
-char 			*expand_variables(char *line, t_shell *mini);
-char			*ft_strtok(char *str, const char *delim); // Delete this or rewrite (for finding path in exec_path.c)
-
 
 //PRINT DEBUG FUNCTIONS
 void print_redirections(t_redirection *redir);

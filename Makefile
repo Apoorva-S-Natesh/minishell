@@ -6,7 +6,11 @@
 #    By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/17 11:23:39 by aschmidt          #+#    #+#              #
+<<<<<<< HEAD
 #    Updated: 2024/10/31 17:02:54 by asomanah         ###   ########.fr        #
+=======
+#    Updated: 2024/10/31 13:11:42 by asomanah         ###   ########.fr        #
+>>>>>>> refs/remotes/origin/execute_pipe
 #                                                                              #
 # **************************************************************************** #
 

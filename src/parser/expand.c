@@ -43,6 +43,8 @@ char	*expand_value(char *token, t_shell *mini)
 				current_length += var_length;
 				free(var_value);
 			}
+			else
+				free(result);
 		}
 		else
 			result[current_length++] = *tkn_ptr++;
