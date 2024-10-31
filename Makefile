@@ -6,7 +6,7 @@
 #    By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/17 11:23:39 by aschmidt          #+#    #+#              #
-#    Updated: 2024/10/30 15:38:54 by asomanah         ###   ########.fr        #
+#    Updated: 2024/10/31 13:11:42 by asomanah         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ SRC	= $(addprefix src/, main.c /input/take_input.c /input/init_shell.c \
 		/execute/exec_path.c print.c /execute/export_utils.c\
 		/execute/execute_utils.c /execute/redirections.c \
 		/execute/heredoc_utils.c /execute/builtin_export.c \
-		/execute/execute_child.c)
+		/execute/execute_child.c /execute/process_utils.c)
 
 LIBFT_PATH	= libft/
 

@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 14:28:10 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/29 19:45:38 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/10/31 15:02:12 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	print_redir_err(const char *filename, const char *message)
 int	setup_input_redir(t_process *prcs, t_redirection *redir, t_shell *mini)
 {
 	int	result;
+	char *unquoted_filename = remove_quotes(redir->input_file);
 
 	close (prcs->input_fd);
 	if (redir->type == 1)
