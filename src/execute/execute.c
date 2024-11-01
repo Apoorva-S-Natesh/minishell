@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:51:27 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/31 17:53:27 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/01 13:38:44 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ void	execute_non_builtin(t_command *cmd, t_process *prcs, \
 t_shell *mini, t_pipe_info *pipe_info)
 {
 	t_exec_info	exec_info;
+	int			exit_status;
 
 	exec_info.cmd = cmd;
 	exec_info.prcs = prcs;
@@ -83,7 +84,10 @@ t_shell *mini, t_pipe_info *pipe_info)
 	exec_info.pipe_info = *pipe_info;
 	prcs->pid = fork();
 	if (prcs->pid == 0)
-		handle_child_process(&exec_info);
+	{
+		exit_status = handle_child_process(&exec_info);
+		exit(exit_status);
+	}
 	else if (prcs->pid < 0)
 	{
 		perror("fork");
@@ -91,30 +95,6 @@ t_shell *mini, t_pipe_info *pipe_info)
 	}
 	else
 		handle_parent_process(&exec_info);
-}
-
-void	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
-{
-	char	**env_array;
-
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
-	env_array = create_env_array(mini->env);
-	prcs->cmd_path = find_command(cmd->tokens[0], mini->env);
-	if (!prcs->cmd_path)
-	{
-		ft_putstr_fd("minishell: command not found: ", 2);
-		ft_putstr_fd(cmd->tokens[0], 2);
-		ft_putstr_fd("\n", 2);
-		mini->last_exit_status = 127;
-		free_env_array(env_array);
-		exit(127);
-	}
-	execve(prcs->cmd_path, cmd->tokens, env_array);
-	perror("execve");
-	free(prcs->cmd_path);
-	free_env_array(env_array);
-	exit(1);
 }
 
 void	handle_parent_process(t_exec_info *exec_info)
@@ -140,15 +120,4 @@ void	handle_parent_process(t_exec_info *exec_info)
 		wait_for_child(exec_info->prcs, exec_info->mini);
 		handle_child_status(exec_info->prcs, exec_info->mini);
 	}
-}
-
-void	finish_execution(t_shell *mini)
-{
-	restore_main_signals();
-	while (wait(NULL) > 0);
-	// Restore original stdin and stdout
-	dup2(mini->redir_info.tempin, STDIN_FILENO);
-	dup2(mini->redir_info.tempout, STDOUT_FILENO);
-	close(mini->redir_info.tempin);
-	close(mini->redir_info.tempout);
 }

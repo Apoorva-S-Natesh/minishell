@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 14:24:35 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/31 17:46:37 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/01 13:20:48 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,10 @@ void	handle_child_status(t_process *prcs, t_shell *mini)
 	prcs->cmd_path = NULL;
 }
 
-void	handle_child_process(t_exec_info *exec_info)
+int	handle_child_process(t_exec_info *exec_info)
 {
+	int	err_no;
+
 	setup_child_signals();
 	if (exec_info->pipe_info.prev_pipe[0] != -1)
 	{// Redirect stdin to the read end of the previous pipe
@@ -55,8 +57,8 @@ void	handle_child_process(t_exec_info *exec_info)
 	// 	close(exec_info->mini->signal_pipe[1]);
 	close(exec_info->mini->signal_pipe[0]);
 	close(exec_info->mini->signal_pipe[1]);
-	execute_command(exec_info->cmd, exec_info->prcs, exec_info->mini);
-	exit(exec_info->mini->last_exit_status);
+	err_no = execute_command(exec_info->cmd, exec_info->prcs, exec_info->mini);
+	return (err_no);
 }
 
 void	wait_for_child(t_process *prcs, t_shell *mini)

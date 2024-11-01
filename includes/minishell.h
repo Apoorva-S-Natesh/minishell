@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/10/31 17:44:47 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/01 13:33:38 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@
 # include <sys/select.h> // for fd_set
 # include <sys/time.h> // for timeval
 # include <termios.h>
+#include <sys/stat.h> // for stat to handle null_cmd_path
+
 
 # ifndef PATH_MAX
 # 	define PATH_MAX 4096
@@ -233,13 +235,12 @@ int				setup_redirs(t_command *cmd, t_process *prcs, \
 t_redir_info *re, t_shell *mini);
 void			execute(t_shell *mini);
 void			cleanup_redirections(t_process *prcs);
-void			execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
 void			handle_child_status(t_process *prcs, t_shell *mini);
 void			initialize_process(t_process *prcs);
 void			execute(t_shell *mini);
-void			execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
+int				execute_command(t_command *cmd, t_process *prcs, t_shell *mini);
 void			handle_child_status(t_process *prcs, t_shell *mini);
-void			handle_child_process(t_exec_info *exec_info);
+int				handle_child_process(t_exec_info *exec_info);
 int				setup_pipes(int pipe_fd[2], t_command *cmd);
 void			init_env_array(t_envv_array *en_ar, t_env *env);
 void			execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, t_pipe_info *pipe_info);
@@ -250,6 +251,10 @@ t_shell *mini, t_pipe_info *pipe_info);
 void			handle_redir_error(int redir_result, t_shell *mini);
 void			handle_parent_process(t_exec_info *exec_info);
 void			wait_for_child(t_process *prcs, t_shell *mini);
+int				check_file_status(const char *cmd_path);
+void			handle_command_error(const char *cmd_path, const char *cmd_name, int status);
+int				execute_command_helper(t_command *cmd, char *cmd_path, \
+	char **env_array);
 
 //pipes
 void			initialize_pipe_info(t_pipe_info *pipe_info);
@@ -258,7 +263,7 @@ int				create_pipe(int pipe_fd[2]);
 
 //redirections 
 
-void			print_redir_err(const char *filename, const char *message);
+void			print_err_msg(const char *filename, const char *message);
 int				setup_input_redir(t_process *prcs, t_redirection *redir,\
 t_shell *mini);
 int				setup_output_redir(t_process *prcs, t_redirection *redir, \

@@ -6,13 +6,13 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 14:28:10 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/31 15:22:00 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/01 13:27:50 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	print_redir_err(const char *filename, const char *message)
+void	print_err_msg(const char *filename, const char *message)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(filename, STDERR_FILENO);
@@ -38,7 +38,7 @@ int	setup_input_redir(t_process *prcs, t_redirection *redir, t_shell *mini)
 	}
 	if (prcs->input_fd < 0)
 	{
-		print_redir_err(redir->input_file, "No such file or directory");
+		print_err_msg(redir->input_file, "No such file or directory");
 		mini->last_exit_status = 1;
 		return (0);
 	}
@@ -56,7 +56,7 @@ int	setup_output_redir(t_process *prcs, t_redirection *redir, t_shell *mini)
 		O_CREAT | O_APPEND, 0644);
 	if (prcs->output_fd < 0)
 	{
-		print_redir_err(redir->output_file, "Permission denied");
+		print_err_msg(redir->output_file, "Permission denied");
 		mini->last_exit_status = 1;
 		return (0);
 	}
