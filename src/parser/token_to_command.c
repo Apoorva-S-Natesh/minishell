@@ -15,7 +15,7 @@ void	process_token(t_command **current_cmd, t_token **current_tkn)
 			if ((*current_tkn)->next && (*current_tkn)->next->type == WORD)
 				handle_redirection(current_cmd, current_tkn);
 			// else
-			// 	printf("minishell: Syntax error: missing file after\
+			// 	printf("minishell: Syntax error: missing file after
 			// redirection\n");
 		}
 		else

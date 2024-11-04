@@ -37,16 +37,16 @@ t_shell *mini, t_pipe_info *pipe_info)
 {
 	int	redir_result;
 
+	if (cmd->next || (!cmd->tokens || !cmd->tokens[0]))
+	{
+		if (create_pipe(pipe_info->pipe_fd) == -1)
+			return ;
+	}
 	redir_result = setup_redirs(cmd, prcs, &mini->redir_info, mini);
 	if (redir_result <= 0)
 	{
 		handle_redir_error(redir_result, mini);
 		return ;
-	}
-	if (cmd->next || (!cmd->tokens || !cmd->tokens[0]))
-	{
-		if (create_pipe(pipe_info->pipe_fd) == -1)
-			return ;
 	}
 	if (is_builtin(cmd))
 		execute_builtin(cmd, mini, pipe_info);
@@ -58,8 +58,15 @@ t_shell *mini, t_pipe_info *pipe_info)
 void	execute_builtin(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info)
 {
 	int	stdout_copy;
+	int stdin_copy;
 
 	stdout_copy = dup(STDOUT_FILENO);
+	stdin_copy = dup(STDIN_FILENO); // setting up input redirection as well for builtin
+	if (pipe_info->prev_pipe[0] != 1)
+	{
+		dup2(pipe_info->prev_pipe[0], STDIN_FILENO);
+		close(pipe_info->prev_pipe[0]);
+	}
 	if (cmd->next)
 	{
 		// Redirect stdout to the write end of the pipe
@@ -67,9 +74,11 @@ void	execute_builtin(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info)
 		close(pipe_info->pipe_fd[1]);
 	}
 	handle_builtin(cmd, mini);
-	// Restore original stdout
+	// Restore original stdout and stdin
 	dup2(stdout_copy, STDOUT_FILENO);
+	dup2(stdin_copy, STDIN_FILENO);
 	close(stdout_copy);
+	close(stdin_copy);
 }
 
 void	execute_non_builtin(t_command *cmd, t_process *prcs, \

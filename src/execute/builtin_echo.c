@@ -47,9 +47,9 @@ static void	print_single(int *i, int size, char **tokens)
 {
 	while (*i < size)
 	{
-		printf("%s", tokens[*i]);
+		ft_putstr_fd(tokens[*i], STDOUT_FILENO);
 		if (*i + 1 < size)
-			printf(" ");
+			ft_putstr_fd(" ", STDOUT_FILENO);
 		(*i)++;
 	}
 }
@@ -61,7 +61,7 @@ int	builtin_echo(char **tokens, t_shell *mini, int size)
 
 	if (size <= 1)
 	{
-		printf("\n");
+		ft_putstr_fd("\n", STDOUT_FILENO);
 		mini->last_exit_status = 0;
 		return (SUCCESS);
 	}
@@ -74,7 +74,7 @@ int	builtin_echo(char **tokens, t_shell *mini, int size)
 	}
 	print_single(&i, size, tokens);
 	if (!n_flag)
-		printf("\n");
+		ft_putstr_fd("\n", STDOUT_FILENO);
 	mini->last_exit_status = 0;
 	return (SUCCESS);
 }

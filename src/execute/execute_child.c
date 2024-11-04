@@ -46,9 +46,9 @@ int	handle_child_process(t_exec_info *exec_info)
 	}
 	if (exec_info->cmd->next != NULL)
 	{// Redirect stdout to the write end of the current pipe
-		close(exec_info->pipe_info.pipe_fd[0]);
 		if (dup2(exec_info->pipe_info.pipe_fd[1], STDOUT_FILENO) == -1)
 			perror ("dup2");
+		close(exec_info->pipe_info.pipe_fd[0]);
 		close(exec_info->pipe_info.pipe_fd[1]);
 	}
 	// if (exec_info->mini->signal_pipe[0] != -1)
