@@ -256,6 +256,8 @@ int				check_file_status(const char *cmd_path);
 void			handle_command_error(const char *cmd_path, const char *cmd_name, int status);
 int				execute_command_helper(t_command *cmd, char *cmd_path, \
 	char **env_array);
+void			handle_exection_pipes(t_pipe_info *pipe_info, t_command *cmd);
+
 
 //pipes
 void			initialize_pipe_info(t_pipe_info *pipe_info);
