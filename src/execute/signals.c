@@ -85,7 +85,21 @@ void	setup_sig_handling(t_shell *mini)
 		perror("sigaction");
 		exit(1);
 	}
-}\
+}
+//cleanup function for signals
+void cleanup_signal_pipe(t_shell *mini)
+{
+    if (mini->signal_pipe[0] != -1)
+    {
+        close(mini->signal_pipe[0]);
+        mini->signal_pipe[0] = -1;
+    }
+    if (mini->signal_pipe[1] != -1)
+    {
+        close(mini->signal_pipe[1]);
+        mini->signal_pipe[1] = -1;
+    }
+}
 
 //To disable the ^C and ^\ on terminal
 void	disable_ctrl_signals(void)

@@ -37,10 +37,15 @@ t_shell *mini, t_pipe_info *pipe_info)
 {
 	int	redir_result;
 
-	if (cmd->next || (!cmd->tokens || !cmd->tokens[0]))
+	if (cmd->next) // if (cmd->next || (!cmd->tokens || !cmd->tokens[0]))
 	{
 		if (create_pipe(pipe_info->pipe_fd) == -1)
 			return ;
+	}
+	else
+	{
+		pipe_info->pipe_fd[0] = -1;
+		pipe_info->pipe_fd[1] = -1;
 	}
 	redir_result = setup_redirs(cmd, prcs, &mini->redir_info, mini);
 	if (redir_result <= 0)
@@ -52,7 +57,29 @@ t_shell *mini, t_pipe_info *pipe_info)
 		execute_builtin(cmd, mini, pipe_info);
 	else if (cmd->tokens && cmd->tokens[0])
 		execute_non_builtin(cmd, prcs, mini, pipe_info);
-	cleanup_pipes(cmd, pipe_info);
+	// if (!cmd->next)
+	// 	cleanup_pipes(cmd, pipe_info);
+	    if (pipe_info->prev_pipe[0] != -1)
+    {
+        close(pipe_info->prev_pipe[0]);
+        pipe_info->prev_pipe[0] = -1;
+    }
+
+    if (cmd->next)
+    {
+        if (pipe_info->prev_pipe[1] != -1)
+            close(pipe_info->prev_pipe[1]);
+        pipe_info->prev_pipe[0] = pipe_info->pipe_fd[0];
+        pipe_info->prev_pipe[1] = pipe_info->pipe_fd[1];
+    }
+    else
+    {
+        if (pipe_info->prev_pipe[1] != -1)
+        {
+            close(pipe_info->prev_pipe[1]);
+            pipe_info->prev_pipe[1] = -1;
+        }
+    }
 }
 
 void	execute_builtin(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info)
@@ -62,16 +89,16 @@ void	execute_builtin(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info)
 
 	stdout_copy = dup(STDOUT_FILENO);
 	stdin_copy = dup(STDIN_FILENO); // setting up input redirection as well for builtin
-	if (pipe_info->prev_pipe[0] != 1)
+	if (pipe_info->prev_pipe[0] != -1)
 	{
 		dup2(pipe_info->prev_pipe[0], STDIN_FILENO);
 		close(pipe_info->prev_pipe[0]);
 	}
-	if (cmd->next)
+	if (cmd->next && pipe_info->pipe_fd[1] != -1)
 	{
 		// Redirect stdout to the write end of the pipe
 		dup2(pipe_info->pipe_fd[1], STDOUT_FILENO);
-		close(pipe_info->pipe_fd[1]);
+		// close(pipe_info->pipe_fd[1]);
 	}
 	handle_builtin(cmd, mini);
 	// Restore original stdout and stdin
@@ -106,27 +133,53 @@ t_shell *mini, t_pipe_info *pipe_info)
 		handle_parent_process(&exec_info);
 }
 
-void	handle_parent_process(t_exec_info *exec_info)
+// void	handle_parent_process(t_exec_info *exec_info)
+// {
+// 	if (exec_info->pipe_info.prev_pipe[0] != -1)
+// 	{
+// 		close(exec_info->pipe_info.prev_pipe[0]);
+// 		close(exec_info->pipe_info.prev_pipe[1]);
+// 	}
+// 	if (exec_info->cmd->next != NULL)
+// 	{// Save the read end of the current pipe for the next command
+// 		close(exec_info->pipe_info.pipe_fd[1]);
+// 		exec_info->pipe_info.prev_pipe[0] = exec_info->pipe_info.pipe_fd[0];
+// 		exec_info->pipe_info.prev_pipe[1] = exec_info->pipe_info.pipe_fd[1];
+// 	}
+// 	else //close the pipe file descriptors if it's the last command.
+// 	{
+// 		close(exec_info->pipe_info.pipe_fd[0]);
+// 		close(exec_info->pipe_info.pipe_fd[1]);
+// 	}
+// 	if (exec_info->cmd->next == NULL)
+// 	{
+// 		wait_for_child(exec_info->prcs, exec_info->mini);
+// 		handle_child_status(exec_info->prcs, exec_info->mini);
+// 	}
+// }
+
+void handle_parent_process(t_exec_info *exec_info)
 {
-	if (exec_info->pipe_info.prev_pipe[0] != -1)
-	{
-		close(exec_info->pipe_info.prev_pipe[0]);
-		close(exec_info->pipe_info.prev_pipe[1]);
-	}
-	if (exec_info->cmd->next != NULL)
-	{// Save the read end of the current pipe for the next command
-		close(exec_info->pipe_info.pipe_fd[1]);
-		exec_info->pipe_info.prev_pipe[0] = exec_info->pipe_info.pipe_fd[0];
-		exec_info->pipe_info.prev_pipe[1] = exec_info->pipe_info.pipe_fd[1];
-	}
-	else //close the pipe file descriptors if it's the last command.
-	{
-		close(exec_info->pipe_info.pipe_fd[0]);
-		close(exec_info->pipe_info.pipe_fd[1]);
-	}
-	if (exec_info->cmd->next == NULL)
-	{
-		wait_for_child(exec_info->prcs, exec_info->mini);
-		handle_child_status(exec_info->prcs, exec_info->mini);
-	}
+    if (exec_info->pipe_info.prev_pipe[0] != -1)
+    {
+        close(exec_info->pipe_info.prev_pipe[0]);
+        exec_info->pipe_info.prev_pipe[0] = -1;
+    }
+    if (exec_info->cmd->next != NULL)
+    {
+		if (exec_info->pipe_info.prev_pipe[1] != -1)
+			close(exec_info->pipe_info.prev_pipe[1]);
+        exec_info->pipe_info.prev_pipe[0] = exec_info->pipe_info.pipe_fd[0];
+        exec_info->pipe_info.prev_pipe[1] = exec_info->pipe_info.pipe_fd[1];
+    }
+    else
+    {
+		if (exec_info->pipe_info.prev_pipe[1] != -1)
+		{
+			close(exec_info->pipe_info.prev_pipe[1]);
+			exec_info->pipe_info.prev_pipe[1] = -1;
+		}
+        wait_for_child(exec_info->prcs, exec_info->mini);
+        handle_child_status(exec_info->prcs, exec_info->mini);
+    }
 }

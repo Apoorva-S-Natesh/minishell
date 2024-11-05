@@ -42,19 +42,18 @@ int	handle_child_process(t_exec_info *exec_info)
 		if (dup2(exec_info->pipe_info.prev_pipe[0], STDIN_FILENO) == -1)
 			perror("dup2");
 		close(exec_info->pipe_info.prev_pipe[0]);
-		close(exec_info->pipe_info.prev_pipe[1]);
 	}
-	if (exec_info->cmd->next != NULL)
+	if (exec_info->pipe_info.prev_pipe[1] != -1)
+		close(exec_info->pipe_info.prev_pipe[1]);
+	if (exec_info->cmd->next != NULL && exec_info->pipe_info.pipe_fd[1] != -1)
 	{// Redirect stdout to the write end of the current pipe
 		if (dup2(exec_info->pipe_info.pipe_fd[1], STDOUT_FILENO) == -1)
 			perror ("dup2");
-		close(exec_info->pipe_info.pipe_fd[0]);
-		close(exec_info->pipe_info.pipe_fd[1]);
 	}
-	// if (exec_info->mini->signal_pipe[0] != -1)
-	// 	close(exec_info->mini->signal_pipe[0]);
-	// if (exec_info->mini->signal_pipe[1] != -1)
-	// 	close(exec_info->mini->signal_pipe[1]);
+	if (exec_info->pipe_info.pipe_fd[0] != -1)
+		close(exec_info->pipe_info.pipe_fd[0]);
+	if (exec_info->pipe_info.pipe_fd[0] != -1)
+		close(exec_info->pipe_info.pipe_fd[1]);
 	close(exec_info->mini->signal_pipe[0]);
 	close(exec_info->mini->signal_pipe[1]);
 	err_no = execute_command(exec_info->cmd, exec_info->prcs, exec_info->mini);

@@ -223,6 +223,7 @@ void			setup_child_signals(void);
 void			disable_ctrl_signals(void);
 void			restore_terminal(void);
 void			handle_child_sigquit(int signum);
+void			cleanup_signal_pipe(t_shell *mini);
 
 // EXECUTE
 char			**split_path(char *path);

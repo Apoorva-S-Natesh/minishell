@@ -84,4 +84,6 @@ void	finish_execution(t_shell *mini)
 	dup2(mini->redir_info.tempout, STDOUT_FILENO);
 	close(mini->redir_info.tempin);
 	close(mini->redir_info.tempout);
+	close(mini->signal_pipe[0]);
+	close(mini->signal_pipe[1]);
 }

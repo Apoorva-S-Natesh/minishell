@@ -14,10 +14,10 @@
 
 void	initialize_pipe_info(t_pipe_info *pipe_info)
 {
-	pipe_info->prev_pipe[0] = -1;
-	pipe_info->prev_pipe[1] = -1;
 	pipe_info->pipe_fd[0] = -1;
 	pipe_info->pipe_fd[1] = -1;
+	pipe_info->prev_pipe[0] = -1;
+	pipe_info->prev_pipe[1] = -1;
 }
 
 void	handle_redir_error(int redir_result, t_shell *mini)
@@ -47,27 +47,50 @@ int	create_pipe(int pipe_fd[2])
 	return (0);
 }
 
-void	cleanup_pipes(t_command *cmd, t_pipe_info *pipe_info)
+// void	cleanup_pipes(t_command *cmd, t_pipe_info *pipe_info)
+// {
+// 	if (pipe_info->prev_pipe[0] != -1)
+// 	{
+// 		close(pipe_info->prev_pipe[0]);
+// 		pipe_info->prev_pipe[0] = -1;
+// 	}
+// 	if (pipe_info->prev_pipe[1] != -1)
+// 	{
+// 		close(pipe_info->prev_pipe[1]);
+// 		pipe_info->prev_pipe[1] = -1;
+// 	}
+// 	if (cmd->next)
+// 	{
+// 		pipe_info->prev_pipe[0] = pipe_info->pipe_fd[0];
+// 		pipe_info->prev_pipe[1] = pipe_info->pipe_fd[1];
+// 	}
+// 	else
+// 	{
+// 		if (pipe_info->pipe_fd[0] != -1)
+// 		{
+// 			close(pipe_info->pipe_fd[0]);
+// 			pipe_info->pipe_fd[0] = -1;
+// 		}
+// 		if (pipe_info->pipe_fd[1] != -1)
+// 		{
+// 			close(pipe_info->pipe_fd[1]);
+// 			pipe_info->pipe_fd[1] = -1;
+// 		}
+// 	}
+// }
+
+void cleanup_pipes(t_command *cmd, t_pipe_info *pipe_info)
 {
-	if (pipe_info->prev_pipe[0] != -1)
-	{
-		close(pipe_info->prev_pipe[0]);
-		pipe_info->prev_pipe[0] = -1;
-	}
-	if (pipe_info->prev_pipe[1] != -1)
-	{
-		close(pipe_info->prev_pipe[1]);
-		pipe_info->prev_pipe[1] = -1;
-	}
-	if (cmd->next)
-	{
-		pipe_info->prev_pipe[0] = pipe_info->pipe_fd[0];
-		pipe_info->prev_pipe[1] = -1;
-		close(pipe_info->pipe_fd[1]);
-	}
-	else
-	{
-		close(pipe_info->pipe_fd[0]);
-		close(pipe_info->pipe_fd[1]);
-	}
+    if (pipe_info->prev_pipe[0] != -1)
+        close(pipe_info->prev_pipe[0]);
+    if (pipe_info->prev_pipe[1] != -1)
+        close(pipe_info->prev_pipe[1]);
+    
+    if (!cmd->next)
+    {
+        if (pipe_info->pipe_fd[0] != -1)
+            close(pipe_info->pipe_fd[0]);
+        if (pipe_info->pipe_fd[1] != -1)
+            close(pipe_info->pipe_fd[1]);
+    }
 }

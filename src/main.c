@@ -15,10 +15,10 @@
 void	execute_minishell(t_shell *mini, t_token *tokens)
 {
 	expand_tokens(tokens, mini);
-	print_tokens(tokens);
+	//print_tokens(tokens);
 	mini->commands = group_tokens_to_cmd(tokens);
 	set_cmd_priorities(mini->commands);
-	print_commands(mini->commands);
+	//print_commands(mini->commands);
 	execute(mini);
 	free_tokens(tokens);
 	free_command(mini->commands);
@@ -48,6 +48,7 @@ int	main(int ac, char **av, char **envv)
 				execute_minishell(&mini, tokens);
 		}
 	}
+	cleanup_signal_pipe(&mini);
 	free_list(mini.env);
 	return (0);
 }
