@@ -30,7 +30,7 @@ char	is_builtin(t_command *cmd)
 }
 
  //change to libft strcmp (now string.h strcmp)
-void	handle_builtin(t_command *cmd, t_shell *mini)
+void	handle_builtin(t_command *cmd, t_shell *mini, int in_pipeline)
 {
 	int	size;
 
@@ -44,7 +44,7 @@ void	handle_builtin(t_command *cmd, t_shell *mini)
 	if (strcmp(cmd->tokens[0], "pwd") == 0)
 		builtin_pwd(mini);
 	if (strcmp(cmd->tokens[0], "export") == 0)
-		builtin_export(cmd->tokens, mini);
+		builtin_export(cmd->tokens, mini, in_pipeline);
 	if (strcmp(cmd->tokens[0], "unset") == 0)
 		builtin_unset(mini, cmd->tokens);
 	if (strcmp(cmd->tokens[0], "env") == 0)

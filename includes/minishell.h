@@ -281,14 +281,14 @@ int				handle_heredoc(const char *delimiter, t_shell *mini);
 
 // BUILTINS
 char			is_builtin(t_command *cmd);
-void			handle_builtin(t_command *cmd, t_shell *mini);
+void			handle_builtin(t_command *cmd, t_shell *mini,  int in_pipeline);
 void			builtin_cd(char **tokens, t_shell *mini, int size);
 char			*ft_getcwd(t_shell *mini);
 int				builtin_echo(char **tokens, t_shell *mini, int size);
 void			builtin_env(t_shell *mini, int size);
 void			builtin_exit(char **tokens, t_shell *mini, int size);
 int				is_valid_identifier(const char *str);
-void			builtin_export(char **tokens, t_shell *mini);
+void			builtin_export(char **tokens, t_shell *mini, int in_pipeline);
 void			print_exported_vars(t_env *env);
 int				set_env_variable(t_shell *mini, const char *key, const char *value);
 void			builtin_pwd(t_shell *mini);

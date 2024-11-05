@@ -64,9 +64,14 @@ void	execute_builtin(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info)
 {
 	int	stdout_copy;
 	int stdin_copy;
+	int	in_pipeline;
 
 	stdout_copy = dup(STDOUT_FILENO);
 	stdin_copy = dup(STDIN_FILENO); // setting up input redirection as well for builtin
+	if (pipe_info->prev_pipe[0] != -1 || cmd->next != NULL)
+		in_pipeline = 1;
+	else
+		in_pipeline = 0;
 	if (pipe_info->prev_pipe[0] != -1)
 	{
 		dup2(pipe_info->prev_pipe[0], STDIN_FILENO);
@@ -78,7 +83,7 @@ void	execute_builtin(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info)
 		dup2(pipe_info->pipe_fd[1], STDOUT_FILENO);
 		// close(pipe_info->pipe_fd[1]);
 	}
-	handle_builtin(cmd, mini);
+	handle_builtin(cmd, mini, in_pipeline);
 	// Restore original stdout and stdin
 	dup2(stdout_copy, STDOUT_FILENO);
 	dup2(stdin_copy, STDIN_FILENO);
