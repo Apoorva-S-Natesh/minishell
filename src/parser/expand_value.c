@@ -1,13 +1,16 @@
-#include "../../includes/minishell.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand_value.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/06 14:24:35 by asomanah          #+#    #+#             */
+/*   Updated: 2024/11/07 13:20:48 by asomanah         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-typedef struct s_expand_info
-{
-    char    *result;
-    size_t  size;
-    size_t  len;
-    char    *tkn_ptr;
-    t_shell *mini;
-} t_expand_info;
+#include "../../includes/minishell.h"
 
 static int resize_result(t_expand_info *info, size_t needed)
 {

@@ -68,8 +68,10 @@ void free_list(t_env *head)
 	{
 		tmp = head;
 		head = head->next;
-		free(tmp->key);
-		free(tmp->value);
+		if (tmp->key)
+			free(tmp->key);
+		if (tmp->value)
+			free(tmp->value);
 		free(tmp);
     }
 }

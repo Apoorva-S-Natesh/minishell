@@ -157,6 +157,15 @@ typedef struct	s_exec_info
 	t_pipe_info	pipe_info;
 }	t_exec_info;
 
+typedef struct	s_expand_info
+{
+	char	*result;
+	size_t	size;
+	size_t	len;
+	char	*tkn_ptr;
+	t_shell	*mini;
+}	t_expand_info;
+
 //INIT SHELL
 void			init_shell(t_shell *mini, char **envv);
 void			set_envv(t_shell *mini, char **envv);
