@@ -14,9 +14,11 @@
 
 void	execute(t_shell *mini)
 {
-	t_process	prcs;
-	t_command	*cmd;
-	t_pipe_info	pipe_info;
+	t_process			prcs;
+	t_command			*cmd;
+	t_pipe_info			pipe_info;
+	struct sigaction	sa_ignore;
+	struct sigaction	sa_old;
 
 	mini->redir_info.tempin = dup(STDIN_FILENO);
 	mini->redir_info.tempout = dup(STDOUT_FILENO);
@@ -25,7 +27,13 @@ void	execute(t_shell *mini)
 	initialize_pipe_info(&pipe_info);
 	while (cmd != NULL)
 	{
+		sa_ignore.sa_handler = SIG_IGN;
+		sigemptyset(&sa_ignore.sa_mask);
+		sa_ignore.sa_flags = 0;
+		sigaction(SIGINT, &sa_ignore, &sa_old);
 		execute_single_command(cmd, &prcs, mini, &pipe_info);
+		// Restore the previous SIGINT handler
+		sigaction(SIGINT, &sa_old, NULL);
 		cleanup_redirections(&prcs);
 		cmd = cmd->next;
 	}
@@ -36,13 +44,6 @@ void	execute_single_command(t_command *cmd, t_process *prcs, \
 t_shell *mini, t_pipe_info *pipe_info)
 {
 	int	redir_result;
-	struct sigaction sa_ignore, sa_old;
-
-    // Temporarily ignore SIGINT in the parent
-    sa_ignore.sa_handler = SIG_IGN;
-    sigemptyset(&sa_ignore.sa_mask);
-    sa_ignore.sa_flags = 0;
-    sigaction(SIGINT, &sa_ignore, &sa_old);
 
 	if (cmd->next) // if (cmd->next || (!cmd->tokens || !cmd->tokens[0]))
 	{
@@ -65,8 +66,6 @@ t_shell *mini, t_pipe_info *pipe_info)
 	else if (cmd->tokens && cmd->tokens[0])
 		execute_non_builtin(cmd, prcs, mini, pipe_info);
 	handle_exection_pipes(pipe_info, cmd);
-	// Restore the previous SIGINT handler
-    sigaction(SIGINT, &sa_old, NULL);
 }
 
 void	execute_builtin(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info)
