@@ -52,6 +52,7 @@ void	restore_main_signals(void)
 	sa_int.sa_handler = handle_sigint;
 	sigemptyset(&sa_int.sa_mask);
 	sa_int.sa_flags = SA_RESTART;
+	
 	sa_quit.sa_handler = SIG_IGN;
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_flags = SA_RESTART;

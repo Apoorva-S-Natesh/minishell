@@ -36,6 +36,13 @@ void	execute_single_command(t_command *cmd, t_process *prcs, \
 t_shell *mini, t_pipe_info *pipe_info)
 {
 	int	redir_result;
+	struct sigaction sa_ignore, sa_old;
+
+    // Temporarily ignore SIGINT in the parent
+    sa_ignore.sa_handler = SIG_IGN;
+    sigemptyset(&sa_ignore.sa_mask);
+    sa_ignore.sa_flags = 0;
+    sigaction(SIGINT, &sa_ignore, &sa_old);
 
 	if (cmd->next) // if (cmd->next || (!cmd->tokens || !cmd->tokens[0]))
 	{
@@ -58,6 +65,8 @@ t_shell *mini, t_pipe_info *pipe_info)
 	else if (cmd->tokens && cmd->tokens[0])
 		execute_non_builtin(cmd, prcs, mini, pipe_info);
 	handle_exection_pipes(pipe_info, cmd);
+	// Restore the previous SIGINT handler
+    sigaction(SIGINT, &sa_old, NULL);
 }
 
 void	execute_builtin(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info)
@@ -137,7 +146,7 @@ void handle_parent_process(t_exec_info *exec_info)
 			close(exec_info->pipe_info.prev_pipe[1]);
 			exec_info->pipe_info.prev_pipe[1] = -1;
 		}
-		wait_for_child(exec_info->prcs, exec_info->mini);
+		wait_for_child(exec_info->prcs);
 		handle_child_status(exec_info->prcs, exec_info->mini);
     }
 }

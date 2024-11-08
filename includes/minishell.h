@@ -260,7 +260,7 @@ void			execute_non_builtin(t_command *cmd, t_process *prcs, \
 t_shell *mini, t_pipe_info *pipe_info);
 void			handle_redir_error(int redir_result, t_shell *mini);
 void			handle_parent_process(t_exec_info *exec_info);
-void			wait_for_child(t_process *prcs, t_shell *mini);
+void			wait_for_child(t_process *prcs);
 int				check_file_status(const char *cmd_path);
 void			handle_command_error(const char *cmd_path, const char *cmd_name, int status);
 int				execute_command_helper(t_command *cmd, char *cmd_path, \

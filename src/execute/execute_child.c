@@ -36,7 +36,10 @@ int	handle_child_process(t_exec_info *exec_info)
 {
 	int	err_no;
 
-	setup_child_signals();
+	// setup_child_signals();
+	// Restore default signal handlers for the child process
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	if (exec_info->pipe_info.prev_pipe[0] != -1)
 	{// Redirect stdin to the read end of the previous pipe
 		if (dup2(exec_info->pipe_info.prev_pipe[0], STDIN_FILENO) == -1)
@@ -60,31 +63,49 @@ int	handle_child_process(t_exec_info *exec_info)
 	return (err_no);
 }
 
-void	wait_for_child(t_process *prcs, t_shell *mini)
-{
-	fd_set			readfds;
-	struct timeval	tv;
-	int				ret;
-	char			sig;
+// void	wait_for_child(t_process *prcs, t_shell *mini)
+// {
+// 	fd_set			readfds;
+// 	struct timeval	tv;
+// 	int				ret;
+// 	char			sig;
 
-	while (1)
-	{
-		FD_ZERO(&readfds);
-		FD_SET(mini->signal_pipe[0], &readfds);
-		tv.tv_sec = 0;
-		tv.tv_usec = 100000;
-		ret = select(mini->signal_pipe[0] + 1, &readfds, NULL, NULL, &tv);
-		if (ret == -1 && errno != EINTR)
-		{
-			perror("select");
-			break ;
-		}
-		else if (ret > 0 && (read(mini->signal_pipe[0], &sig, 1)) > 0 && (sig == SIGINT))
-		{
-			kill(prcs->pid, SIGINT);
-			write(STDOUT_FILENO, "\n", 1);
-		}
-		if (waitpid(prcs->pid, &prcs->status, WNOHANG) != 0)
-			break ;
-	}
+// 	while (1)
+// 	{
+// 		FD_ZERO(&readfds);
+// 		FD_SET(mini->signal_pipe[0], &readfds);
+// 		tv.tv_sec = 0;
+// 		tv.tv_usec = 100000;
+// 		ret = select(mini->signal_pipe[0] + 1, &readfds, NULL, NULL, &tv);
+// 		if (ret == -1 && errno != EINTR)
+// 		{
+// 			perror("select");
+// 			break ;
+// 		}
+// 		else if (ret > 0 && (read(mini->signal_pipe[0], &sig, 1)) > 0 && (sig == SIGINT))
+// 		{
+// 			kill(prcs->pid, SIGINT);
+// 			write(STDOUT_FILENO, "\n", 1);
+// 		}
+// 		if (waitpid(prcs->pid, &prcs->status, WNOHANG) != 0)
+// 			break ;
+// 	}
+// }
+
+void wait_for_child(t_process *prcs)
+{
+    int status;
+    pid_t wpid;
+
+    while ((wpid = waitpid(prcs->pid, &status, WUNTRACED)) > 0)
+    {
+        if (WIFEXITED(status) || WIFSIGNALED(status))
+        {
+            prcs->status = status;
+            break;
+        }
+    }
+
+    // After the child process finishes, restore the custom SIGINT handler
+    restore_main_signals();
 }
