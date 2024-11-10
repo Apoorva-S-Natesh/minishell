@@ -26,6 +26,7 @@ void	init_shell(t_shell *mini, char **envv)
 	mini->input = NULL;
 	mini->commands = NULL;
 	mini->last_exit_status = 0;
+	mini->expand_heredoc = 0;
 	set_envv(mini, envv);
 }
 

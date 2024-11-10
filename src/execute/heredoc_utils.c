@@ -17,10 +17,15 @@ void	write_heredoc_line(int fd, char *line, t_shell *mini)
 {
 	char	*expanded_line;
 
+	if (!line || !mini)
+		return ;
+	expanded_line = NULL;
 	if (mini->expand_heredoc)
 		expanded_line = expand_value(line, mini);
 	else
 		expanded_line = expand_value(line, mini);
+	if (!expanded_line)
+		return ;
 	write(fd, expanded_line, ft_strlen(expanded_line));
 	if (expanded_line != line)
 		free(expanded_line);

@@ -89,6 +89,6 @@ int	handle_heredoc(const char *delimiter, t_shell *mini)
 	result = handle_heredoc_parent(&hd_prcs, mini);
 	restore_main_signals();
 	if (result == -1 && mini->last_exit_status == 130)
-        return (-2);  // Special value to indicate SIGINT interruption
+		return (-2);  // Special value to indicate SIGINT interruption
 	return (result);
 }

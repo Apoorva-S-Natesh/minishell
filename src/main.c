@@ -52,4 +52,3 @@ int	main(int ac, char **av, char **envv)
 	free_list(mini.env);
 	return (0);
 }
-

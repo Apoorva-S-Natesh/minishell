@@ -72,6 +72,3 @@ check_leaks: $(NAME) readline.supp
 	--suppressions=readline.supp ./$(NAME)
 
 .PHONY: all clean fclean re check_leaks
-
-##You might want to add readline.supp to your .gitignore file if you're using git, to avoid committing it to your repository.
-##With these changes, you can now run make check_leaks to check for memory leaks while ignoring those from the readline library.
