@@ -22,7 +22,7 @@ SRC	= $(addprefix src/, main.c /input/take_input.c /input/init_shell.c \
 		/utils/envv_utils.c /utils/free_utils.c /utils/close_program.c \
 		/utils/ft_strtok.c /parser/token.c /parser/token_maker.c \
 		/parser/command.c /parser/token_to_command.c  \
-		/parser/expand_value.c \
+		/parser/expand_value.c /parser/validate_tokens.c\
 		/parser/expand.c /parser/quotes.c /parser/parsing_redirection.c \
 		/execute/execute.c /execute/execution.c /execute/signals.c \
 		/execute/builtin_cd.c /execute/builtin_echo.c /execute/builtin_pwd.c \

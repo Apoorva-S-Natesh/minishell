@@ -190,6 +190,7 @@ void			free_command(t_command *command);
 
 //CREATE TOKEN
 t_token			*tokenize(t_shell *mini);
+int				validate_tokens(t_token *tokens);
 void			handle_word(t_shell *mini, int *i, t_token **tokens);
 void			set_redi_and_pipes(t_shell *mini, int *i, t_token **tokens);
 int				handle_quotes(t_shell *mini, int *i, t_token **tokens);

@@ -15,6 +15,12 @@
 void	execute_minishell(t_shell *mini, t_token *tokens)
 {
 	expand_tokens(&tokens, mini);
+	if (!validate_tokens(tokens))
+	{
+		printf("syntax error near unexpected token `|'\n");
+		free_tokens(tokens);
+		return ;
+	}
 	//print_tokens(tokens);
 	mini->commands = group_tokens_to_cmd(tokens);
 	set_cmd_priorities(mini->commands);

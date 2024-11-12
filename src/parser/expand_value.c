@@ -14,7 +14,7 @@
 
 static int resize_result(t_expand_info *info, size_t needed)
 {
-    char    *new_result;
+	char    *new_result;
     size_t  new_size;
 
     new_size = info->size;

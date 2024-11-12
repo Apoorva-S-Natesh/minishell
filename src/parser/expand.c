@@ -1,25 +1,4 @@
 #include "../../includes/minishell.h"
-/*
-void expand_tokens(t_token *tokens, t_shell *mini)
-{
-    t_token *current;
-	char *expanded;
-
-	current = tokens;
-    while (current && current->value)
-	{
-        if (current->type != SINGLE_Q && ft_strchr(current->value, '$'))
-		{
-            expanded = expand_value(current->value, mini);
-            if (expanded )
-			{
-                free(current->value);
-                current->value = expanded;
-            }
-        }
-        current = current->next;
-    }
-}*/
 
 static int expand_token_value(t_token *token, t_shell *mini)
 {
