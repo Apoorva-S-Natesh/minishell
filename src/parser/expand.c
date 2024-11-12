@@ -1,5 +1,5 @@
 #include "../../includes/minishell.h"
-
+/*
 void expand_tokens(t_token *tokens, t_shell *mini)
 {
     t_token *current;
@@ -11,13 +11,63 @@ void expand_tokens(t_token *tokens, t_shell *mini)
         if (current->type != SINGLE_Q && ft_strchr(current->value, '$'))
 		{
             expanded = expand_value(current->value, mini);
-            if (expanded)
+            if (expanded )
 			{
                 free(current->value);
                 current->value = expanded;
             }
         }
         current = current->next;
+    }
+}*/
+
+static int expand_token_value(t_token *token, t_shell *mini)
+{
+    char *expanded;
+
+    if (token->type != SINGLE_Q && ft_strchr(token->value, '$'))
+    {
+        expanded = expand_value(token->value, mini);
+        if (expanded)
+        {
+            if (*expanded == '\0')
+            {
+                free(expanded);
+                return (0);
+            }
+            free(token->value);
+            token->value = expanded;
+        }
+    }
+    return (1);
+}
+
+void expand_tokens(t_token **tokens, t_shell *mini)
+{
+    t_token *current;
+    t_token *prev;
+	t_token *temp;
+
+	current = *tokens;
+	prev = NULL;
+    while (current)
+    {
+        if (!expand_token_value(current, mini))
+        {
+            if (prev)
+                prev->next = current->next;
+            else
+                *tokens = current->next;
+
+            temp = current;
+            current = current->next;
+            free(temp);
+        }
+        else
+        {
+            prev = current;
+            current = current->next;
+        }
     }
 }
 

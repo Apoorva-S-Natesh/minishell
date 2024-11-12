@@ -200,7 +200,7 @@ void			append_or_concat_token(t_token **tokens, char *value, int type, int quote
 t_token			*get_last_token(t_token *tokens);
 
 //EXPAND TOKENS
-void			expand_tokens(t_token *tokens, t_shell *mini);
+void			expand_tokens(t_token **tokens, t_shell *mini);
 char			*expand_value(char	*token, t_shell *mini);
 char			*extract_env(char **ptr, t_shell *mini);
 char			*get_env_value(const char *name, t_env *env_list);
@@ -273,7 +273,7 @@ void			initialize_pipe_info(t_pipe_info *pipe_info);
 void			cleanup_pipes(t_command *cmd, t_pipe_info *pipe_info);
 int				create_pipe(int pipe_fd[2]);
 
-//redirections 
+//redirections
 
 void			print_err_msg(const char *filename, const char *message);
 int				setup_input_redir(t_process *prcs, t_redirection *redir,\
