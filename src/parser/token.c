@@ -116,7 +116,7 @@ void handle_word(t_shell *mini, int *i, t_token **tokens)
     {
         buffer[buffer_index] = '\0';
 		char *cleaned_str = remove_quotes(buffer);
-        append_token(tokens, cleaned_str, WORD, 0);
+		append_or_concat_token(tokens, cleaned_str, WORD, 0);
 		free(cleaned_str);
     }
 }
@@ -138,7 +138,7 @@ t_token	*tokenize(t_shell *mini)
 				return (NULL); // Handle unclosed quotes
 			continue ;
 		}
-		if (mini->input[i] == '|' || mini->input[i] == '<' || 
+		if (mini->input[i] == '|' || mini->input[i] == '<' ||
 			mini->input[i] == '>')
 		{
 			set_redi_and_pipes(mini, &i, &tokens);
