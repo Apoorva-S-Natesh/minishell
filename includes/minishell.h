@@ -99,10 +99,8 @@ typedef struct s_token
 typedef struct s_command
 {
 	char			**tokens; //array of nodes of tokes
-//	int				type; //1 for builtin - 0 for path
 	int				priority; // 1 for << , increase from left to right, 0 if quotes failed
 	t_redirection	*redirection; // if there are < or > or >> inside the command. Pointer to the list
-//	t_command		*prev;
 	t_command		*next;
 }	t_command;
 
@@ -111,6 +109,7 @@ typedef struct s_shell
 	t_command		*commands; //pointer to the head of commands list
 	char			*input; //store the original input (?)
 	t_env			*env;
+	t_token			*token;
 	int				running_status;
 	int				signal_received;
 	char			cwd[1024];

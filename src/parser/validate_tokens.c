@@ -2,8 +2,7 @@
 
 static int is_special_token(t_token *token)
 {
-    if (token->type == PIPE || token->type == RED_IN ||\
-	 token->type == RED_OUT || token->type == APPEND || token->type == HEREDOC)
+    if (token->type == PIPE)
 		return (1);
 	else
 		return (0);

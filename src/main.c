@@ -22,6 +22,7 @@ void	execute_minishell(t_shell *mini, t_token *tokens)
 		return ;
 	}
 	//print_tokens(tokens);
+	mini->token = tokens;
 	mini->commands = group_tokens_to_cmd(tokens);
 	set_cmd_priorities(mini->commands);
 	//print_commands(mini->commands);

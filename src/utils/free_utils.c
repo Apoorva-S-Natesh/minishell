@@ -60,9 +60,14 @@ void	free_redirections(t_redirection *redirection)
 	{
 		tmp = redirection;
 		redirection = redirection->next;
+		if (tmp->input_file)
+			free(tmp->input_file);
+		if (tmp->output_file)
+			free(tmp->output_file);
 		free(tmp);
 	}
 }
+
 
 void	free_command(t_command *command)
 {

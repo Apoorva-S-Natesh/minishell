@@ -69,5 +69,6 @@ void	builtin_exit(char **tokens, t_shell *mini, int size)
 	}
 	free_command(mini->commands);
 	free_list(mini->env);
+	free_tokens(mini->token);
 	exit(exit_status);
 }
