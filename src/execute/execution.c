@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:31:30 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/14 14:09:23 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 18:03:27 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,9 @@ int	execute_command(t_command *cmd, t_process *prcs, t_shell *mini)
 	signal(SIGQUIT, SIG_DFL);
 	env_array = create_env_array(mini->env);
 	prcs->cmd_path = find_command(cmd->tokens[0], mini->env);
+	printf("CMD_PATH %s\n", prcs->cmd_path);
 	status = check_file_status(prcs->cmd_path);
+	printf("the status %d\n", status);
 	if (status != 0)
 	{
 		handle_command_error(prcs->cmd_path, cmd->tokens[0], status);
@@ -47,9 +49,9 @@ int	check_file_status(const char *cmd_path)
 {
 	struct stat	st;
 
-	if (ft_strcmp(cmd_path, "") == 0)
-		return (127);
 	if (!cmd_path)
+		return (127);
+	if (ft_strcmp(cmd_path, "") == 0)
 		return (127);
 	if (access(cmd_path, F_OK) != 0)
 		return (127);
@@ -64,9 +66,9 @@ void	handle_command_error(const char *cmd_path, const char *cmd_name, int status
 {
 	struct stat	st;
 
-	if (status == 127 && ft_strcmp(cmd_path, "") == 0)
+	if (status == 127 && !cmd_path)
 		print_err_msg(cmd_name, "command not found");
-	else if (status == 127 && !cmd_path)
+	else if (status == 127 && ft_strcmp(cmd_path, "") == 0)
 		print_err_msg(cmd_name, "command not found");
 	else if (status == 127)
 		print_err_msg(cmd_name, strerror(errno));
