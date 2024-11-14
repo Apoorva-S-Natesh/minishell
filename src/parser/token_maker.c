@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 09:30:01 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 13:43:08 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 14:13:23 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,6 @@ void set_concat_flag(char *input, int i, t_token *last_token)
 	{
 		last_token->concat_flag = 1;
 	}
-	print_tokens(last_token);
 }
 
 void	append_or_concat_token(t_token **tokens, char *value, int type, int quote_type)
