@@ -9,14 +9,16 @@ static int expand_token_value(t_token *token, t_shell *mini)
         expanded = expand_value(token->value, mini);
         if (expanded)
         {
-            if (*expanded == '\0')
+            /*if (*expanded == '\0')
             {
                 free(expanded);
                 return (0);
-            }
+            }*/
             free(token->value);
             token->value = expanded;
         }
+        else
+            return (0);
     }
     return (1);
 }
