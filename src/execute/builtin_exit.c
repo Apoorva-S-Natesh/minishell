@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 13:01:38 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/30 17:06:32 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 15:08:53 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@ More than one argument: prints an error message and doesn't exit.
 */
 
 #include "../../includes/minishell.h"
+
+static void	free_everything(t_shell *mini);
+static char	is_valid_exit_arg(const char *arg);
+static void	print_exit_error(const char *arg, const char *message);
 
 static char	is_valid_exit_arg(const char *arg)
 {
@@ -41,6 +45,13 @@ static void	print_exit_error(const char *arg, const char *message)
 	ft_putstr_fd(": ", 2);
 	ft_putstr_fd(message, 2);
 	ft_putstr_fd("\n", 2);
+}
+
+static void	free_everything(t_shell *mini)
+{
+	free_command(mini->commands);
+	free_list(mini->env);
+	free_tokens(mini->token);
 }
 
 void	builtin_exit(char **tokens, t_shell *mini, int size)
@@ -67,8 +78,6 @@ void	builtin_exit(char **tokens, t_shell *mini, int size)
 			}
 		}
 	}
-	free_command(mini->commands);
-	free_list(mini->env);
-	free_tokens(mini->token);
+	free_everything(mini);
 	exit(exit_status);
 }

@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 13:02:43 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/30 21:48:05 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 15:26:27 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static void	deloneenv(t_env **last, t_env *current, t_env *headcopy)
 {
 	if (!last || !(*last) || !current)
 		return ;
-
 	if (*last != current)
 	{
 		(*last)->next = current->next;
@@ -70,13 +69,6 @@ void	builtin_unset(t_shell *mini, char **args)
 				mini->last_exit_status = 0;
 			}
 		}
-		// else
-		// {
-		// 	ft_putstr_fd("minishell: unset: `", 2);
-		// 	ft_putstr_fd(args[i], 2);
-		// 	ft_putstr_fd(": not a valid identifier\n", 2);
-		// 	mini->last_exit_status = 1;
-		// }
 		i++;
 	}
 }

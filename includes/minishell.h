@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/01 13:33:38 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 15:22:03 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,7 +299,8 @@ void			builtin_exit(char **tokens, t_shell *mini, int size);
 int				is_valid_identifier(const char *str);
 void			builtin_export(char **tokens, t_shell *mini, int in_pipeline);
 void			print_exported_vars(t_env *env);
-int				set_env_variable(t_shell *mini, const char *key, const char *value);
+int				set_env_variable(t_shell *mini, const char *key, \
+const char *value);
 void			builtin_pwd(t_shell *mini);
 void			builtin_unset(t_shell *mini, char **args);
 

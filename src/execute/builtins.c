@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:51:04 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/01 16:59:56 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 15:27:03 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 char	is_builtin(t_command *cmd)
 {
 	if (!cmd || !cmd->tokens || !cmd->tokens[0])
-		return 0;
+		return (0);
 	if ((strcmp(cmd->tokens[0], "echo") == 0) || 
 		(strcmp(cmd->tokens[0], "cd") == 0) || 
 		(strcmp(cmd->tokens[0], "pwd") == 0) || 
@@ -29,7 +29,7 @@ char	is_builtin(t_command *cmd)
 	return (0);
 }
 
- //change to libft strcmp (now string.h strcmp)
+//change to libft strcmp (now string.h strcmp)
 void	handle_builtin(t_command *cmd, t_shell *mini, int in_pipeline)
 {
 	int	size;
