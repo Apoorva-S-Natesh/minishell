@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+         #
+#    By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/17 11:23:39 by aschmidt          #+#    #+#              #
-#    Updated: 2024/11/14 16:34:52 by aschmidt         ###   ########.fr        #
+#    Updated: 2024/11/14 19:52:42 by asomanah         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,8 @@ SRC	= $(addprefix src/, main.c /input/take_input.c /input/init_shell.c \
 		/execute/exec_path.c print.c /execute/export_utils.c\
 		/execute/execute_utils.c /execute/redirections.c \
 		/execute/heredoc_utils.c /execute/builtin_export.c \
-		/execute/execute_child.c /execute/process_utils.c)
+		/execute/execute_child.c /execute/process_utils.c \
+		/execute/export_set_env.c)
 
 LIBFT_PATH	= libft/
 

@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 16:24:06 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 19:21:40 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef MINISHELL_H
 #define MINISHELL_H
@@ -300,7 +301,8 @@ void			builtin_exit(char **tokens, t_shell *mini, int size);
 int				is_valid_identifier(const char *str);
 void			builtin_export(char **tokens, t_shell *mini, int in_pipeline);
 void			print_exported_vars(t_env *env);
-int				set_env_variable(t_shell *mini, const char *key, const char *value);
+int				set_env_variable(t_shell *mini, const char *key, \
+const char *value);
 void			builtin_pwd(t_shell *mini);
 void			builtin_unset(t_shell *mini, char **args);
 
@@ -309,10 +311,17 @@ void			initialize_pipe_info(t_pipe_info *pipe_info);
 void			free_env_array(char **env_array);
 int				many_args(int num_args);
 
+// Builtin in child process
+void			setup_child_pipes(t_pipe_info *pipe_info);
+void			handle_parent_pipes(t_pipe_info *pipe_info);
+void			wait_for_child_builtin(pid_t pid, t_shell *mini);
+
+
 //PRINT DEBUG FUNCTIONS
 void print_redirections(t_redirection *redir);
 void print_command_tokens(t_command *cmd);
 void print_commands(t_command *commands);
 void print_tokens(t_token *tokens);
+void execute_builtin_in_child(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info);
 
 #endif
