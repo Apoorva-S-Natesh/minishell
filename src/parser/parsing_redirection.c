@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing_redirection.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/14 19:13:41 by aschmidt          #+#    #+#             */
+/*   Updated: 2024/11/14 19:20:41 by aschmidt         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 void	handle_redirection(t_command **cmd, t_token **current_token)
@@ -11,60 +23,59 @@ void	handle_redirection(t_command **cmd, t_token **current_token)
 	*current_token = next_token;
 }
 
-void add_redi_to_cmd(t_command *cmd, t_token *redir_token, char *filename)
+void	add_redi_to_cmd(t_command *cmd, t_token *redir_token, char *filename)
 {
-    t_redirection *redir;
+	t_redirection	*redir;
 
 	redir = malloc(sizeof(t_redirection));
-    if (!redir)
+	if (!redir)
 		return ;
 	redir->input_file = NULL;
-    redir->output_file = NULL;
-    redir->type = 0;
-    redir->next = NULL;
-    set_redi_type(redir, redir_token, filename);
-    append_redi(cmd, redir);
+	redir->output_file = NULL;
+	redir->type = 0;
+	redir->next = NULL;
+	set_redi_type(redir, redir_token, filename);
+	append_redi(cmd, redir);
 }
 
-void set_redi_type(t_redirection *redir, t_token *redir_token, char *filename)
+void	set_redi_type(t_redirection *redir, \
+	t_token *redir_token, char *filename)
 {
-    if (redir_token->type == RED_IN)
+	if (redir_token->type == RED_IN)
 	{
-        redir->input_file = ft_strdup(filename);
+		redir->input_file = ft_strdup(filename);
 		redir->type = 1;
 	}
-    else if (redir_token->type == RED_OUT)
+	else if (redir_token->type == RED_OUT)
 	{
-        redir->output_file = ft_strdup(filename);
+		redir->output_file = ft_strdup(filename);
 		redir->type = 2;
 	}
-    else if (redir_token->type == APPEND)
-    {
-        redir->output_file = ft_strdup(filename);
-        redir->type = 3;
-    }
+	else if (redir_token->type == APPEND)
+	{
+		redir->output_file = ft_strdup(filename);
+		redir->type = 3;
+	}
 	else if (redir_token->type == HEREDOC)
-    {
-        redir->input_file = ft_strdup(filename);
-        redir->type = 4;
-    }
+	{
+		redir->input_file = ft_strdup(filename);
+		redir->type = 4;
+	}
 }
 
-
-void append_redi(t_command *cmd, t_redirection *redir)
+void	append_redi(t_command *cmd, t_redirection *redir)
 {
-	t_redirection *temp;
+	t_redirection	*temp;
 
-    if (!cmd->redirection)
-        cmd->redirection = redir;
-    else
-    {
-        temp = cmd->redirection;
-        while (temp->next)
-            temp = temp->next;
-        temp->next = redir;
-    }
+	if (!cmd->redirection)
+		cmd->redirection = redir;
+	else
+	{
+		temp = cmd->redirection;
+		while (temp->next)
+			temp = temp->next;
+		temp->next = redir;
+	}
 	if (redir->type == 4)
 		cmd->priority = 0;
 }
-
