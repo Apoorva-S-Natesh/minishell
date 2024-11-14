@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_maker.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 09:30:01 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/10/30 16:31:36 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 13:30:01 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@ e_token_type	classify_token(char *token_value)
 
 void set_concat_flag(char *input, int i, t_token *last_token)
 {
+	if (!last_token)
+		return ;
 	if (input[i] && !ft_isspace(input[i]) && input[i] != '|' && input[i] != '<' && input[i] != '>')
 	{
 		last_token->concat_flag = 1;
