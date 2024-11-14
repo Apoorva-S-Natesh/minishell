@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 09:30:01 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 14:13:23 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 22:07:57 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void append_token(t_token **tokens, char *value, e_token_type type, int quote_ty
     t_token *new;
     t_token *current;
 
-   /* if (ft_strlen(value) == 0)
+   /*if (ft_strlen(value) == 0)
         return;*/
     new = init_empty_token();
     if (!new)
@@ -41,7 +41,7 @@ void append_token(t_token **tokens, char *value, e_token_type type, int quote_ty
     new->value = ft_strdup(value);
     if (!new->value)
     {
-        free(new); // Free the token if value allocation fails
+        free(new);
         return;
     }
     new->type = type;

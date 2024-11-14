@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 10:41:01 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 15:55:10 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 22:24:37 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	execute_minishell(t_shell *mini, t_token *tokens)
 {
+	print_tokens(tokens);
 	expand_tokens(&tokens, mini);
 	if (!validate_tokens(tokens))
 	{

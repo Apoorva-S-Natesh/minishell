@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 14:24:35 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/14 16:52:48 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 20:55:32 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ static int	handle_dollar_sign(t_expand_info *info)
 	}
 	return (1);
 }
+
 
 static int	append_char(t_expand_info *info, char c)
 {

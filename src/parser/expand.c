@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:59:46 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 19:06:25 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 22:21:06 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,23 @@
 
 static int	expand_token_value(t_token *token, t_shell *mini)
 {
-	char	*expanded;
+	char *expanded;
 
-	if (token->type != SINGLE_Q && ft_strchr(token->value, '$'))
-	{
-		expanded = expand_value(token->value, mini);
-		if (expanded)
-		{
-			free(token->value);
-			token->value = expanded;
-		}
-		else
-			return (0);
-	}
-	return (1);
+    if (token->type != SINGLE_Q && ft_strchr(token->value, '$'))
+    {
+        expanded = expand_value(token->value, mini);
+        if (expanded)
+        {
+            if (*expanded == '\0')
+            {
+                free(expanded);
+                return (0);
+            }
+            free(token->value);
+            token->value = expanded;
+        }
+    }
+    return (1);
 }
 
 void	expand_tokens(t_token **tokens, t_shell *mini)
@@ -72,7 +75,8 @@ char	*extract_env(char **ptr, t_shell *mini)
 		return (ft_itoa(mini->last_exit_status));
 	}
 	while (**ptr && (ft_isalnum(**ptr) || **ptr == '_'))
-		var_length = *ptr - var_start;
+		(*ptr)++;
+	var_length = *ptr - var_start;
 	var_name = malloc(var_length + 1);
 	if (!var_name)
 		return (NULL);
