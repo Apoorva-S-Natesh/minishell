@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 10:41:01 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 12:12:00 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 15:55:10 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,9 @@ void	execute_minishell(t_shell *mini, t_token *tokens)
 		free_tokens(tokens);
 		return ;
 	}
-	//print_tokens(tokens);
 	mini->token = tokens;
 	mini->commands = group_tokens_to_cmd(tokens);
 	set_cmd_priorities(mini->commands);
-	//print_commands(mini->commands);
 	execute(mini);
 	free_tokens(tokens);
 	free_command(mini->commands);

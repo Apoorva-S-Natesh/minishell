@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/01 13:33:38 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 16:24:06 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdlib.h>
 # include <unistd.h>
 # include <string.h>
+# include <stddef.h>
 # include <sys/wait.h>
 # include <fcntl.h>
 # include <signal.h>

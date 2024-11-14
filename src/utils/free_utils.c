@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/23 13:33:37 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/10/29 14:30:38 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 16:22:44 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ void	free_tokens(t_token *tokens)
 	}
 }
 
-
 void	free_env_array(char **env_array)
 {
 	int	i;
@@ -68,7 +67,6 @@ void	free_redirections(t_redirection *redirection)
 	}
 }
 
-
 void	free_command(t_command *command)
 {
 	t_command	*tmp;
@@ -83,10 +81,10 @@ void	free_command(t_command *command)
 			i = 0;
 			while (tmp->tokens[i] != NULL)
 			{
-				free(tmp->tokens[i]); // Free token strings
+				free(tmp->tokens[i]);
 				i++;
 			}
-			free(tmp->tokens); // Free the tokens array itself
+			free(tmp->tokens);
 		}
 		free_redirections(tmp->redirection);
 		free(tmp);

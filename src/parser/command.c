@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/31 13:09:20 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/31 13:11:14 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 16:37:23 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,26 +68,27 @@ void	append_command(t_command **head, t_command *new_command)
 	}
 }
 
-void set_cmd_priorities(t_command *cmd_head)
+void	set_cmd_priorities(t_command *cmd_head)
 {
-    int priority = 0;
-    t_command *cmd = cmd_head;
+	int			priority;
+	t_command	*cmd;
 
-    // First pass to count how many heredoc commands (priority == 0) exist
-    while (cmd != NULL)
-    {
-        if (cmd->priority == 0)
-            priority++;  // Count heredoc commands to start non-heredoc priorities later
-        cmd = cmd->next;
-    }
-    // Second pass to assign increasing priority for commands without heredoc
-    cmd = cmd_head;
-    while (cmd != NULL)
-    {
-        if (cmd->priority != 0) {  // Skip commands with heredoc priority
-            cmd->priority = priority;
-            priority++;
-        }
-        cmd = cmd->next;
-    }
+	priority = 0;
+	cmd = cmd_head;
+	while (cmd != NULL)
+	{
+		if (cmd->priority == 0)
+			priority++;
+		cmd = cmd->next;
+	}
+	cmd = cmd_head;
+	while (cmd != NULL)
+	{
+		if (cmd->priority != 0)
+		{
+			cmd->priority = priority;
+			priority++;
+		}
+		cmd = cmd->next;
+	}
 }

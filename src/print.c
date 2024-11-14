@@ -1,25 +1,35 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/14 15:56:42 by aschmidt          #+#    #+#             */
+/*   Updated: 2024/11/14 15:58:31 by aschmidt         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-void print_tokens(t_token *tokens) {
+void print_tokens(t_token *tokens)
+{
     t_token *current = tokens;
 
-    while (current != NULL) {
-        // Print the value of the token
+    current = tokens;
+    while (current != NULL)
+    {
         printf("Value: %s, ", current->value);
 		printf("Flag: %d, ", current->concat_flag);
 		printf("Type: %d, ", current->type);
-        // Print the quote status of the token
-        if (current->quote == 0) {
+        if (current->quote == 0)
             printf("Quote: None\n");
-        } else if (current->quote == 1) {
+        else if (current->quote == 1)
             printf("Quote: Single Quote\n");
-        } else if (current->quote == 2) {
+        else if (current->quote == 2)
             printf("Quote: Double Quote\n");
-        } else {
+        else
             printf("Quote: Invalid\n");
-        }
-
-        // Move to the next token
         current = current->next;
     }
 }
