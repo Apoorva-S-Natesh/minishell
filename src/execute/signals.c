@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:51:39 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/31 17:55:40 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 21:40:31 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,20 +22,10 @@ void	handle_sigint(int signum)
 	rl_redisplay();
 }
 
-void	handle_sigquit(int signum)
-{
-	(void)signum;
-}
-
-void	handle_child_sigquit(int signum)
-{
-	(void)signum;
-}
-
 void	setup_heredoc_signals(void)
 {
-    signal(SIGINT, SIG_IGN);  // Ignore SIGINT in the parent
-    signal(SIGQUIT, SIG_IGN); // Ignore SIGQUIT in the parent
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 }
 
 void	setup_child_signals(void)
@@ -52,11 +42,10 @@ void	restore_main_signals(void)
 	sa_int.sa_handler = handle_sigint;
 	sigemptyset(&sa_int.sa_mask);
 	sa_int.sa_flags = SA_RESTART;
-	
 	sa_quit.sa_handler = SIG_IGN;
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_flags = SA_RESTART;
-	if (sigaction(SIGINT, &sa_int, NULL) == -1 ||
+	if (sigaction(SIGINT, &sa_int, NULL) == -1 || 
 		sigaction(SIGQUIT, &sa_quit, NULL) == -1)
 	{
 		perror("sigaction");
@@ -77,46 +66,13 @@ void	setup_sig_handling(t_shell *mini)
 	sa_int.sa_handler = handle_sigint;
 	sigemptyset(&sa_int.sa_mask);
 	sa_int.sa_flags = SA_RESTART;
-	sa_quit.sa_handler = handle_sigquit;
+	sa_quit.sa_handler = SIG_IGN;
 	sigemptyset(&sa_quit.sa_mask);
 	sa_quit.sa_flags = SA_RESTART;
-	if (sigaction(SIGINT, &sa_int, NULL) == -1 ||
+	if (sigaction(SIGINT, &sa_int, NULL) == -1 || 
 		sigaction(SIGQUIT, &sa_quit, NULL) == -1)
 	{
 		perror("sigaction");
 		exit(1);
 	}
-}
-//cleanup function for signals
-void cleanup_signal_pipe(t_shell *mini)
-{
-    if (mini->signal_pipe[0] != -1)
-    {
-        close(mini->signal_pipe[0]);
-        mini->signal_pipe[0] = -1;
-    }
-    if (mini->signal_pipe[1] != -1)
-    {
-        close(mini->signal_pipe[1]);
-        mini->signal_pipe[1] = -1;
-    }
-}
-
-//To disable the ^C and ^\ on terminal
-void	disable_ctrl_signals(void)
-{
-	struct termios	term;
-
-	tcgetattr(STDIN_FILENO, &term);
-	term.c_lflag &= ~ECHOCTL;
-	tcsetattr(STDIN_FILENO, TCSANOW, &term);
-}
-
-void	restore_terminal(void)
-{
-	struct termios	term;
-
-	tcgetattr(STDIN_FILENO, &term);
-	term.c_lflag |= ECHOCTL;
-	tcsetattr(STDIN_FILENO, TCSANOW, &term);
 }

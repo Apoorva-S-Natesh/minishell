@@ -6,18 +6,15 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 13:01:38 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/30 17:06:32 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 19:41:34 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/*
-No arguments: exits with the status of the last executed command.
-One numeric argument: exits with that status (adjusted to be between 0-255).
-Non-numeric argument: prints an error and exits with status 255.
-More than one argument: prints an error message and doesn't exit.
-*/
-
 #include "../../includes/minishell.h"
+
+static char	is_valid_exit_arg(const char *arg);
+static void	print_exit_error(const char *arg, const char *message);
+static void	free_at_exit(t_shell *mini);
 
 static char	is_valid_exit_arg(const char *arg)
 {
@@ -41,6 +38,13 @@ static void	print_exit_error(const char *arg, const char *message)
 	ft_putstr_fd(": ", 2);
 	ft_putstr_fd(message, 2);
 	ft_putstr_fd("\n", 2);
+}
+
+static void	free_at_exit(t_shell *mini)
+{
+	free_command(mini->commands);
+	free_list(mini->env);
+	free_tokens(mini->token);
 }
 
 void	builtin_exit(char **tokens, t_shell *mini, int size)
@@ -67,8 +71,6 @@ void	builtin_exit(char **tokens, t_shell *mini, int size)
 			}
 		}
 	}
-	free_command(mini->commands);
-	free_list(mini->env);
-	free_tokens(mini->token);
+	free_at_exit(mini);
 	exit(exit_status);
 }

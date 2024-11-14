@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_path.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 14:23:57 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/14 17:54:42 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 20:01:18 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,15 +60,28 @@ char	*check_cmd_in_path(char *cmd, char **paths)
 	return (NULL);
 }
 
+// Helper function to free paths
+void	free_paths(char **paths)
+{
+	int		i;
+
+	i = 0;
+	while (paths[i])
+	{
+		free(paths[i]);
+		i++;
+	}
+	free(paths);
+}
+
 //Main fucntion to find the full path of a command
 char	*find_command(char *cmd, t_env *variable)
 {
 	char	*path_env;
 	char	**paths;
 	char	*result;
-	int		i;
 
-	if (ft_strcmp(cmd,"") == 0)
+	if (ft_strcmp(cmd, "") == 0)
 	{
 		result = ft_strdup("");
 		return (result);
@@ -83,12 +96,6 @@ char	*find_command(char *cmd, t_env *variable)
 	if (!paths)
 		return (NULL);
 	result = check_cmd_in_path(cmd, paths);
-	i = 0;
-	while (paths[i])
-	{
-		free(paths[i]);
-		i++;
-	}
-	free(paths);
+	free_paths(paths);
 	return (result);
 }

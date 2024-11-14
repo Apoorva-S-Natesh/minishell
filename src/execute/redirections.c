@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 14:28:10 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/01 13:27:50 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 21:35:50 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	setup_input_redir(t_process *prcs, t_redirection *redir, t_shell *mini)
 	else if (redir->type == 4)
 	{
 		result = handle_heredoc(redir->input_file, mini);
-		if (result == -2 || result == -1) // SIGINT received during heredoc
+		if (result == -2 || result == -1)
 			return (result);
 		else 
 			prcs->input_fd = result;
