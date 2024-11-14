@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 15:22:03 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 15:42:03 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,10 +309,17 @@ void			initialize_pipe_info(t_pipe_info *pipe_info);
 void			free_env_array(char **env_array);
 int				many_args(int num_args);
 
+// Builtin in child process
+void			setup_child_pipes(t_pipe_info *pipe_info);
+void			handle_parent_pipes(t_pipe_info *pipe_info);
+void			wait_for_child_builtin(pid_t pid, t_shell *mini);
+
+
 //PRINT DEBUG FUNCTIONS
 void print_redirections(t_redirection *redir);
 void print_command_tokens(t_command *cmd);
 void print_commands(t_command *commands);
 void print_tokens(t_token *tokens);
+void execute_builtin_in_child(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info);
 
 #endif

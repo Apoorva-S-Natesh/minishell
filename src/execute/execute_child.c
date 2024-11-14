@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 14:24:35 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/01 13:20:48 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 15:35:33 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,35 +62,6 @@ int	handle_child_process(t_exec_info *exec_info)
 	err_no = execute_command(exec_info->cmd, exec_info->prcs, exec_info->mini);
 	return (err_no);
 }
-
-// void	wait_for_child(t_process *prcs, t_shell *mini)
-// {
-// 	fd_set			readfds;
-// 	struct timeval	tv;
-// 	int				ret;
-// 	char			sig;
-
-// 	while (1)
-// 	{
-// 		FD_ZERO(&readfds);
-// 		FD_SET(mini->signal_pipe[0], &readfds);
-// 		tv.tv_sec = 0;
-// 		tv.tv_usec = 100000;
-// 		ret = select(mini->signal_pipe[0] + 1, &readfds, NULL, NULL, &tv);
-// 		if (ret == -1 && errno != EINTR)
-// 		{
-// 			perror("select");
-// 			break ;
-// 		}
-// 		else if (ret > 0 && (read(mini->signal_pipe[0], &sig, 1)) > 0 && (sig == SIGINT))
-// 		{
-// 			kill(prcs->pid, SIGINT);
-// 			write(STDOUT_FILENO, "\n", 1);
-// 		}
-// 		if (waitpid(prcs->pid, &prcs->status, WNOHANG) != 0)
-// 			break ;
-// 	}
-// }
 
 void wait_for_child(t_process *prcs)
 {

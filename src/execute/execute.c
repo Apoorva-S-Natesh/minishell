@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:51:27 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/01 13:38:44 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 15:42:37 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,46 +40,73 @@ void	execute(t_shell *mini)
 	finish_execution(mini);
 }
 
-void	execute_single_command(t_command *cmd, t_process *prcs, \
-t_shell *mini, t_pipe_info *pipe_info)
+void execute_single_command(t_command *cmd, t_process *prcs, t_shell *mini, t_pipe_info *pipe_info)
 {
-	int	redir_result;
+    int redir_result;
+    int in_pipeline = 0;
 
-	if (cmd->next) // if (cmd->next || (!cmd->tokens || !cmd->tokens[0]))
-	{
-		if (create_pipe(pipe_info->pipe_fd) == -1)
-			return ;
-	}
-	else
-	{
-		pipe_info->pipe_fd[0] = -1;
-		pipe_info->pipe_fd[1] = -1;
-	}
-	redir_result = setup_redirs(cmd, prcs, &mini->redir_info, mini);
-	if (redir_result <= 0)
-	{
-		handle_redir_error(redir_result, mini);
-		return ;
-	}
-	if (is_builtin(cmd))
-		execute_builtin(cmd, mini, pipe_info);
-	else if (cmd->tokens && cmd->tokens[0])
-		execute_non_builtin(cmd, prcs, mini, pipe_info);
-	handle_exection_pipes(pipe_info, cmd);
+    if (cmd->next || pipe_info->prev_pipe[0] != -1)
+    {
+        in_pipeline = 1;
+        if (create_pipe(pipe_info->pipe_fd) == -1)
+            return;
+    }
+    else
+    {
+        pipe_info->pipe_fd[0] = -1;
+        pipe_info->pipe_fd[1] = -1;
+    }
+    redir_result = setup_redirs(cmd, prcs, &mini->redir_info, mini);
+    if (redir_result <= 0)
+    {
+        handle_redir_error(redir_result, mini);
+        return;
+    }
+    if (is_builtin(cmd))
+    {
+        if (in_pipeline)
+            execute_builtin_in_child(cmd, mini, pipe_info);
+        else
+            execute_builtin(cmd, mini, pipe_info);
+    }
+    else if (cmd->tokens && cmd->tokens[0])
+        execute_non_builtin(cmd, prcs, mini, pipe_info);
+
+    handle_exection_pipes(pipe_info, cmd);
+}
+
+void execute_builtin_in_child(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info)
+{
+    pid_t pid = fork();
+
+    if (pid == 0)
+    {
+        // Child process
+        setup_child_signals();
+        setup_child_pipes(pipe_info);
+        handle_builtin(cmd, mini, 1);
+        exit(mini->last_exit_status);
+    }
+    else if (pid < 0)
+    {
+        perror("fork");
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        // Parent process
+        handle_parent_pipes(pipe_info);
+        wait_for_child_builtin(pid, mini);
+    }
 }
 
 void	execute_builtin(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info)
 {
 	int	stdout_copy;
 	int stdin_copy;
-	int	in_pipeline;
 
 	stdout_copy = dup(STDOUT_FILENO);
-	stdin_copy = dup(STDIN_FILENO); // setting up input redirection as well for builtin
-	if (pipe_info->prev_pipe[0] != -1 || cmd->next != NULL)
-		in_pipeline = 1;
-	else
-		in_pipeline = 0;
+	stdin_copy = dup(STDIN_FILENO);
 	if (pipe_info->prev_pipe[0] != -1)
 	{
 		dup2(pipe_info->prev_pipe[0], STDIN_FILENO);
@@ -91,7 +118,7 @@ void	execute_builtin(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info)
 		dup2(pipe_info->pipe_fd[1], STDOUT_FILENO);
 		// close(pipe_info->pipe_fd[1]);
 	}
-	handle_builtin(cmd, mini, in_pipeline);
+	handle_builtin(cmd, mini, 0);
 	// Restore original stdout and stdin
 	dup2(stdout_copy, STDOUT_FILENO);
 	dup2(stdin_copy, STDIN_FILENO);
@@ -147,7 +174,7 @@ void handle_parent_process(t_exec_info *exec_info)
 		}
 		wait_for_child(exec_info->prcs);
 		handle_child_status(exec_info->prcs, exec_info->mini);
-    }
+	}
 }
 
 void	handle_exection_pipes(t_pipe_info *pipe_info, t_command *cmd)
@@ -172,4 +199,40 @@ void	handle_exection_pipes(t_pipe_info *pipe_info, t_command *cmd)
 			pipe_info->prev_pipe[1] = -1;
 		}
 	}
+}
+
+void setup_child_pipes(t_pipe_info *pipe_info)
+{
+    if (pipe_info->prev_pipe[0] != -1)
+    {
+        dup2(pipe_info->prev_pipe[0], STDIN_FILENO);
+        close(pipe_info->prev_pipe[0]);
+    }
+    if (pipe_info->pipe_fd[1] != -1)
+    {
+        dup2(pipe_info->pipe_fd[1], STDOUT_FILENO);
+        close(pipe_info->pipe_fd[1]);
+    }
+    if (pipe_info->pipe_fd[0] != -1)
+        close(pipe_info->pipe_fd[0]);
+}
+
+void handle_parent_pipes(t_pipe_info *pipe_info)
+{
+    if (pipe_info->prev_pipe[0] != -1)
+        close(pipe_info->prev_pipe[0]);
+    if (pipe_info->prev_pipe[1] != -1)
+        close(pipe_info->prev_pipe[1]);
+    pipe_info->prev_pipe[0] = pipe_info->pipe_fd[0];
+    pipe_info->prev_pipe[1] = pipe_info->pipe_fd[1];
+}
+
+void wait_for_child_builtin(pid_t pid, t_shell *mini)
+{
+    int status;
+    waitpid(pid, &status, 0);
+    if (WIFEXITED(status))
+        mini->last_exit_status = WEXITSTATUS(status);
+    else if (WIFSIGNALED(status))
+        mini->last_exit_status = 128 + WTERMSIG(status);
 }
