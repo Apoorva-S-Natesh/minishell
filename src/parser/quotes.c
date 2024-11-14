@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 19:34:10 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 19:34:13 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 22:58:49 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,34 +43,51 @@ char *extract_quoted_content(char *input, int *i, int quote_type, int buffer_ind
 	buffer = malloc(256);
 	if (buffer == NULL)
 		return (NULL);
-	(*i)++; // Move past the opening quote
+	(*i)++;
 	if (quote_type == SINGLE_Q)
 		closing_quote = '\'';
 	else
 		closing_quote = '\"';
-    while (input[*i] && input[*i] != closing_quote) // Extract content until the closing quote
+    while (input[*i] && input[*i] != closing_quote)
 	{
 		buffer[buffer_index++] = input[*i];
 		(*i)++;
 	}
     if (input[*i] == closing_quote)
 	{
-        buffer[buffer_index] = '\0'; // Null-terminate the buffer
-        (*i)++; // Move past the closing quote
-        return (buffer); // Return the extracted content
+        buffer[buffer_index] = '\0';
+        (*i)++;
+        return (buffer);
     }
-    free(buffer); // Free memory if unclosed quote
-    return (NULL); // Return NULL for unclosed quotes
+    free(buffer);
+    return (NULL);
+}
+
+static void	handle_double_quotes(t_shell *mini, int *i, t_token **tokens, char *quoted_content)
+{
+	char	*expanded_content;
+
+	expanded_content = NULL;
+	if (ft_strlen(quoted_content) > 0)
+	{
+		expanded_content = expand_value(quoted_content, mini);
+		append_or_concat_token(tokens, expanded_content, DOUBLE_Q, 2);
+		set_concat_flag(mini->input, *i, get_last_token(*tokens));
+		free(expanded_content);
+	}
+	else
+	{
+		append_or_concat_token(tokens, quoted_content, DOUBLE_Q, 2);
+		set_concat_flag(mini->input, *i, get_last_token(*tokens));
+	}
 }
 
 int handle_quotes(t_shell *mini, int *i, t_token **tokens)
 {
 	int		quote_type;
 	char	*quoted_content;
-	char	*expanded_content;
-	int		buffer_index; //just to not exceed 25 lines in the next function
+	int		buffer_index;
 
-	expanded_content = NULL;
 	buffer_index = 0;
 	if (mini->input[*i] == '\'')
 		quote_type = SINGLE_Q;
@@ -80,30 +97,15 @@ int handle_quotes(t_shell *mini, int *i, t_token **tokens)
 	if (quoted_content == NULL)
 	{
 		printf("Error: Unclosed quote detected!\n");
-		return (0); // Indicate an error
+		return (0);
 	}
-	if (quote_type == DOUBLE_Q) // Expand for double quotes, but directly append for single quotes
-	{
-		if (ft_strlen(quoted_content) > 0)
-		{
-			expanded_content = expand_value(quoted_content, mini);
-			if (!expanded_content)
-				return (0);
-			append_or_concat_token(tokens, expanded_content, DOUBLE_Q, 2); // Append expanded token
-			set_concat_flag(mini->input, *i, get_last_token(*tokens));
-			free(expanded_content); // Free after use
-		}
-		else
-		{
-			append_or_concat_token(tokens, quoted_content, DOUBLE_Q, 2); // Append expanded token
-			set_concat_flag(mini->input, *i, get_last_token(*tokens));
-		}
-	}
-	else // Directly append single-quoted content without expansion
+	if (quote_type == DOUBLE_Q)
+		handle_double_quotes(mini, i, tokens, quoted_content);
+	else
 	{
 		append_or_concat_token(tokens, quoted_content, SINGLE_Q, 1);
 		set_concat_flag(mini->input, *i, get_last_token(*tokens));
 	}
 	free(quoted_content);
-	return (1); // Successful execution
+	return (1);
 }

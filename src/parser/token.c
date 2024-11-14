@@ -6,56 +6,13 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/24 10:25:16 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 19:30:00 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 22:47:07 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void	set_redirection(char *input, int *i, t_token **tokens)
-{
-	if (input[*i] == '<')
-	{
-		if (input[*i + 1] == '<')
-		{
-			append_token(tokens, "<<", HEREDOC, 0);
-			(*i)++;
-		}
-		else
-			append_token(tokens, "<", RED_IN, 0);
-		(*i)++;
-	}
-	else if (input[*i] == '>')
-	{
-		if (input[*i + 1] == '>')
-		{
-			append_token(tokens, ">>", APPEND, 0);
-			(*i)++;
-		}
-		else
-			append_token(tokens, ">", RED_OUT, 0);
-		(*i)++;
-	}
-}
-
-void	set_redi_and_pipes(t_shell *mini, int *i, t_token **tokens)
-{
-	char	*input;
-
-	input = mini->input;
-	if (input[*i] == '|')
-	{
-		append_token(tokens, "|", PIPE, 0);
-		(*i)++;
-	}
-	else if (input[*i] == '<' || input[*i] == '>')
-	{
-		set_redirection(input, i, tokens);
-	}
-}
-
-static void	handle_quote(char *input, int *i, char *buffer, \
-	int *buffer_index, int *in_quotes, char *quote_char)
+static void handle_quote(char *input, int *i, char *buffer, int *buffer_index, int *in_quotes, char *quote_char)
 {
 	if (!*in_quotes)
 	{
@@ -134,7 +91,7 @@ t_token	*tokenize(t_shell *mini)
 		if (mini->input[i] == '\'' || mini->input[i] == '\"')
 		{
 			if (!handle_quotes(mini, &i, &tokens))
-				return (NULL); // Handle unclosed quotes
+				return (NULL);
 			continue ;
 		}
 		if (mini->input[i] == '|' || mini->input[i] == '<' ||

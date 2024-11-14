@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 14:24:35 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/14 20:55:32 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 23:05:28 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ static int	handle_dollar_sign(t_expand_info *info)
 	return (1);
 }
 
-
 static int	append_char(t_expand_info *info, char c)
 {
 	if (info->len + 1 >= info->size)
@@ -94,7 +93,7 @@ char	*expand_value(char *token, t_shell *mini)
 	while (*info.tkn_ptr)
 	{
 		if (*info.tkn_ptr == '$' && *(info.tkn_ptr + 1) \
-            && !ft_isspace(*(info.tkn_ptr + 1)))
+			&& !ft_isspace(*(info.tkn_ptr + 1)))
 		{
 			if (!handle_dollar_sign(&info))
 				return (NULL);

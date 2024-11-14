@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/25 09:30:01 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 22:07:57 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 22:59:16 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static t_token *init_empty_token(void)
     return new_token;
 }
 
-void append_token(t_token **tokens, char *value, e_token_type type, int quote_type)
+void append_token(t_token **tokens, char *value, t_token_type type, int quote_type)
 {
     t_token *new;
     t_token *current;
@@ -57,7 +57,7 @@ void append_token(t_token **tokens, char *value, e_token_type type, int quote_ty
 	}
 }
 
-e_token_type	classify_token(char *token_value)
+t_token_type	classify_token(char *token_value)
 {
 	if (ft_strcmp(token_value, "<") == 0)
 		return (RED_IN);
