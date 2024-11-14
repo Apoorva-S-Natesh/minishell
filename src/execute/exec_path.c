@@ -6,7 +6,7 @@
 /*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 14:23:57 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/14 14:06:24 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 14:38:02 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,10 @@ char	*find_command(char *cmd, t_env *variable)
 	int		i;
 
 	if (ft_strcmp(cmd,"") == 0)
-		return ("");
+	{
+		result = ft_strdup("");
+		return (result);
+	}
 	if (ft_strchr(cmd, '/'))
 		return (ft_strdup(cmd));
 	path_env = get_env_value("PATH", variable);

@@ -4,6 +4,7 @@ static int expand_token_value(t_token *token, t_shell *mini)
 {
     char *expanded;
 
+    
     if (token->type != SINGLE_Q && ft_strchr(token->value, '$'))
     {
         expanded = expand_value(token->value, mini);

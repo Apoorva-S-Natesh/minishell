@@ -58,6 +58,7 @@ int handle_quotes(t_shell *mini, int *i, t_token **tokens)
 	char	*expanded_content;
 	int		buffer_index; //just to not exceed 25 lines in the next function
 
+	expanded_content = NULL;
 	buffer_index = 0;
 	if (mini->input[*i] == '\'')
 		quote_type = SINGLE_Q;
@@ -71,10 +72,20 @@ int handle_quotes(t_shell *mini, int *i, t_token **tokens)
 	}
 	if (quote_type == DOUBLE_Q) // Expand for double quotes, but directly append for single quotes
 	{
-		expanded_content = expand_value(quoted_content, mini);
-		append_or_concat_token(tokens, expanded_content, DOUBLE_Q, 2); // Append expanded token
-		set_concat_flag(mini->input, *i, get_last_token(*tokens));
-		free(expanded_content); // Free after use
+		if (ft_strlen(quoted_content) > 0)
+		{
+			expanded_content = expand_value(quoted_content, mini);
+			if (!expanded_content)
+				return (0);
+			append_or_concat_token(tokens, expanded_content, DOUBLE_Q, 2); // Append expanded token
+			set_concat_flag(mini->input, *i, get_last_token(*tokens));
+			free(expanded_content); // Free after use
+		}
+		else
+		{
+			append_or_concat_token(tokens, quoted_content, DOUBLE_Q, 2); // Append expanded token
+			set_concat_flag(mini->input, *i, get_last_token(*tokens));
+		}
 	}
 	else // Directly append single-quoted content without expansion
 	{
