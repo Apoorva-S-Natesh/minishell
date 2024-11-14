@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:51:27 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/01 13:38:44 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 21:01:43 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ void	execute(t_shell *mini)
 		sa_ignore.sa_flags = 0;
 		sigaction(SIGINT, &sa_ignore, &sa_old);
 		execute_single_command(cmd, &prcs, mini, &pipe_info);
-		// Restore the previous SIGINT handler
 		sigaction(SIGINT, &sa_old, NULL);
 		cleanup_redirections(&prcs);
 		cmd = cmd->next;
@@ -45,7 +44,7 @@ t_shell *mini, t_pipe_info *pipe_info)
 {
 	int	redir_result;
 
-	if (cmd->next) // if (cmd->next || (!cmd->tokens || !cmd->tokens[0]))
+	if (cmd->next)
 	{
 		if (create_pipe(pipe_info->pipe_fd) == -1)
 			return ;
@@ -71,11 +70,11 @@ t_shell *mini, t_pipe_info *pipe_info)
 void	execute_builtin(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info)
 {
 	int	stdout_copy;
-	int stdin_copy;
+	int	stdin_copy;
 	int	in_pipeline;
 
 	stdout_copy = dup(STDOUT_FILENO);
-	stdin_copy = dup(STDIN_FILENO); // setting up input redirection as well for builtin
+	stdin_copy = dup(STDIN_FILENO);
 	if (pipe_info->prev_pipe[0] != -1 || cmd->next != NULL)
 		in_pipeline = 1;
 	else
@@ -87,44 +86,16 @@ void	execute_builtin(t_command *cmd, t_shell *mini, t_pipe_info *pipe_info)
 	}
 	if (cmd->next && pipe_info->pipe_fd[1] != -1)
 	{
-		// Redirect stdout to the write end of the pipe
 		dup2(pipe_info->pipe_fd[1], STDOUT_FILENO);
-		// close(pipe_info->pipe_fd[1]);
 	}
 	handle_builtin(cmd, mini, in_pipeline);
-	// Restore original stdout and stdin
 	dup2(stdout_copy, STDOUT_FILENO);
 	dup2(stdin_copy, STDIN_FILENO);
 	close(stdout_copy);
 	close(stdin_copy);
 }
 
-void	execute_non_builtin(t_command *cmd, t_process *prcs, \
-t_shell *mini, t_pipe_info *pipe_info)
-{
-	t_exec_info	exec_info;
-	int			exit_status;
-
-	exec_info.cmd = cmd;
-	exec_info.prcs = prcs;
-	exec_info.mini = mini;
-	exec_info.pipe_info = *pipe_info;
-	prcs->pid = fork();
-	if (prcs->pid == 0)
-	{
-		exit_status = handle_child_process(&exec_info);
-		exit(exit_status);
-	}
-	else if (prcs->pid < 0)
-	{
-		perror("fork");
-		exit(EXIT_FAILURE);
-	}
-	else
-		handle_parent_process(&exec_info);
-}
-
-void handle_parent_process(t_exec_info *exec_info)
+void	handle_parent_process(t_exec_info *exec_info)
 {
 	if (exec_info->pipe_info.prev_pipe[0] != -1)
 	{
@@ -147,7 +118,7 @@ void handle_parent_process(t_exec_info *exec_info)
 		}
 		wait_for_child(exec_info->prcs);
 		handle_child_status(exec_info->prcs, exec_info->mini);
-    }
+	}
 }
 
 void	handle_exection_pipes(t_pipe_info *pipe_info, t_command *cmd)

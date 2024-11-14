@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:31:30 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/14 22:05:21 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 22:33:30 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ int	check_file_status(const char *cmd_path)
 	return (0);
 }
 
-void	handle_command_error(const char *cmd_path, const char *cmd_name, int status)
+void	handle_command_error(const char *cmd_path, const char *cmd_name, \
+int status)
 {
 	struct stat	st;
 
@@ -78,8 +79,8 @@ void	handle_command_error(const char *cmd_path, const char *cmd_name, int status
 void	finish_execution(t_shell *mini)
 {
 	restore_main_signals();
-	while (wait(NULL) > 0);
-	// Restore original stdin and stdout
+	while (wait(NULL) > 0)
+		;
 	dup2(mini->redir_info.tempin, STDIN_FILENO);
 	dup2(mini->redir_info.tempout, STDOUT_FILENO);
 	close(mini->redir_info.tempin);

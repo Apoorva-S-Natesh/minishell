@@ -6,24 +6,9 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:50:20 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/29 11:49:02 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 19:38:34 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-/*
-cd /: Changes to the root directory.
-cd: Changes to the home directory.
-cd ..: Changes to the parent directory.
-cd -: Changes to the previous directory.
-cd /folder/subfolder: Changes to a specified path.
-how is this handled in our minishell
-asomanah@c3a10c5:~$ cd core_curriculum//////so_long///maps
-asomanah@c3a10c5:~/core_curriculum/so_long/maps$ - should be done in parsing or here?
-
-changing directories involves more than just calling the chdir() system call. 
-The shell needs to update its own internal state and environment variables (like PWD) 
-to reflect the new current directory.
-*/
 
 #include "../../includes/minishell.h"
 
@@ -108,7 +93,6 @@ static int	update_direcs(char *current_dir, char *prev_dir, t_shell *mini)
 	set_env_variable(mini, "PWD", new_dir);
 	set_env_variable(mini, "OLDPWD", prev_dir);
 	ft_strlcpy(mini->cwd, current_dir, sizeof(mini->cwd));
-	//free(new_dir);
 	return (0);
 }
 

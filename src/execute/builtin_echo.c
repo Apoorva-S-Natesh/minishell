@@ -6,35 +6,11 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 12:58:17 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/29 11:56:39 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 21:33:52 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-/*
-case 1: the escape sequences
-asomanah@c3a10c5:~/core_curriculum/minishell$ echo \t
-t
-asomanah@c3a10c5:~/core_curriculum/minishell$ echo \\t
-\t
-asomanah@c3a10c5:~/core_curriculum/minishell$ echo \\\t
-\t
-asomanah@c3a10c5:~/core_curriculum/minishell$ echo \\\t\
-> k
-\tk
-case 1: with $
-echo "$1"
-
-echo "$USER"
-user_name
-bash-5.1$ echo '$USER'
-$USER
-
-case 3:  inside quotes
- echo "'\\t'"
-'\t'
-*/
 
 static int	n_flag_present(char *arg)
 {
@@ -78,11 +54,3 @@ int	builtin_echo(char **tokens, t_shell *mini, int size)
 	mini->last_exit_status = 0;
 	return (SUCCESS);
 }
-
-/*
-echo "a b c" | tr ' ' '\n' | sort | uniq:
-Buffering: The most likely issue is that the output is being buffered. 
-In a pipeline, stdout is redirected to a pipe, which might not be line-buffered 
-by default. This can cause the output to be held in the buffer and not immediately 
-sent to the next command in the pipeline.
-*/

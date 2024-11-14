@@ -6,20 +6,16 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 14:23:14 by asomanah          #+#    #+#             */
-/*   Updated: 2024/10/29 16:37:19 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 21:41:25 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-/*The heredoc is typically handled in a child process to allow for proper signal
-handling and to prevent the main shell process from being affected by signals
-during heredoc input.*/
-
 //Child process function for handling heredoc input
 void	heredoc_child_process(int wr_fd, const char *delimiter, t_shell *mini)
 {
-	signal(SIGINT, SIG_DFL); // Set SIGINT to default behavior
+	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_IGN);
 	heredoc_read_loop(wr_fd, delimiter, mini);
 	close (wr_fd);
@@ -77,7 +73,7 @@ int	handle_heredoc(const char *delimiter, t_shell *mini)
 	setup_heredoc_signals();
 	if (!delimiter || !mini)
 	{
-		ft_putstr_fd("Error: Invalid arguments to handle_hd \n" ,STDERR_FILENO);
+		ft_putstr_fd("Error: Invalid arguments to handle_hd \n", STDERR_FILENO);
 		return (-1);
 	}
 	initialize_process(&hd_prcs);
@@ -89,6 +85,6 @@ int	handle_heredoc(const char *delimiter, t_shell *mini)
 	result = handle_heredoc_parent(&hd_prcs, mini);
 	restore_main_signals();
 	if (result == -1 && mini->last_exit_status == 130)
-		return (-2);  // Special value to indicate SIGINT interruption
+		return (-2);
 	return (result);
 }
