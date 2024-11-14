@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 10:41:01 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 22:24:37 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 22:34:22 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ int	main(int ac, char **av, char **envv)
 	if (!check_args(ac, av))
 		return (0);
 	init_shell(&mini, envv);
-	disable_ctrl_signals();
-	atexit(restore_terminal);
 	setup_sig_handling(&mini);
 	while (mini.running_status)
 	{
