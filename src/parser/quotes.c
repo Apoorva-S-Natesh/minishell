@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   quotes.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/14 19:34:10 by aschmidt          #+#    #+#             */
+/*   Updated: 2024/11/15 11:01:20 by asomanah         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 char	*remove_quotes(char *str)
@@ -10,7 +22,7 @@ char	*remove_quotes(char *str)
 	len = ft_strlen(str);
 	cleaned_str = malloc(len + 1);
 	if (!cleaned_str)
-		return NULL;
+		return (NULL);
 	src = str;
 	dst = cleaned_str;
 	while (*src)
@@ -23,7 +35,8 @@ char	*remove_quotes(char *str)
 	return (cleaned_str);
 }
 
-char *extract_quoted_content(char *input, int *i, int quote_type, int buffer_index)
+char	*extract_quoted_content(char *input, int *i, int quote_type, \
+	int buffer_index)
 {
 	char	*buffer;
 	char	closing_quote;
@@ -31,67 +44,82 @@ char *extract_quoted_content(char *input, int *i, int quote_type, int buffer_ind
 	buffer = malloc(256);
 	if (buffer == NULL)
 		return (NULL);
-	(*i)++; // Move past the opening quote
+	(*i)++;
 	if (quote_type == SINGLE_Q)
 		closing_quote = '\'';
 	else
 		closing_quote = '\"';
-    while (input[*i] && input[*i] != closing_quote) // Extract content until the closing quote
+	while (input[*i] && input[*i] != closing_quote)
 	{
 		buffer[buffer_index++] = input[*i];
 		(*i)++;
 	}
-    if (input[*i] == closing_quote)
+	if (input[*i] == closing_quote)
 	{
-        buffer[buffer_index] = '\0'; // Null-terminate the buffer
-        (*i)++; // Move past the closing quote
-        return (buffer); // Return the extracted content
-    }
-    free(buffer); // Free memory if unclosed quote
-    return (NULL); // Return NULL for unclosed quotes
+		buffer[buffer_index] = '\0';
+		(*i)++;
+		return (buffer);
+	}
+	free(buffer);
+	return (NULL);
 }
 
-int handle_quotes(t_shell *mini, int *i, t_token **tokens)
+// Function to handle expansion for double quotes
+int	handle_double_quotes(t_shell *mini, char *quoted_content, \
+	t_token **tokens, int *i)
+{
+	char	*expanded_content;
+
+	if (ft_strlen(quoted_content) > 0)
+	{
+		expanded_content = expand_value(quoted_content, mini);
+		if (!expanded_content)
+			return (0);
+		append_or_concat_token(tokens, expanded_content, DOUBLE_Q, 2);
+		set_concat_flag(mini->input, *i, get_last_token(*tokens));
+		free(expanded_content);
+		free(quoted_content);
+	}
+	else 
+	{
+		append_or_concat_token(tokens, quoted_content, DOUBLE_Q, 2);
+		set_concat_flag(mini->input, *i, get_last_token(*tokens));
+		free(quoted_content);
+	}
+	return (1);
+}
+
+// Function to handle single quotes
+int	handle_single_quotes(char *quoted_content, t_token **tokens, \
+	int *i, t_shell *mini)
+{
+	append_or_concat_token(tokens, quoted_content, SINGLE_Q, 1);
+	set_concat_flag(mini->input, *i, get_last_token(*tokens));
+	free(quoted_content);
+	return (1);
+}
+
+// Main function to handle quotes in the input
+int	handle_quotes(t_shell *mini, int *i, t_token **tokens)
 {
 	int		quote_type;
 	char	*quoted_content;
-	char	*expanded_content;
-	int		buffer_index; //just to not exceed 25 lines in the next function
+	int		buffer_index;
 
-	expanded_content = NULL;
 	buffer_index = 0;
 	if (mini->input[*i] == '\'')
 		quote_type = SINGLE_Q;
-	else
+	else 
 		quote_type = DOUBLE_Q;
-	quoted_content = extract_quoted_content(mini->input, i, quote_type, buffer_index);
+	quoted_content = extract_quoted_content(mini->input, i, \
+		quote_type, buffer_index);
 	if (quoted_content == NULL)
 	{
 		printf("Error: Unclosed quote detected!\n");
-		return (0); // Indicate an error
+		return (0);
 	}
-	if (quote_type == DOUBLE_Q) // Expand for double quotes, but directly append for single quotes
-	{
-		if (ft_strlen(quoted_content) > 0)
-		{
-			expanded_content = expand_value(quoted_content, mini);
-			if (!expanded_content)
-				return (0);
-			append_or_concat_token(tokens, expanded_content, DOUBLE_Q, 2); // Append expanded token
-			set_concat_flag(mini->input, *i, get_last_token(*tokens));
-			free(expanded_content); // Free after use
-		}
-		else
-		{
-			append_or_concat_token(tokens, quoted_content, DOUBLE_Q, 2); // Append expanded token
-			set_concat_flag(mini->input, *i, get_last_token(*tokens));
-		}
-	}
-	else // Directly append single-quoted content without expansion
-	{
-		append_or_concat_token(tokens, quoted_content, SINGLE_Q, 1);
-		set_concat_flag(mini->input, *i, get_last_token(*tokens));
-	}
-	free(quoted_content);
-	return (1); // Successful execution
+	if (quote_type == DOUBLE_Q)
+		return (handle_double_quotes(mini, quoted_content, tokens, i));
+	else
+		return (handle_single_quotes(quoted_content, tokens, i, mini));
 }

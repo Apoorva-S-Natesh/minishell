@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token_to_command.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/11/14 19:34:59 by aschmidt          #+#    #+#             */
+/*   Updated: 2024/11/15 00:09:27 by asomanah         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 void	process_token(t_command **current_cmd, t_token **current_tkn)
 {
-	e_token_type	type;
+	t_token_type	type;
 
 	type = (*current_tkn)->type;
 	if (type == PIPE)
@@ -14,9 +26,6 @@ void	process_token(t_command **current_cmd, t_token **current_tkn)
 		{
 			if ((*current_tkn)->next && (*current_tkn)->next->type == WORD)
 				handle_redirection(current_cmd, current_tkn);
-			// else
-			// 	printf("minishell: Syntax error: missing file after
-			// redirection\n");
 		}
 		else
 			add_tkn_to_cmd(*current_cmd, *current_tkn);
@@ -32,18 +41,18 @@ void	add_tkn_to_cmd(t_command *cmd, t_token *token)
 
 	i = 0;
 	j = 0;
-	while (cmd->tokens && cmd->tokens[i]) //calculate existing tokens
+	while (cmd->tokens && cmd->tokens[i])
 		i++;
-	new_tokens = malloc(sizeof(char *) * (i + 2)); //create space for existing tokens + new and NULL
+	new_tokens = malloc(sizeof(char *) * (i + 2));
 	if (!new_tokens)
 		return ;
 	while (j < i)
 	{
-		new_tokens[j] = cmd->tokens[j]; //copy old data
+		new_tokens[j] = cmd->tokens[j];
 		j++;
 	}
-		new_tokens[i] = ft_strdup(token->value); //add new token
-		new_tokens[i + 1] = NULL;
-		free(cmd->tokens);
-		cmd->tokens = new_tokens;
+	new_tokens[i] = ft_strdup(token->value);
+	new_tokens[i + 1] = NULL;
+	free(cmd->tokens);
+	cmd->tokens = new_tokens;
 }

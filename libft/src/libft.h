@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 16:09:25 by asomanah          #+#    #+#             */
-/*   Updated: 2024/09/25 09:42:14 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/15 01:31:27 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 # include <stdlib.h>
 # include <unistd.h>
 # ifndef BUFFER_SIZE
-#	define BUFFER_SIZE 1
-#endif
+#  define BUFFER_SIZE 1
+# endif
 
 typedef struct s_list
 {
@@ -72,6 +72,7 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 int		ft_isspace(int c);
 char	*ft_strndup(const char *s1, size_t n);
 int		ft_strcmp(const char *s1, const char *s2);
+char	*ft_strtok(char *str, const char *delim);
 
 //get next line
 char	*get_next_line(int fd);

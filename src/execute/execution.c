@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/01 13:31:30 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/14 21:43:58 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/15 11:07:22 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,6 @@ int	check_file_status(const char *cmd_path)
 
 	if (!cmd_path)
 		return (127);
-	if (ft_strcmp(cmd_path, "") == 0)
-		return (127);
 	if (access(cmd_path, F_OK) != 0)
 		return (127);
 	if (stat(cmd_path, &st) == 0 && S_ISDIR(st.st_mode))
@@ -66,8 +64,6 @@ int status)
 	struct stat	st;
 
 	if (status == 127 && !cmd_path)
-		print_err_msg(cmd_name, "command not found");
-	else if (status == 127 && ft_strcmp(cmd_path, "") == 0)
 		print_err_msg(cmd_name, "command not found");
 	else if (status == 127)
 		print_err_msg(cmd_name, strerror(errno));

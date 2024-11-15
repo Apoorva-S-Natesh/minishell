@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 14:23:57 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/14 20:01:18 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/15 11:14:35 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,13 @@
 char	**split_path(char *path)
 {
 	char	**paths;
-	char	*token;
 	int		count;
 
 	count = 0;
 	paths = malloc(sizeof(char *) * (PATH_MAX));
 	if (!paths)
 		return (NULL);
-	token = strtok(path, ":");
-	while (token)
-	{
-		paths[count] = ft_strdup(token);
-		count++;
-		token = strtok(NULL, ":");
-	}
-	paths[count] = NULL;
+	paths = ft_split(path, ':');
 	return (paths);
 }
 
@@ -81,11 +73,6 @@ char	*find_command(char *cmd, t_env *variable)
 	char	**paths;
 	char	*result;
 
-	if (ft_strcmp(cmd, "") == 0)
-	{
-		result = ft_strdup("");
-		return (result);
-	}
 	if (ft_strchr(cmd, '/'))
 		return (ft_strdup(cmd));
 	path_env = get_env_value("PATH", variable);

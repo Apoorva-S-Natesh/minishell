@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/01 13:02:43 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/14 21:41:49 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/15 01:21:28 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ static void	ft_unset(char *key, t_env **env)
 	current = *env;
 	while (current)
 	{
-		if (strncmp(current->key, key, len) == 0 && current->key[len] == '\0')
+		if (ft_strncmp(current->key, key, len) == 0 && \
+			current->key[len] == '\0')
 		{
 			deloneenv(env, current, headcopy);
 			return ;
@@ -66,7 +67,7 @@ void	builtin_unset(t_shell *mini, char **args)
 	{
 		if (is_valid_identifier(args[i]))
 		{
-			if (strcmp(args[i], "_") != 0)
+			if (ft_strcmp(args[i], "_") != 0)
 			{
 				ft_unset(args[i], &mini->env);
 				mini->last_exit_status = 0;

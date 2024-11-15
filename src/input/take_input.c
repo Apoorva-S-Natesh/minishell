@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   take_input.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/19 14:19:49 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/10/29 19:54:22 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 19:22:31 by aschmidt         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	take_input(t_shell *mini)
 	}
 	else
 	{
-		free(mini->input); //To prevent memory leaks when an empty string is entered.
+		free(mini->input);
 		return (0);
 	}
 }

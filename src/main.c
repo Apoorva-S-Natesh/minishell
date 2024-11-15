@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 10:41:01 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 19:39:07 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/15 11:14:55 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,16 @@
 
 void	execute_minishell(t_shell *mini, t_token *tokens)
 {
+	int	validate_result;
+
 	expand_tokens(&tokens, mini);
-	if (!validate_tokens(tokens))
-	{
+	validate_result = validate_tokens(tokens, mini);
+	if (validate_result == -1)
 		printf("syntax error near unexpected token `|'\n");
+	else if (validate_result == -2)
+		printf("syntax error near unexpected token `newline'\n");
+	if (validate_result < 0)
+	{
 		free_tokens(tokens);
 		return ;
 	}
