@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/29 14:23:57 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/14 22:33:15 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/15 09:13:18 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ char	**split_path(char *path)
 	paths = malloc(sizeof(char *) * (PATH_MAX));
 	if (!paths)
 		return (NULL);
-	token = strtok(path, ":");
+	token = ft_strtok(path, ":");
 	while (token)
 	{
 		paths[count] = ft_strdup(token);
 		count++;
-		token = strtok(NULL, ":");
+		token = ft_strtok(NULL, ":");
 	}
 	paths[count] = NULL;
 	return (paths);
