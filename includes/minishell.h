@@ -6,9 +6,10 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/15 11:03:05 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/14 19:21:40 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
@@ -323,6 +324,12 @@ void			builtin_unset(t_shell *mini, char **args);
 void			initialize_pipe_info(t_pipe_info *pipe_info);
 void			free_env_array(char **env_array);
 int				many_args(int num_args);
+
+// Builtin in child process
+void			setup_child_pipes(t_pipe_info *pipe_info);
+void			handle_parent_pipes(t_pipe_info *pipe_info);
+void			wait_for_child_builtin(pid_t pid, t_shell *mini);
+
 
 //PRINT DEBUG FUNCTIONS
 void			print_redirections(t_redirection *redir);
