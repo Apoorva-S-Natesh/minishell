@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 19:34:10 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/15 00:05:54 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/15 11:01:20 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,11 +78,13 @@ int	handle_double_quotes(t_shell *mini, char *quoted_content, \
 		append_or_concat_token(tokens, expanded_content, DOUBLE_Q, 2);
 		set_concat_flag(mini->input, *i, get_last_token(*tokens));
 		free(expanded_content);
+		free(quoted_content);
 	}
 	else 
 	{
 		append_or_concat_token(tokens, quoted_content, DOUBLE_Q, 2);
 		set_concat_flag(mini->input, *i, get_last_token(*tokens));
+		free(quoted_content);
 	}
 	return (1);
 }
@@ -93,6 +95,7 @@ int	handle_single_quotes(char *quoted_content, t_token **tokens, \
 {
 	append_or_concat_token(tokens, quoted_content, SINGLE_Q, 1);
 	set_concat_flag(mini->input, *i, get_last_token(*tokens));
+	free(quoted_content);
 	return (1);
 }
 

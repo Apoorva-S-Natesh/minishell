@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/15 00:54:28 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/15 11:03:05 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@ void			free_command(t_command *command);
 
 //CREATE TOKEN
 t_token			*tokenize(t_shell *mini);
-int				validate_tokens(t_token *tokens);
+int				validate_tokens(t_token *tokens, t_shell *mini);
 void			handle_word(t_shell *mini, int *i, t_token **tokens);
 void			set_redi_and_pipes(t_shell *mini, int *i, t_token **tokens);
 int				handle_quotes(t_shell *mini, int *i, t_token **tokens);
