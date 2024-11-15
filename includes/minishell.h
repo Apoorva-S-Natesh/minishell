@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/17 11:19:35 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 22:58:53 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/15 00:54:28 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,16 @@ typedef struct s_expand_info
 	t_shell	*mini;
 }	t_expand_info;
 
+// Struct to manage state during tokenization
+typedef struct s_tokenizer 
+{
+	char	*input;
+	char	buffer[256];
+	int		buffer_index;
+	int		in_quotes;
+	char	quote_char;
+}	t_tokenizer;
+
 //INIT SHELL
 void			init_shell(t_shell *mini, char **envv);
 void			set_envv(t_shell *mini, char **envv);
@@ -196,6 +206,9 @@ void			set_concat_flag(char *input, int i, t_token *last_token);
 void			append_or_concat_token(t_token **tokens, char *value, \
 				int type, int quote_type);
 t_token			*get_last_token(t_token *tokens);
+void			handle_quote(t_tokenizer *tokenizer, int *i);
+void			handle_equals(t_tokenizer *tokenizer, int *i);
+int				should_break(char c, int in_quotes);
 
 //EXPAND TOKENS
 void			expand_tokens(t_token **tokens, t_shell *mini);
@@ -205,6 +218,12 @@ char			*get_env_value(const char *name, t_env *env_list);
 char			*remove_quotes(char *str);
 char			*extract_quoted_content(char *input, int *i, int quote_type, \
 				int buffer_index);
+int				resize_result(t_expand_info *info, size_t needed);
+int				append_var_value(t_expand_info *info, char *value);
+int				handle_dollar_sign(t_expand_info *info);
+int				append_char(t_expand_info *info, char c);
+void			initialize_info(t_expand_info *info, char *token, \
+				t_shell *mini);
 
 //CREATE COMMAND
 t_command		*group_tokens_to_cmd(t_token *tokens);

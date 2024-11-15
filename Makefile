@@ -6,7 +6,7 @@
 #    By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/17 11:23:39 by aschmidt          #+#    #+#              #
-#    Updated: 2024/11/14 19:52:42 by asomanah         ###   ########.fr        #
+#    Updated: 2024/11/15 00:25:29 by asomanah         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ LDFLAGS = -lreadline
 
 SRC	= $(addprefix src/, main.c /input/take_input.c /input/init_shell.c \
 		/utils/envv_utils.c /utils/free_utils.c /utils/close_program.c \
-		/parser/token.c /parser/token_maker.c \
+		/parser/token.c /parser/token_maker.c /parser/token_utils.c\
 		/parser/command.c /parser/token_to_command.c  \
 		/parser/expand_value.c /parser/validate_tokens.c\
 		/parser/expand.c /parser/quotes.c /parser/parsing_redirection.c \

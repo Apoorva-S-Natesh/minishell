@@ -3,34 +3,61 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 18:59:46 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 22:21:06 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 23:52:13 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+char	*expand_value(char *token, t_shell *mini)
+{
+	t_expand_info	info;
+
+	initialize_info(&info, token, mini);
+	info.result = malloc(info.size);
+	if (!info.result)
+		return (NULL);
+	while (*info.tkn_ptr)
+	{
+		if (*info.tkn_ptr == '$' && *(info.tkn_ptr + 1) \
+			&& !ft_isspace(*(info.tkn_ptr + 1)))
+		{
+			if (!handle_dollar_sign(&info))
+				return (NULL);
+		}
+		else
+		{
+			if (!append_char(&info, *info.tkn_ptr))
+				return (NULL);
+			info.tkn_ptr++;
+		}
+	}
+	info.result[info.len] = '\0';
+	return (info.result);
+}
+
 static int	expand_token_value(t_token *token, t_shell *mini)
 {
-	char *expanded;
+	char	*expanded;
 
-    if (token->type != SINGLE_Q && ft_strchr(token->value, '$'))
-    {
-        expanded = expand_value(token->value, mini);
-        if (expanded)
-        {
-            if (*expanded == '\0')
-            {
-                free(expanded);
-                return (0);
-            }
-            free(token->value);
-            token->value = expanded;
-        }
-    }
-    return (1);
+	if (token->type != SINGLE_Q && ft_strchr(token->value, '$'))
+	{
+		expanded = expand_value(token->value, mini);
+		if (expanded)
+		{
+			if (*expanded == '\0')
+			{
+				free(expanded);
+				return (0);
+			}
+			free(token->value);
+			token->value = expanded;
+		}
+	}
+	return (1);
 }
 
 void	expand_tokens(t_token **tokens, t_shell *mini)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_to_command.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/14 19:34:59 by aschmidt          #+#    #+#             */
-/*   Updated: 2024/11/14 20:39:23 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/15 00:09:27 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	process_token(t_command **current_cmd, t_token **current_tkn)
 {
-	e_token_type	type;
+	t_token_type	type;
 
 	type = (*current_tkn)->type;
 	if (type == PIPE)

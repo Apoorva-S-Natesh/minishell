@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand_value.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aschmidt <aschmidt@student.42.fr>          +#+  +:+       +#+        */
+/*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 14:24:35 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/14 20:55:32 by aschmidt         ###   ########.fr       */
+/*   Updated: 2024/11/14 23:50:51 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	resize_result(t_expand_info *info, size_t needed)
+int	resize_result(t_expand_info *info, size_t needed)
 {
 	char	*new_result;
 	size_t	new_size;
@@ -37,7 +37,7 @@ static int	resize_result(t_expand_info *info, size_t needed)
 	return (1);
 }
 
-static int	append_var_value(t_expand_info *info, char *value)
+int	append_var_value(t_expand_info *info, char *value)
 {
 	size_t	value_len;
 
@@ -52,7 +52,7 @@ static int	append_var_value(t_expand_info *info, char *value)
 	return (1);
 }
 
-static int	handle_dollar_sign(t_expand_info *info)
+int	handle_dollar_sign(t_expand_info *info)
 {
 	char	*var_value;
 	int		success;
@@ -68,8 +68,7 @@ static int	handle_dollar_sign(t_expand_info *info)
 	return (1);
 }
 
-
-static int	append_char(t_expand_info *info, char c)
+int	append_char(t_expand_info *info, char c)
 {
 	if (info->len + 1 >= info->size)
 	{
@@ -80,32 +79,10 @@ static int	append_char(t_expand_info *info, char c)
 	return (1);
 }
 
-char	*expand_value(char *token, t_shell *mini)
+void	initialize_info(t_expand_info *info, char *token, t_shell *mini)
 {
-	t_expand_info	info;
-
-	info.size = ft_strlen(token) * 2;
-	info.result = malloc(info.size);
-	if (!info.result)
-		return (NULL);
-	info.len = 0;
-	info.tkn_ptr = token;
-	info.mini = mini;
-	while (*info.tkn_ptr)
-	{
-		if (*info.tkn_ptr == '$' && *(info.tkn_ptr + 1) \
-            && !ft_isspace(*(info.tkn_ptr + 1)))
-		{
-			if (!handle_dollar_sign(&info))
-				return (NULL);
-		}
-		else
-		{
-			if (!append_char(&info, *info.tkn_ptr))
-				return (NULL);
-			info.tkn_ptr++;
-		}
-	}
-	info.result[info.len] = '\0';
-	return (info.result);
+	info->size = ft_strlen(token) * 2;
+	info->len = 0;
+	info->tkn_ptr = token;
+	info->mini = mini;
 }
