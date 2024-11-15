@@ -6,7 +6,7 @@
 /*   By: asomanah <asomanah@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/19 16:09:25 by asomanah          #+#    #+#             */
-/*   Updated: 2024/11/15 01:06:38 by asomanah         ###   ########.fr       */
+/*   Updated: 2024/11/15 01:31:27 by asomanah         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 int		ft_isspace(int c);
 char	*ft_strndup(const char *s1, size_t n);
 int		ft_strcmp(const char *s1, const char *s2);
+char	*ft_strtok(char *str, const char *delim);
 
 //get next line
 char	*get_next_line(int fd);
