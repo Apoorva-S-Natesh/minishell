@@ -1,4 +1,4 @@
 readline.supp
 minishell_tester/
 .vscode/
-.print.c
+./src/print.c
