@@ -16,9 +16,7 @@
 char	**split_path(char *path)
 {
 	char	**paths;
-	int		count;
 
-	count = 0;
 	paths = malloc(sizeof(char *) * (PATH_MAX));
 	if (!paths)
 		return (NULL);
