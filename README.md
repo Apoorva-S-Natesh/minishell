@@ -50,7 +50,7 @@ Minishell is a shell implementation that aims to replicate many features of Bash
 
 - **Ctrl-C**: Displays a new prompt on a new line.
 - **Ctrl-D**: Exits the shell.
-- \*\*Ctrl-\*\*: No action is performed.
+- **Ctrl-\ **: No action is performed.
 
 ## Installation
 
@@ -61,6 +61,8 @@ To run this project, clone the repository to your local machine and compile it w
 ```bash
 git clone https://github.com/yourusername/minishell.git
 cd minishell
+make
+./minishell
 ```
 
 ## Technologies
@@ -88,5 +90,5 @@ This project was developed using the following technologies and tools:
 
 ## Contributors
 
-    **Apoorva-S-Natesh**
-    **arekiu**
+    # Apoorva-S-Natesh
+    # arekiu
