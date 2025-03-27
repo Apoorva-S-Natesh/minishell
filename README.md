@@ -61,11 +61,13 @@ To run this project, clone the repository to your local machine and compile it w
 ```bash
 git clone https://github.com/yourusername/minishell.git
 cd minishell
+```
 
 ## Technologies
 
 This project was developed using the following technologies and tools:
 
+```
 - **C Programming Language**:
   - The entire shell is implemented using the C programming language. The project emphasizes low-level programming skills, such as memory management, string manipulation, process management, and system calls.
 
@@ -82,9 +84,9 @@ This project was developed using the following technologies and tools:
 
 - **Version Control**:
   - **Git**: The project is tracked using Git for version control. It allows for easy collaboration, history tracking, and code management.
+```
 
 ## Contributors
 
-	**Apoorva-S-Natesh**
-	**arekiu**
-```
+    **Apoorva-S-Natesh**
+    **arekiu**
